@@ -18,6 +18,7 @@ import Campaign from "@/pages/Campaign";
 import StoryFlow from "@/pages/StoryFlow";
 import Characters from "@/pages/Characters";
 import Maps from "@/pages/Maps";
+import MapDetail from "@/pages/MapDetail";
 import Sessions from "@/pages/Sessions";
 import Gruppe from "@/pages/Gruppe";
 import Utskrift from "@/pages/Utskrift";
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
           <Route path="/historie" element={<StoryFlow />} />
           <Route path="/karakterer" element={<Characters />} />
           <Route path="/kart" element={<Maps />} />
+          <Route path="/kart/:mapId" element={<MapDetail />} />
           <Route path="/sesjoner" element={<Sessions />} />
           <Route path="/gruppe" element={<Gruppe />} />
           <Route path="/spill" element={<Spill />} />
