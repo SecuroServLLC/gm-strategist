@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Lightbulb } from "lucide-react";
+import { ChevronDown, ChevronRight, Lightbulb, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BOARD_ELEMENTS, CATEGORY_LABELS, COLOR_CLASSES, isCompatible } from "@/lib/boardLibrary";
 import { ICON_MAP } from "@/lib/boardIcons";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const CATS = ["terrain", "enemy", "npc", "building", "hazard", "item"];
 
-export default function BoardSidebar({ selected, isObstacle, solving, onSolve }) {
+export default function BoardSidebar({ selected, isObstacle, solving, onSolve, isNpc, socialLoading, onSocial }) {
   const [open, setOpen] = useState({ terrain: true, enemy: true, npc: true, building: true, hazard: true, item: true });
 
   return (
@@ -15,6 +15,11 @@ export default function BoardSidebar({ selected, isObstacle, solving, onSolve })
       {isObstacle && (
         <Button onClick={onSolve} disabled={solving} size="sm" variant="outline" className="w-full mb-2 gap-2 border-primary/40 text-primary hover:bg-primary/10">
           <Lightbulb className="w-4 h-4" /> {solving ? "Genererer…" : "Flere løsninger"}
+        </Button>
+      )}
+      {isNpc && (
+        <Button onClick={onSocial} disabled={socialLoading} size="sm" variant="outline" className="w-full mb-2 gap-2 border-purple-500/40 text-purple-300 hover:bg-purple-500/10">
+          <Shield className="w-4 h-4" /> {socialLoading ? "Genererer…" : "Sosial profil"}
         </Button>
       )}
       <div className="text-xs text-muted-foreground mb-2 px-1 leading-relaxed">
