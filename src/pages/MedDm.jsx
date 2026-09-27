@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Bot, Pencil, Trash2, Sparkles, RefreshCw, Link2, User, Gauge, Coins, Cloud, Gem } from "lucide-react";
+import { Plus, Bot, Pencil, Trash2, Sparkles, RefreshCw, Link2, User, Gauge, Coins, Cloud, Gem, Swords, Puzzle } from "lucide-react";
 import FactionDialog from "@/components/FactionDialog";
 import CoDmResult from "@/components/CoDmResult";
 import PlayerHooksCard from "@/components/meddm/PlayerHooksCard";
@@ -16,6 +16,8 @@ import PacingCard from "@/components/meddm/PacingCard";
 import EconomyCard from "@/components/meddm/EconomyCard";
 import TravelWeatherCard from "@/components/meddm/TravelWeatherCard";
 import LootCard from "@/components/meddm/LootCard";
+import EncounterCard from "@/components/meddm/EncounterCard";
+import PuzzleCard from "@/components/meddm/PuzzleCard";
 
 function FactionPower({ power }) {
   const p = Math.max(0, Math.min(100, power || 0));
@@ -35,6 +37,8 @@ const TOOLS = [
   { id: "okonomi", label: "Økonomi", icon: Coins },
   { id: "reise", label: "Reise & vær", icon: Cloud },
   { id: "loot", label: "Loot", icon: Gem },
+  { id: "mote", label: "Dynamisk møte", icon: Swords },
+  { id: "gate", label: "Gåter", icon: Puzzle },
 ];
 
 export default function MedDm() {
@@ -219,6 +223,8 @@ export default function MedDm() {
               {activeTool === "okonomi" && <EconomyCard campaign={campaign} />}
               {activeTool === "reise" && <TravelWeatherCard campaign={campaign} />}
               {activeTool === "loot" && <LootCard campaign={campaign} />}
+              {activeTool === "mote" && <EncounterCard campaign={campaign} />}
+              {activeTool === "gate" && <PuzzleCard campaign={campaign} />}
             </div>
           </div>
         </div>
