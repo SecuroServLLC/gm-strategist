@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Lightbulb, Shield, Swords, Zap } from "lucide-react";
+import { ChevronDown, ChevronRight, Lightbulb, Shield, Swords, Zap, Route } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BOARD_ELEMENTS, CATEGORY_LABELS, COLOR_CLASSES, isCompatible } from "@/lib/boardLibrary";
 import { ICON_MAP } from "@/lib/boardIcons";
@@ -7,11 +7,16 @@ import { Button } from "@/components/ui/button";
 
 const CATS = ["terrain", "enemy", "npc", "building", "hazard", "item"];
 
-export default function BoardSidebar({ selected, isObstacle, solving, onSolve, isNpc, socialLoading, onSocial, isViolence, violenceLoading, onViolence, isCoercion, coercionLoading, onCoercion }) {
+export default function BoardSidebar({ selected, isObstacle, solving, onSolve, isNpc, socialLoading, onSocial, isViolence, violenceLoading, onViolence, isCoercion, coercionLoading, onCoercion, isPathsTarget, pathsLoading, onPaths }) {
   const [open, setOpen] = useState({ terrain: true, enemy: true, npc: true, building: true, hazard: true, item: true });
 
   return (
     <div className="h-full overflow-y-auto scrollbar-thin pr-1">
+      {isPathsTarget && (
+        <Button onClick={onPaths} disabled={pathsLoading} size="sm" variant="outline" className="w-full mb-2 gap-2 border-primary/50 text-primary hover:bg-primary/15">
+          <Route className="w-4 h-4" /> {pathsLoading ? "Genererer…" : "5 løsningsveier"}
+        </Button>
+      )}
       {isObstacle && (
         <Button onClick={onSolve} disabled={solving} size="sm" variant="outline" className="w-full mb-2 gap-2 border-primary/40 text-primary hover:bg-primary/10">
           <Lightbulb className="w-4 h-4" /> {solving ? "Genererer…" : "Flere løsninger"}
