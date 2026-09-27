@@ -28,7 +28,7 @@
     },
     "mode": {
       "type": "string",
-      "description": "Spillemodus for \u00f8kta (fra kampanjens modusar)"
+      "description": "Spillemodus for \u00f8kten (fra kampanjens moduser)"
     },
     "recap": {
       "type": "string",

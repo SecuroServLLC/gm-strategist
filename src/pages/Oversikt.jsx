@@ -5,7 +5,7 @@ import { useCampaign } from "@/hooks/useCampaign";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Dices, BookOpen, Backpack, Printer, Swords, UserPlus, Cog, Library } from "lucide-react";
+import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Dices, BookOpen, Backpack, Printer, Swords, UserPlus, Cog, Library, Bot } from "lucide-react";
 
 export default function Oversikt() {
   const { campaign, loading } = useCampaign();
@@ -36,8 +36,8 @@ export default function Oversikt() {
       <div className="h-full flex items-center justify-center text-muted-foreground">
         <div className="text-center">
           <Library className="w-10 h-10 mx-auto mb-3 opacity-40" />
-          <p className="mb-4">Vel eller opprett ei kampanje først.</p>
-          <Link to="/"><Button variant="outline">Til kampanjane</Button></Link>
+          <p className="mb-4">Velg eller opprett en kampanje først.</p>
+          <Link to="/"><Button variant="outline">Til kampanjene</Button></Link>
         </div>
       </div>
     );
@@ -49,17 +49,18 @@ export default function Oversikt() {
     { to: "/kart", label: "Kart", value: counts.maps, icon: MapIcon, desc: "Lokasjoner og skisser" },
     { to: "/sesjoner", label: "Økter", value: counts.sessions, icon: BookOpen, desc: "Spilte økter og notater" },
     { to: "/gruppe", label: "Følget", value: counts.party, icon: Backpack, desc: "Følgesvenner og inventar" },
-    { to: "/spelarar", label: "Spelarar", value: counts.players, icon: UserPlus, desc: "Kven som er med" },
+    { to: "/spelarar", label: "Spillere", value: counts.players, icon: UserPlus, desc: "Hvem som er med" },
   ];
   const actions = [
-    { to: "/historie", icon: Workflow, label: "Bygg historie-flyt", desc: "Tegn opp scener, valg og terningkast i et flytskjema." },
+    { to: "/historie", icon: Workflow, label: "Bygg historieflyt", desc: "Tegn opp scener, valg og terningkast i et flytskjema." },
     { to: "/karakterer", icon: Users, label: "Generer karakterer", desc: "La AIen lage unike karakterkort med portrett." },
     { to: "/kart", icon: MapIcon, label: "Lag kartgalleriet", desc: "10–15 kart med notater og referanseskisser." },
-    { to: "/system", icon: Cog, label: "Sett opp regelverket", desc: "Eigendefinerte attributtar, ferdigheter, terningmekanikk og modusar." },
-    { to: "/spelarar", icon: UserPlus, label: "Registrer spelarar", desc: "Kven som er med, og kva karakter dei speler." },
+    { to: "/system", icon: Cog, label: "Sett opp regelverket", desc: "Egendefinerte attributter, ferdigheter, terningmekanikk og moduser." },
+    { to: "/spelarar", icon: UserPlus, label: "Registrer spillere", desc: "Hvem som er med, og hvilken karakter de spiller." },
     { to: "/sesjoner", icon: BookOpen, label: "Planlegg økter", desc: "Flere økter per kampanje – notater bæres inn i neste økt." },
     { to: "/gruppe", icon: Backpack, label: "Sett opp følget", desc: "Karakterer og brikker på laget, pluss inventar og gull." },
     { to: "/spill", icon: Swords, label: "Spill økta", desc: "HP, tilstander, ressurser, utrusting og hendelseslogg ved bordet." },
+    { to: "/med-dm", icon: Bot, label: "Kjør med-DM", desc: "Oppdater fraksjonsstatus, regn ut konsekvenser, få 3 komplikasjoner." },
     { to: "/utskrift", icon: Printer, label: "Print A6-ark", desc: "NPC-kort og brikkekort, fire per A4-side." },
   ];
 

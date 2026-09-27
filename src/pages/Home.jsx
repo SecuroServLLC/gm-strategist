@@ -27,8 +27,8 @@ export default function Home() {
         </div>
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>
-            <h1 className="font-heading text-4xl mb-1">Kampanjar</h1>
-            <p className="text-muted-foreground text-lg">Kva historie vil du utforska i kveld?</p>
+            <h1 className="font-heading text-4xl mb-1">Kampanjer</h1>
+            <p className="text-muted-foreground text-lg">Hvilken historie vil du utforske i kveld?</p>
           </div>
           <Button className="gap-1.5" onClick={() => setDialogOpen(true)}><Plus className="w-4 h-4" /> Ny kampanje</Button>
         </div>
@@ -38,8 +38,8 @@ export default function Home() {
             <CardContent className="p-10 text-center">
               <Sparkles className="w-10 h-10 text-primary mx-auto mb-4" />
               <h2 className="font-heading text-2xl mb-2">Ingen kampanje enda</h2>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">Spinne den røde tråden først – hovedfortellinga, verda, og hinta som styrer spelet.</p>
-              <Button size="lg" className="gap-2" onClick={() => setDialogOpen(true)}><Plus className="w-4 h-4" /> Opprett raud tråd</Button>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">Spinn den røde tråden først – hovedfortellingen, verden, og hintene som styrer spillet.</p>
+              <Button size="lg" className="gap-2" onClick={() => setDialogOpen(true)}><Plus className="w-4 h-4" /> Opprett rød tråd</Button>
             </CardContent>
           </Card>
         ) : (

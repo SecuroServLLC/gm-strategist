@@ -1,0 +1,28 @@
+{
+  "name": "Faction",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "description": "N\u00e5v\u00e6rende status/forhold, f.eks. Alliert, Fiendtlig, N\u00f8ytral, i oppl\u00f8sning..."
+    },
+    "description": {
+      "type": "string",
+      "description": "Hvem fraksjonen er, m\u00e5l, ressurser"
+    },
+    "notes": {
+      "type": "string",
+      "description": "GM-notater og hendelser som p\u00e5virker fraksjonen"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "name"
+  ]
+}

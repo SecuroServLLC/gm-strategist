@@ -19,7 +19,7 @@ export default function ModeList({ value, onChange }) {
         </div>
       ))}
       <Button size="sm" variant="outline" className="gap-1.5" onClick={add}><Plus className="w-3.5 h-3.5" /> Legg til modus</Button>
-      <p className="text-xs text-muted-foreground">Modusane kan brukast til å merka økter (t.d. Utforsk / Kamp / Sosial / Kvile).</p>
+      <p className="text-xs text-muted-foreground">Modusene kan brukes til å merke økter (f.eks. Utforsk / Kamp / Sosial / Kvile).</p>
     </div>
   );
 }

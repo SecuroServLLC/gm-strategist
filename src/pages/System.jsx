@@ -34,8 +34,8 @@ export default function System() {
       <div className="h-full flex items-center justify-center text-muted-foreground">
         <div className="text-center">
           <Cog className="w-10 h-10 mx-auto mb-3 opacity-40" />
-          <p className="mb-4">Du treng ei kampanje først.</p>
-          <Link to="/"><Button variant="outline">Til kampanjane</Button></Link>
+          <p className="mb-4">Du trenger en kampanje først.</p>
+          <Link to="/"><Button variant="outline">Til kampanjene</Button></Link>
         </div>
       </div>
     );
@@ -60,10 +60,10 @@ export default function System() {
       <div className="max-w-3xl mx-auto px-8 py-10 space-y-6">
         <div className="flex items-center gap-3 mb-2"><Cog className="w-6 h-6 text-primary" /><span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Regelverk</span></div>
         <h1 className="font-heading text-4xl mb-1">System</h1>
-        <p className="text-muted-foreground text-lg">Eigendefinerte attributtar, ferdigheter, terningmekanikk og modusar – heile regelverket for denne kampanjen.</p>
+        <p className="text-muted-foreground text-lg">Egendefinerte attributter, ferdigheter, terningmekanikk og moduser – hele regelverket for denne kampanjen.</p>
 
         <Card className="glass-card">
-          <CardHeader><CardTitle className="text-lg">Attributtar</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-lg">Attributter</CardTitle></CardHeader>
           <CardContent><AttributeList value={form.attributes} onChange={(v) => set("attributes", v)} /></CardContent>
         </Card>
 
@@ -78,12 +78,12 @@ export default function System() {
         </Card>
 
         <Card className="glass-card">
-          <CardHeader><CardTitle className="text-lg">Spillemodusar</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-lg">Spillemoduser</CardTitle></CardHeader>
           <CardContent><ModeList value={form.modes} onChange={(v) => set("modes", v)} /></CardContent>
         </Card>
 
         <div className="flex justify-end pb-10">
-          <Button onClick={save} disabled={saving} className="gap-1.5"><Save className="w-4 h-4" /> {saving ? "Lagrar…" : "Lagre system"}</Button>
+          <Button onClick={save} disabled={saving} className="gap-1.5"><Save className="w-4 h-4" /> {saving ? "Lagrer…" : "Lagre system"}</Button>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@
     },
     "name": {
       "type": "string",
-      "description": "Faktisk namn p\u00e5 personen"
+      "description": "Faktisk navn p\u00e5 personen"
     },
     "contact": {
       "type": "string",
@@ -15,12 +15,12 @@
     },
     "role": {
       "type": "string",
-      "default": "Spelar",
-      "description": "Spelar, GM, Co-GM... (fritekst)"
+      "default": "Spiller",
+      "description": "Spiller, GM, Co-GM... (fritekst)"
     },
     "character_id": {
       "type": "string",
-      "description": "Karakter dei speler (valgfritt)"
+      "description": "Karakter de spiller (valgfritt)"
     },
     "notes": {
       "type": "string"

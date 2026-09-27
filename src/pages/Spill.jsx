@@ -80,8 +80,8 @@ export default function Spill() {
       <div className="h-full flex items-center justify-center text-muted-foreground">
         <div className="text-center">
           <Swords className="w-10 h-10 mx-auto mb-3 opacity-40" />
-          <p className="mb-4">Du treng ei kampanje før du kan spela.</p>
-          <Link to="/kampanje"><Button variant="outline">Opprett raud tråd</Button></Link>
+          <p className="mb-4">Du trenger en kampanje før du kan spille.</p>
+          <Link to="/kampanje"><Button variant="outline">Opprett rød tråd</Button></Link>
         </div>
       </div>
     );
@@ -97,16 +97,16 @@ export default function Spill() {
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Spillebordet</span>
         </div>
         <h1 className="font-heading text-4xl mb-1">Spill</h1>
-        <p className="text-muted-foreground text-lg mb-6">HP, tilstander, ressurser, utrusting og hendelseslogg – alt du treng ved bordet.</p>
+        <p className="text-muted-foreground text-lg mb-6">HP, tilstander, ressurser, utrusting og hendelseslogg – alt du trenger ved bordet.</p>
 
         <Card className="glass-card mb-6">
           <CardContent className="p-4 flex items-center gap-3 flex-wrap">
             <span className="text-sm text-muted-foreground flex items-center gap-1.5"><BookOpen className="w-4 h-4" /> Aktiv økt:</span>
             {sessions.length === 0 ? (
-              <span className="text-sm text-muted-foreground">Inga økt enda. <Link to="/sesjoner" className="text-primary underline">Opprett ei</Link>.</span>
+              <span className="text-sm text-muted-foreground">Ingen økt enda. <Link to="/sesjoner" className="text-primary underline">Opprett en</Link>.</span>
             ) : (
               <Select value={sessionId || ""} onValueChange={setSessionId}>
-                <SelectTrigger className="w-64"><SelectValue placeholder="Vel økt" /></SelectTrigger>
+                <SelectTrigger className="w-64"><SelectValue placeholder="Velg økt" /></SelectTrigger>
                 <SelectContent>
                   {sessions.map((s) => <SelectItem key={s.id} value={s.id}>Økt {s.session_number} — {s.title}</SelectItem>)}
                 </SelectContent>
@@ -125,7 +125,7 @@ export default function Spill() {
 
           <TabsContent value="play">
             {activeMembers.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-10">Ingen aktive følgesvenner. Legg til dei på <Link to="/gruppe" className="text-primary underline">Følget</Link>-sida.</p>
+              <p className="text-sm text-muted-foreground text-center py-10">Ingen aktive følgesvenner. Legg til de på <Link to="/gruppe" className="text-primary underline">Følget</Link>-siden.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {activeMembers.map((m) => <PlayCard key={m.id} member={m} onUpdate={updateMember} />)}
@@ -135,7 +135,7 @@ export default function Spill() {
 
           <TabsContent value="loot">
             {members.length === 0 && items.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-10">Ingen utrusting enno. Legg til gjenstander på <Link to="/gruppe" className="text-primary underline">Følget</Link>-sida, så kan du dra dei mellom karakterar her.</p>
+              <p className="text-sm text-muted-foreground text-center py-10">Ingen utrusting enda. Legg til gjenstander på <Link to="/gruppe" className="text-primary underline">Følget</Link>-siden, så kan du dra dem mellom karakterer her.</p>
             ) : (
               <LoadoutBoard members={members} items={items} onMoveItem={moveItem} />
             )}
@@ -145,7 +145,7 @@ export default function Spill() {
             {sessionId ? (
               <SessionLog events={events} onAdd={addEvent} onDelete={deleteEvent} />
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-10">Opprett ei økt først for å logga hendelser.</p>
+              <p className="text-sm text-muted-foreground text-center py-10">Opprett en økt først for å logge hendelser.</p>
             )}
           </TabsContent>
         </Tabs>

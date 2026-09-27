@@ -94,7 +94,7 @@ export default function Utskrift() {
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Utskrift</span>
         </div>
         <h1 className="no-print font-heading text-4xl mb-1">A6-ark &amp; brikkekort</h1>
-        <p className="no-print text-muted-foreground text-lg mb-6">Fire A6-ark per A4-side. Klikk navn for å ta arkt bort/tilbake.</p>
+        <p className="no-print text-muted-foreground text-lg mb-6">Fire A6-ark per A4-side. Klikk navn for å ta arket bort/tilbake.</p>
 
         <div className="no-print flex flex-wrap gap-3 mb-8">
           <Button className="gap-2" onClick={print} disabled={cards.length === 0}><Printer className="w-4 h-4" /> Skriv ut</Button>
@@ -123,7 +123,7 @@ export default function Utskrift() {
         </div>
 
         {cards.length === 0 ? (
-          <p className="no-print text-sm text-muted-foreground text-center py-10">Ingen arkt valgt. Opprett NPC-er og brikker, eller velg arkt over.</p>
+          <p className="no-print text-sm text-muted-foreground text-center py-10">Ingen arket valgt. Opprett NPC-er og brikker, eller velg arket over.</p>
         ) : (
           <div className="print-doc space-y-4">
             {pages.map((page, pi) => (

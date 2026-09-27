@@ -36,7 +36,7 @@ export default function CampaignDialog({ open, onOpenChange, onSaved }) {
         <DialogHeader><DialogTitle>Ny kampanje</DialogTitle></DialogHeader>
         <div className="space-y-4">
           <div><Label className="mb-1.5 block">Tittel</Label><Input value={form.title} onChange={(e) => update("title", e.target.value)} placeholder="f.eks. Skygger over Eldoria" autoFocus /></div>
-          <div><Label className="mb-1.5 block">Premiss – den røde tråden</Label><Textarea rows={4} value={form.premise} onChange={(e) => update("premise", e.target.value)} placeholder="Hovedfortellinga – kva står på spel?" /></div>
+          <div><Label className="mb-1.5 block">Premiss – den røde tråden</Label><Textarea rows={4} value={form.premise} onChange={(e) => update("premise", e.target.value)} placeholder="Hovedfortellingen – hva står på spill?" /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label className="mb-1.5 block">Verden / setting</Label><Textarea rows={2} value={form.setting} onChange={(e) => update("setting", e.target.value)} placeholder="Tidsalder, geografi..." /></div>
             <div><Label className="mb-1.5 block">Tone</Label><Input value={form.tone} onChange={(e) => update("tone", e.target.value)} placeholder="Mørk, episk..." /></div>
@@ -52,7 +52,7 @@ export default function CampaignDialog({ open, onOpenChange, onSaved }) {
             </Select>
           </div>
         </div>
-        <DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button><Button onClick={submit} disabled={saving}>{saving ? "Lagrar…" : "Opprett"}</Button></DialogFooter>
+        <DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button><Button onClick={submit} disabled={saving}>{saving ? "Lagrer…" : "Opprett"}</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );

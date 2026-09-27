@@ -66,7 +66,7 @@
         ]
       },
       "default": [],
-      "description": "Eigendefinerte attributtar for regelverket"
+      "description": "Egendefinerte attributter for regelverket"
     },
     "skills": {
       "type": "array",
@@ -78,7 +78,7 @@
           },
           "attribute": {
             "type": "string",
-            "description": "Knytt til eit attributt-navn"
+            "description": "Knytt til et attributt-navn"
           },
           "description": {
             "type": "string"
@@ -89,7 +89,7 @@
         ]
       },
       "default": [],
-      "description": "Eigendefinerte ferdigheter"
+      "description": "Egendefinerte ferdigheter"
     },
     "dice_config": {
       "type": "object",
@@ -104,7 +104,7 @@
         },
         "success_threshold": {
           "type": "string",
-          "description": "Suksess/fiasco-reglar"
+          "description": "Suksess/fiasco-regler"
         },
         "advantage_rule": {
           "type": "string",
@@ -130,7 +130,7 @@
         ]
       },
       "default": [],
-      "description": "Spillemodusar (utforsk/kamp/sosial/kvile...)"
+      "description": "Spillemoduser (utforsk/kamp/sosial/kvile...)"
     },
     "difficulty": {
       "type": "string",

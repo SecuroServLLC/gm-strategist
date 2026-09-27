@@ -17,15 +17,15 @@ export default function PlayerDialog({ open, player, characters, onOpenChange, o
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
-        <DialogHeader><DialogTitle>{player?.id ? "Rediger spelar" : "Legg til spelar"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{player?.id ? "Rediger spiller" : "Legg til spiller"}</DialogTitle></DialogHeader>
         <div className="space-y-4">
-          <div><Label className="mb-1.5 block">Namn</Label><Input value={form.name || ""} onChange={(e) => update("name", e.target.value)} placeholder="Faktisk namn" autoFocus /></div>
+          <div><Label className="mb-1.5 block">Navn</Label><Input value={form.name || ""} onChange={(e) => update("name", e.target.value)} placeholder="Faktisk navn" autoFocus /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div><Label className="mb-1.5 block">Rolle</Label><Input value={form.role || ""} onChange={(e) => update("role", e.target.value)} placeholder="Spelar / GM / Co-GM" /></div>
+            <div><Label className="mb-1.5 block">Rolle</Label><Input value={form.role || ""} onChange={(e) => update("role", e.target.value)} placeholder="Spiller / GM / Co-GM" /></div>
             <div><Label className="mb-1.5 block">Kontakt</Label><Input value={form.contact || ""} onChange={(e) => update("contact", e.target.value)} placeholder="epost / discord" /></div>
           </div>
           <div>
-            <Label className="mb-1.5 block">Speler karakter (valgfritt)</Label>
+            <Label className="mb-1.5 block">Spiller karakter (valgfritt)</Label>
             <Select value={form.character_id || "none"} onValueChange={(v) => update("character_id", v === "none" ? "" : v)}>
               <SelectTrigger><SelectValue placeholder="Ingen" /></SelectTrigger>
               <SelectContent>
