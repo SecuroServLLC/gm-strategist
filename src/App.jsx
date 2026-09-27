@@ -21,6 +21,7 @@ import Oversikt from "@/pages/Oversikt";
 import Spelarar from "@/pages/Spelarar";
 import System from "@/pages/System";
 import MedDm from "@/pages/MedDm";
+import Brett from "@/pages/Brett";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
         <Route path="/spelarar" element={<Spelarar />} />
         <Route path="/system" element={<System />} />
         <Route path="/med-dm" element={<MedDm />} />
+        <Route path="/brett" element={<Brett />} />
         <Route path="/utskrift" element={<Utskrift />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

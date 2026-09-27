@@ -1,0 +1,85 @@
+{
+  "name": "BoardItem",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "board": {
+      "type": "string",
+      "default": "Hovedbrett",
+      "description": "Hvilket brett elementet h\u00f8rer til"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "terrain",
+        "enemy",
+        "npc",
+        "building",
+        "hazard"
+      ],
+      "description": "Kategori fra biblioteket"
+    },
+    "element_key": {
+      "type": "string",
+      "description": "N\u00f8kkel i biblioteket, f.eks. 'dark_cave'"
+    },
+    "label": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string",
+      "enum": [
+        "green",
+        "red",
+        "blue",
+        "amber",
+        "purple",
+        "slate"
+      ],
+      "default": "slate"
+    },
+    "icon": {
+      "type": "string",
+      "description": "lucide-ikonnavn"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "x": {
+      "type": "number",
+      "default": 0,
+      "description": "Celle-koordinat X"
+    },
+    "y": {
+      "type": "number",
+      "default": 0,
+      "description": "Celle-koordinat Y"
+    },
+    "w": {
+      "type": "number",
+      "default": 2,
+      "description": "Bredde i celler"
+    },
+    "h": {
+      "type": "number",
+      "default": 2,
+      "description": "H\u00f8yde i celler"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "board",
+    "category",
+    "element_key",
+    "label"
+  ]
+}
