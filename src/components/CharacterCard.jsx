@@ -28,9 +28,9 @@ export default function CharacterCard({ character, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="text-left glass-card rounded-2xl overflow-hidden hover:border-primary/40 transition-all group hover:-translate-y-0.5 w-full"
+      className="text-left glass-card rounded-2xl overflow-hidden hover:border-primary/40 transition-all group hover:-translate-y-0.5 w-full h-full flex flex-col"
     >
-      <div className="relative h-44 overflow-hidden bg-accent/30">
+      <div className="relative h-44 overflow-hidden bg-accent/30 shrink-0">
         {character.portrait_url ? (
           <Image src={character.portrait_url} fittingType="fill" className="w-full h-full transition-transform group-hover:scale-105" />
         ) : (
@@ -44,7 +44,7 @@ export default function CharacterCard({ character, onClick }) {
           </Badge>
         </div>
       </div>
-      <div className="p-4">
+      <div className="p-4 flex-1 flex flex-col">
         <h3 className="font-heading text-xl leading-tight">{character.name}</h3>
         <p className="text-sm text-primary/90 capitalize mb-3">{character.archetype} · {character.race}</p>
 
@@ -57,11 +57,9 @@ export default function CharacterCard({ character, onClick }) {
           ))}
         </div>
 
-        {character.hook && (
-          <p className="text-xs text-muted-foreground italic line-clamp-2 border-t border-border pt-2">
-            {character.hook}
-          </p>
-        )}
+        <p className="text-xs text-muted-foreground italic line-clamp-2 border-t border-border pt-2 mt-auto">
+          {character.hook || "Ingen hook ennå."}
+        </p>
       </div>
     </button>
   );

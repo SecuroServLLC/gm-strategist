@@ -8,12 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Plus, ScrollText, Loader2 } from "lucide-react";
 
+const ROLE_OPTIONS = [
+  { value: "all", label: "Alle" },
+  { value: "protagonist", label: "Protagonist" },
+  { value: "ally", label: "Alliert" },
+  { value: "antagonist", label: "Antagonist" },
+  { value: "npc", label: "NPC" },
+  { value: "contact", label: "Kontakt" },
+  { value: "mentor", label: "Mentor" },
+];
+
 export default function Characters() {
   const { campaign, loading } = useCampaign();
   const [characters, setCharacters] = useState([]);
   const [loadingList, setLoadingList] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [roleFilter, setRoleFilter] = useState("all");
+
+  const filtered = roleFilter === "all" ? characters : characters.filter((c) => c.role === roleFilter);
 
   const load = useCallback(async () => {
     if (!campaign) return;
@@ -71,6 +84,24 @@ export default function Characters() {
           </Button>
         </div>
 
+        {characters.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            {ROLE_OPTIONS.map((r) => {
+              const count = r.value === "all" ? characters.length : characters.filter((c) => c.role === r.value).length;
+              const active = roleFilter === r.value;
+              return (
+                <button
+                  key={r.value}
+                  onClick={() => setRoleFilter(r.value)}
+                  className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${active ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-primary/40"}`}
+                >
+                  {r.label} <span className={active ? "opacity-80" : "opacity-50"}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {loadingList ? (
           <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 text-primary animate-spin" /></div>
         ) : characters.length === 0 ? (
@@ -82,8 +113,8 @@ export default function Characters() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {characters.map((c) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+            {filtered.map((c) => (
               <CharacterCard key={c.id} character={c} onClick={() => openEdit(c)} />
             ))}
           </div>

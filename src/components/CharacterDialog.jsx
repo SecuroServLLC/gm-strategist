@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Loader2, Save, Dices, Upload, Wand2 } from "lucide-react";
 
@@ -24,6 +23,14 @@ const ROLES = [
 const STAT_KEYS = ["kraft", "smidighet", "utholdenhet", "intelligens", "visdom", "utstralning"];
 
 const EMPTY = { name: "", archetype: "", race: "", role: "npc", background: "", personality: "", stats: {}, abilities: [], appearance: "", hook: "", portrait_url: "", notes: "" };
+
+function SectionLabel({ children }) {
+  return (
+    <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70 font-medium pt-1">
+      {children}
+    </div>
+  );
+}
 
 export default function CharacterDialog({ open, onOpenChange, character, campaignId, setting, onSaved }) {
   const [form, setForm] = useState(EMPTY);
@@ -113,17 +120,17 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl bg-card border-border max-h-[92vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl flex items-center gap-2">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full sm:max-w-2xl p-0 gap-0 flex flex-col">
+        <SheetHeader className="px-6 pt-6 pb-4 border-b border-border shrink-0">
+          <SheetTitle className="font-heading text-xl flex items-center gap-2">
             <Wand2 className="w-5 h-5 text-primary" />
             {character ? "Rediger karakter" : "Generer karakter"}
-          </DialogTitle>
-        </DialogHeader>
+          </SheetTitle>
+        </SheetHeader>
 
         <ScrollArea className="flex-1">
-          <div className="space-y-5 pr-2 pb-2">
+          <div className="px-6 py-5 space-y-5">
             {/* AI prompt */}
             <div className="rounded-xl border border-primary/25 bg-accent/30 p-4 space-y-3">
               <Label className="text-sm flex items-center gap-1.5 text-primary"><Sparkles className="w-4 h-4" /> Beskriv karakteren</Label>
@@ -147,7 +154,7 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
 
             {/* Portrait */}
             <div className="flex gap-4">
-              <div className="w-32 h-32 rounded-xl overflow-hidden bg-accent/40 border border-border shrink-0 flex items-center justify-center">
+              <div className="w-28 h-28 rounded-xl overflow-hidden bg-accent/40 border border-border shrink-0 flex items-center justify-center">
                 {form.portrait_url ? (
                   <Image src={form.portrait_url} fittingType="fill" className="w-full h-full" />
                 ) : (
@@ -163,6 +170,7 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
               </div>
             </div>
 
+            <SectionLabel>Grunnleggende</SectionLabel>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs">Navn</Label>
@@ -185,24 +193,23 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
               </div>
             </div>
 
-            <div>
-              <Label className="text-xs flex items-center gap-1.5"><Dices className="w-3.5 h-3.5" /> Attributter (1-20)</Label>
-              <div className="grid grid-cols-6 gap-2 mt-1.5">
-                {STAT_KEYS.map((k) => (
-                  <div key={k} className="text-center">
-                    <Input
-                      type="number"
-                      min="1" max="20"
-                      value={form.stats[k] ?? ""}
-                      onChange={(e) => setStat(k, parseInt(e.target.value) || 0)}
-                      className="text-center font-heading text-lg h-12"
-                    />
-                    <div className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">{k.slice(0, 3)}</div>
-                  </div>
-                ))}
-              </div>
+            <SectionLabel>Attributter (1–20)</SectionLabel>
+            <div className="grid grid-cols-6 gap-2">
+              {STAT_KEYS.map((k) => (
+                <div key={k} className="text-center">
+                  <Input
+                    type="number"
+                    min="1" max="20"
+                    value={form.stats[k] ?? ""}
+                    onChange={(e) => setStat(k, parseInt(e.target.value) || 0)}
+                    className="text-center font-heading text-lg h-12"
+                  />
+                  <div className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">{k.slice(0, 3)}</div>
+                </div>
+              ))}
             </div>
 
+            <SectionLabel>Beskrivelse</SectionLabel>
             <div>
               <Label className="text-xs">Bakgrunn</Label>
               <Textarea value={form.background} onChange={(e) => set("background", e.target.value)} rows={2} className="mt-1" />
@@ -226,14 +233,14 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
           </div>
         </ScrollArea>
 
-        <DialogFooter className="border-t border-border pt-4">
+        <SheetFooter className="px-6 py-4 border-t border-border shrink-0 flex-row gap-2">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Avbryt</Button>
           <Button onClick={save} disabled={saving} className="gap-2">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             {character ? "Lagre" : "Opprett karakter"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
