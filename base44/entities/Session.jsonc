@@ -1,0 +1,46 @@
+{
+  "name": "Session",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "session_number": {
+      "type": "number",
+      "default": 1,
+      "description": "Rekkef\u00f8lge i kampanjen"
+    },
+    "title": {
+      "type": "string"
+    },
+    "play_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "playing",
+        "done"
+      ],
+      "default": "planned"
+    },
+    "recap": {
+      "type": "string",
+      "description": "Kort sammendrag av hva som skjedde denne \u00f8kten"
+    },
+    "notes": {
+      "type": "string",
+      "description": "L\u00f8pende notater under spillet"
+    },
+    "prep_notes": {
+      "type": "string",
+      "description": "Ting \u00e5 huske / \u00e5pne tr\u00e5der til neste \u00f8kt"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "title"
+  ]
+}

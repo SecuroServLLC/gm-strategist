@@ -5,22 +5,23 @@ import { useCampaign } from "@/hooks/useCampaign";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Sparkles, Dices } from "lucide-react";
+import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Sparkles, Dices, BookOpen } from "lucide-react";
 
 export default function Home() {
   const { campaign, loading } = useCampaign();
-  const [counts, setCounts] = useState({ nodes: 0, characters: 0, maps: 0 });
+  const [counts, setCounts] = useState({ nodes: 0, characters: 0, maps: 0, sessions: 0 });
 
   useEffect(() => {
     if (!campaign) return;
     (async () => {
       try {
-        const [nodes, characters, maps] = await Promise.all([
+        const [nodes, characters, maps, sessions] = await Promise.all([
           base44.entities.StoryNode.filter({ campaign_id: campaign.id }),
           base44.entities.Character.filter({ campaign_id: campaign.id }),
           base44.entities.MapItem.filter({ campaign_id: campaign.id }),
+          base44.entities.Session.filter({ campaign_id: campaign.id }),
         ]);
-        setCounts({ nodes: nodes.length, characters: characters.length, maps: maps.length });
+        setCounts({ nodes: nodes.length, characters: characters.length, maps: maps.length, sessions: sessions.length });
       } catch (e) {}
     })();
   }, [campaign]);
@@ -87,11 +88,12 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
                 { to: "/historie", label: "Historienoder", value: counts.nodes, icon: Workflow, desc: "Scener, valg og terningutfall" },
                 { to: "/karakterer", label: "Karakterer", value: counts.characters, icon: Users, desc: "Karakterkort og arketyper" },
                 { to: "/kart", label: "Kart", value: counts.maps, icon: MapIcon, desc: "Lokasjoner og skisser" },
+                { to: "/sesjoner", label: "Økter", value: counts.sessions, icon: BookOpen, desc: "Spilte økter og notater" },
               ].map((s) => {
                 const Icon = s.icon;
                 return (
@@ -120,7 +122,8 @@ export default function Home() {
                   { to: "/historie", icon: Workflow, label: "Bygg historie-flyt", desc: "Tegn opp scener, valg og terningkast i et flytskjema." },
                   { to: "/karakterer", icon: Users, label: "Generer karakterer", desc: "La AIen lage unike karakterkort med portrett." },
                   { to: "/kart", icon: MapIcon, label: "Lag kartgalleriet", desc: "10–15 kart med notater og referanseskisser." },
-                ].map((a) => {
+                  { to: "/sesjoner", icon: BookOpen, label: "Planlegg økter", desc: "Flere økter per kampanje – notater bæres inn i neste økt." },
+                  ].map((a) => {
                   const Icon = a.icon;
                   return (
                     <Link key={a.to} to={a.to} className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/40 transition-colors group">

@@ -13,6 +13,7 @@ import Campaign from "@/pages/Campaign";
 import StoryFlow from "@/pages/StoryFlow";
 import Characters from "@/pages/Characters";
 import Maps from "@/pages/Maps";
+import Sessions from "@/pages/Sessions";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
         <Route path="/historie" element={<StoryFlow />} />
         <Route path="/karakterer" element={<Characters />} />
         <Route path="/kart" element={<Maps />} />
+        <Route path="/sesjoner" element={<Sessions />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
