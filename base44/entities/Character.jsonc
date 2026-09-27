@@ -10,7 +10,7 @@
     },
     "archetype": {
       "type": "string",
-      "description": "Custom klassisk arketype/profesjon, f.eks. 'Farmer', 'Skyggevever'"
+      "description": "Egendefinert arketype/profesjon, f.eks. 'Bonde', 'Skyggevever'"
     },
     "race": {
       "type": "string"
@@ -35,11 +35,11 @@
     },
     "stats": {
       "type": "object",
-      "description": "Seks attributter 1-20: kraft, smidighet, utholdenhet, intelligens, visdom, utstralning"
+      "description": "Seks attributter 1-20: kraft, smidighet, utholdenhet, intelligens, visdom, utstr\u00e5ling"
     },
     "hp": {
       "type": "number",
-      "description": "Hit points / livspoeng"
+      "description": "Livspoeng"
     },
     "abilities": {
       "type": "array",
@@ -54,6 +54,10 @@
     "hook": {
       "type": "string",
       "description": "Kobling til kampanjens r\u00f8de tr\u00e5d"
+    },
+    "secret_agenda": {
+      "type": "string",
+      "description": "Skjult m\u00e5l som utvikler seg uavhengig av spillerne"
     },
     "portrait_url": {
       "type": "string"

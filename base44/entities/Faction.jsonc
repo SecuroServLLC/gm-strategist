@@ -10,15 +10,32 @@
     },
     "status": {
       "type": "string",
-      "description": "N\u00e5v\u00e6rende status/forhold, f.eks. Alliert, Fiendtlig, N\u00f8ytral, i oppl\u00f8sning..."
+      "description": "Forhold til spillerne: Alliert, Fiendtlig, N\u00f8ytral..."
+    },
+    "power": {
+      "type": "number",
+      "description": "Makt/innflytelse 0-100",
+      "default": 50
+    },
+    "agenda": {
+      "type": "string",
+      "description": "Skjult agenda \u2013 fraksjonens egentlige m\u00e5l"
     },
     "description": {
       "type": "string",
-      "description": "Hvem fraksjonen er, m\u00e5l, ressurser"
+      "description": "Hvem fraksjonen er, ressurser, omfang"
+    },
+    "activities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Hva fraksjonen gj\u00f8r i bakgrunnen"
     },
     "notes": {
       "type": "string",
-      "description": "GM-notater og hendelser som p\u00e5virker fraksjonen"
+      "description": "GM-notater og hendelser"
     }
   },
   "required": [
