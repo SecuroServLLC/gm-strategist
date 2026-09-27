@@ -5,11 +5,18 @@ import { useCampaign } from "@/hooks/useCampaign";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Dices, BookOpen, Backpack, Printer, Swords, UserPlus, Cog, Library, Bot } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Dices, BookOpen, Backpack, Printer, Swords, UserPlus, Cog, Library, Bot, Trash2, Monitor, Laptop } from "lucide-react";
+import DeleteCampaignDialog from "@/components/DeleteCampaignDialog";
+
+const MODE_LABEL = { digital: "Digital", physical: "Fysisk", hybrid: "Hybrid" };
+const MODE_ICON = { digital: Monitor, physical: Dices, hybrid: Laptop };
 
 export default function Oversikt() {
-  const { campaign, loading } = useCampaign();
+  const { campaign, loading, trash } = useCampaign();
+  const navigate = useNavigate();
   const [counts, setCounts] = useState({ nodes: 0, characters: 0, maps: 0, sessions: 0, party: 0, players: 0 });
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (!campaign) return;
@@ -80,8 +87,12 @@ export default function Oversikt() {
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="border-primary/40 text-primary capitalize">{campaign.status}</Badge>
                 {campaign.tone && <Badge variant="secondary" className="capitalize">{campaign.tone}</Badge>}
+                {(() => { const MI = MODE_ICON[campaign.play_mode] || Monitor; return <Badge variant="secondary" className="gap-1 capitalize"><MI className="w-3 h-3" />{MODE_LABEL[campaign.play_mode] || "Digital"}</Badge>; })()}
               </div>
-              <Link to="/kampanje"><Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">Rediger <ArrowRight className="w-3.5 h-3.5" /></Button></Link>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="gap-1.5 text-destructive hover:text-destructive" onClick={() => setDeleteOpen(true)}><Trash2 className="w-3.5 h-3.5" /> Papirkurv</Button>
+                <Link to="/kampanje"><Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">Rediger <ArrowRight className="w-3.5 h-3.5" /></Button></Link>
+              </div>
             </div>
             <div className="flex items-center gap-2 mb-3 text-primary"><ScrollText className="w-4 h-4" /><span className="text-xs uppercase tracking-widest">Den røde tråden</span></div>
             <p className="text-foreground/90 leading-relaxed whitespace-pre-line font-heading text-lg">{campaign.premise || "Ingen premiss satt enda."}</p>
@@ -120,6 +131,12 @@ export default function Oversikt() {
           </CardContent>
         </Card>
       </div>
+      <DeleteCampaignDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        campaign={campaign}
+        onConfirm={async (c) => { await trash(c.id); navigate("/"); }}
+      />
     </div>
   );
 }

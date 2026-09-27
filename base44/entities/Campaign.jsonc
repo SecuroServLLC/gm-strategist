@@ -46,6 +46,26 @@
       ],
       "default": "draft"
     },
+    "play_mode": {
+      "type": "string",
+      "enum": [
+        "digital",
+        "physical",
+        "hybrid"
+      ],
+      "default": "digital",
+      "description": "Hvordan kampanjen spilles: Digital (skjerm), Fysisk (bord/brikker), Hybrid (begge + skjermvisning)"
+    },
+    "trashed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Papirkurv \u2013 kampanjen er flyttet til papirkurv og slettes permanent etter 30 dager"
+    },
+    "trashed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "N\u00e5r kampanjen ble flyttet til papirkurv (for 30-dagers nedtelling)"
+    },
     "attributes": {
       "type": "array",
       "items": {

@@ -6,17 +6,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
+import { campaignLimit } from "@/lib/subscription";
 
-const empty = { title: "", premise: "", setting: "", tone: "", status: "draft" };
+const empty = { title: "", premise: "", setting: "", tone: "", status: "draft", play_mode: "digital" };
 
-export default function CampaignDialog({ open, onOpenChange, onSaved }) {
+export default function CampaignDialog({ open, onOpenChange, onSaved, activeCount = 0 }) {
   const [form, setForm] = useState(empty);
   const [saving, setSaving] = useState(false);
   useEffect(() => { if (open) setForm(empty); }, [open]);
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
+  const limit = campaignLimit();
+  const atQuota = activeCount >= limit;
+
   const submit = async () => {
-    if (!form.title.trim()) return;
+    if (!form.title.trim() || atQuota) return;
     setSaving(true);
     try {
       const created = await base44.entities.Campaign.create({
@@ -25,6 +29,7 @@ export default function CampaignDialog({ open, onOpenChange, onSaved }) {
         setting: form.setting.trim(),
         tone: form.tone.trim(),
         status: form.status,
+        play_mode: form.play_mode,
       });
       onSaved(created);
     } finally { setSaving(false); }
@@ -51,8 +56,23 @@ export default function CampaignDialog({ open, onOpenChange, onSaved }) {
               </SelectContent>
             </Select>
           </div>
+          <div><Label className="mb-1.5 block">Spillemodus</Label>
+            <Select value={form.play_mode} onValueChange={(v) => update("play_mode", v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="digital">Digital (skjerm)</SelectItem>
+                <SelectItem value="physical">Fysisk (bord/brikker)</SelectItem>
+                <SelectItem value="hybrid">Hybrid (bord + skjermvisning)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {atQuota && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-200">
+              Du har nådd gratis-kvoten på {limit} aktive kampanjer. Slett eller gjenopprett plass i papirkurven, eller vent på abonnement (kommer snart).
+            </div>
+          )}
         </div>
-        <DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button><Button onClick={submit} disabled={saving}>{saving ? "Lagrer…" : "Opprett"}</Button></DialogFooter>
+        <DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button><Button onClick={submit} disabled={saving || atQuota}>{saving ? "Lagrer…" : "Opprett"}</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );

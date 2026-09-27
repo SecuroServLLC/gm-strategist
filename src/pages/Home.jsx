@@ -3,14 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { useCampaign } from "@/hooks/useCampaign";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Library, Plus, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Library, Plus, Sparkles, Trash2, CreditCard } from "lucide-react";
 import CampaignCard from "@/components/CampaignCard";
 import CampaignDialog from "@/components/CampaignDialog";
+import DeleteCampaignDialog from "@/components/DeleteCampaignDialog";
+import TrashDialog from "@/components/TrashDialog";
+import SubscriptionPanel from "@/components/SubscriptionPanel";
+import { campaignLimit } from "@/lib/subscription";
 
 export default function Home() {
-  const { campaigns, loading, setActive } = useCampaign();
+  const { campaigns, trashedCampaigns, loading, setActive, trash, restore, purge, refresh } = useCampaign();
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [trashOpen, setTrashOpen] = useState(false);
+  const [subOpen, setSubOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const limit = campaignLimit();
 
   const open = (c) => { setActive(c.id); navigate("/oversikt"); };
 
@@ -30,7 +40,14 @@ export default function Home() {
             <h1 className="font-heading text-4xl mb-1">Kampanjer</h1>
             <p className="text-muted-foreground text-lg">Hvilken historie vil du utforske i kveld?</p>
           </div>
-          <Button className="gap-1.5" onClick={() => setDialogOpen(true)}><Plus className="w-4 h-4" /> Ny kampanje</Button>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="border-primary/40 text-primary">{campaigns.length} / {limit}</Badge>
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setSubOpen(true)}><CreditCard className="w-4 h-4" /> Abonnement</Button>
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setTrashOpen(true)}>
+              <Trash2 className="w-4 h-4" /> Papirkurv {trashedCampaigns.length > 0 && <span className="ml-0.5 text-xs bg-muted rounded-full px-1.5">{trashedCampaigns.length}</span>}
+            </Button>
+            <Button className="gap-1.5" onClick={() => setDialogOpen(true)}><Plus className="w-4 h-4" /> Ny kampanje</Button>
+          </div>
         </div>
 
         {campaigns.length === 0 ? (
@@ -44,15 +61,30 @@ export default function Home() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {campaigns.map((c) => <CampaignCard key={c.id} campaign={c} onOpen={() => open(c)} />)}
-          </div>
-        )}
-      </div>
-      <CampaignDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onSaved={(c) => { setActive(c.id); setDialogOpen(false); navigate("/oversikt"); }}
-      />
-    </div>
-  );
-}
+            {campaigns.map((c) => <CampaignCard key={c.id} campaign={c} onOpen={() => open(c)} onDelete={setDeleteTarget} />)}
+            </div>
+            )}
+            </div>
+            <CampaignDialog
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            activeCount={campaigns.length}
+            onSaved={(c) => { setActive(c.id); setDialogOpen(false); navigate("/oversikt"); }}
+            />
+            <DeleteCampaignDialog
+            open={!!deleteTarget}
+            onOpenChange={(o) => !o && setDeleteTarget(null)}
+            campaign={deleteTarget}
+            onConfirm={async (c) => { await trash(c.id); setDeleteTarget(null); }}
+            />
+            <TrashDialog
+            open={trashOpen}
+            onOpenChange={setTrashOpen}
+            campaigns={trashedCampaigns}
+            onRestore={async (id) => { await restore(id); await refresh(); }}
+            onPurge={async (id) => { await purge(id); }}
+            />
+            <SubscriptionPanel open={subOpen} onOpenChange={setSubOpen} activeCount={campaigns.length} />
+            </div>
+            );
+            }
