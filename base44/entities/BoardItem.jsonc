@@ -17,7 +17,8 @@
         "enemy",
         "npc",
         "building",
-        "hazard"
+        "hazard",
+        "item"
       ],
       "description": "Kategori fra biblioteket"
     },
@@ -73,6 +74,37 @@
     },
     "notes": {
       "type": "string"
+    },
+    "escalation": {
+      "type": "object",
+      "description": "Heist-eskaleringsstatus for sonen",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "silent",
+            "con",
+            "aggressive"
+          ],
+          "default": "silent"
+        },
+        "alarm": {
+          "type": "boolean",
+          "default": false
+        },
+        "sneaky_closed": {
+          "type": "boolean",
+          "default": false
+        },
+        "difficulty_mod": {
+          "type": "number",
+          "default": 0
+        },
+        "guard_count": {
+          "type": "number",
+          "default": 0
+        }
+      }
     }
   },
   "required": [

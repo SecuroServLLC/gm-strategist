@@ -114,6 +114,7 @@ export const ROLE_BADGES = {
   entrance: { ring: "ring-2 ring-emerald-400", label: "Inngang", badge: "bg-emerald-400/85 text-emerald-950" },
   exit: { ring: "ring-2 ring-purple-400", label: "Utgang", badge: "bg-purple-400/85 text-purple-950" },
   lock: { ring: "ring-2 ring-amber-500", label: "Låst", badge: "bg-amber-500/85 text-amber-50" },
+  alarm: { ring: "ring-2 ring-rose-500 animate-pulse", label: "Alarm", badge: "bg-rose-500/90 text-rose-50" },
 };
 
 export const LINK_KINDS = {

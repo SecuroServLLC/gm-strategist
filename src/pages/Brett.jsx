@@ -22,6 +22,7 @@ import NpcSocialDialog from "@/components/board/NpcSocialDialog";
 import ViolenceReportDialog from "@/components/board/ViolenceReportDialog";
 import CoercionReportDialog from "@/components/board/CoercionReportDialog";
 import ObstaclePathsDialog from "@/components/board/ObstaclePathsDialog";
+import EscalationPanel from "@/components/board/EscalationPanel";
 import RelationsOverlay from "@/components/board/RelationsOverlay";
 import RelationsPanel from "@/components/board/RelationsPanel";
 import { semanticColorFor, computeRelations } from "@/lib/boardRelations";
@@ -66,6 +67,8 @@ export default function Brett() {
   const [paths, setPaths] = useState(null);
   const [pathsLoading, setPathsLoading] = useState(false);
   const [pathsOpen, setPathsOpen] = useState(false);
+  const [checkFailed, setCheckFailed] = useState(false);
+  const [escLoading, setEscLoading] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -119,6 +122,7 @@ export default function Brett() {
     return null;
   };
   if (hubSpoke?.hub_id) badgesMap[hubSpoke.hub_id] = "hub";
+  boardItems.forEach((it) => { if (it.escalation?.alarm) badgesMap[it.id] = "alarm"; });
   const seqMap = (gauntlet?.sequence || []).reduce((m, s) => { m[s.room_id] = s; return m; }, {});
 
   const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); setGauntlet(null); };
@@ -280,6 +284,66 @@ export default function Brett() {
     }
   };
 
+  const handleSetInitial = async (state) => {
+    if (!selected) return;
+    const next = { ...(selected.escalation || {}), state };
+    try {
+      const upd = await base44.entities.BoardItem.update(selected.id, { escalation: next });
+      setItems((p) => p.map((i) => (i.id === selected.id ? upd : i)));
+      setCheckFailed(false);
+    } catch (e) {}
+  };
+
+  const handlePlanB = async () => {
+    if (!selected) return;
+    setEscLoading(true);
+    try {
+      const cx = selected.x + selected.w / 2, cy = selected.y + selected.h / 2;
+      const nearby = items
+        .filter((r) => r.id !== selected.id && r.board === activeBoard)
+        .map((r) => ({ r, d: Math.abs((r.x + r.w / 2) - cx) + Math.abs((r.y + r.h / 2) - cy) }))
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 8)
+        .map(({ r }) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, tags: r.tags }));
+      const res = await base44.functions.invoke("escalationEngine", {
+        zone: { id: selected.id, label: selected.label, element_key: selected.element_key, category: selected.category, tags: selected.tags, x: selected.x, y: selected.y, w: selected.w, h: selected.h, escalation: selected.escalation },
+        nearby_rooms: nearby,
+        board_bounds: { cols: COLS, rows: ROWS },
+        context: { tone: campaign?.tone, setting: campaign?.setting, premise: campaign?.premise },
+      });
+      const data = res.data || {};
+      // spawn guards
+      const guardItems = [];
+      for (const g of (data.guards || [])) {
+        const gx = Math.max(0, Math.min(COLS - 2, Math.round(g.x)));
+        const gy = Math.max(0, Math.min(ROWS - 2, Math.round(g.y)));
+        try {
+          const created = await base44.entities.BoardItem.create({
+            campaign_id: campaign.id, board: activeBoard, category: "npc", element_key: g.element_key || "guard",
+            label: g.label || "Alarmvakt", color: "red", icon: "Shield", tags: ["humanoid", "alarm"], x: gx, y: gy, w: 2, h: 2,
+          });
+          guardItems.push(created);
+        } catch (e) {}
+      }
+      // persist escalation
+      const nextEsc = {
+        state: "aggressive",
+        alarm: true,
+        sneaky_closed: true,
+        difficulty_mod: data.difficulty_mod || 4,
+        guard_count: (selected.escalation?.guard_count || 0) + guardItems.length,
+      };
+      try {
+        const upd = await base44.entities.BoardItem.update(selected.id, { escalation: nextEsc });
+        setItems((p) => [...p.map((i) => (i.id === selected.id ? upd : i)), ...guardItems]);
+      } catch (e) {
+        setItems((p) => [...p, ...guardItems]);
+      }
+      setCheckFailed(false);
+    } catch (e) {}
+    finally { setEscLoading(false); }
+  };
+
   const handlePaths = async () => {
     if (!selected || !["npc", "hazard"].includes(selected.category)) return;
     setPathsLoading(true);
@@ -431,6 +495,16 @@ export default function Brett() {
 
       <div className="flex-1 flex min-h-0">
         <aside className="w-60 shrink-0 border-r border-border bg-card/40 p-3">
+        {selected && (
+          <EscalationPanel
+            escalation={selected.escalation}
+            checkFailed={checkFailed}
+            loading={escLoading}
+            onSetInitial={handleSetInitial}
+            onFailCheck={() => setCheckFailed(true)}
+            onPlanB={handlePlanB}
+          />
+        )}
         <BoardSidebar selected={selected} isObstacle={selected?.category === "hazard"} solving={solutionsLoading} onSolve={handleSolutions} isNpc={selected?.category === "npc"} socialLoading={socialLoading} onSocial={handleSocial} isViolence={["enemy", "npc", "hazard"].includes(selected?.category)} violenceLoading={violenceLoading} onViolence={handleViolence} isCoercion={selected?.category === "npc"} coercionLoading={coercionLoading} onCoercion={handleCoercion} isPathsTarget={["npc", "hazard"].includes(selected?.category)} pathsLoading={pathsLoading} onPaths={handlePaths} />
         </aside>
 
