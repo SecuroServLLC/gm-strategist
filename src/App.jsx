@@ -17,6 +17,9 @@ import Sessions from "@/pages/Sessions";
 import Gruppe from "@/pages/Gruppe";
 import Utskrift from "@/pages/Utskrift";
 import Spill from "@/pages/Spill";
+import Oversikt from "@/pages/Oversikt";
+import Spelarar from "@/pages/Spelarar";
+import System from "@/pages/System";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -46,6 +49,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/oversikt" element={<Oversikt />} />
         <Route path="/kampanje" element={<Campaign />} />
         <Route path="/historie" element={<StoryFlow />} />
         <Route path="/karakterer" element={<Characters />} />
@@ -53,6 +57,8 @@ const AuthenticatedApp = () => {
         <Route path="/sesjoner" element={<Sessions />} />
         <Route path="/gruppe" element={<Gruppe />} />
         <Route path="/spill" element={<Spill />} />
+        <Route path="/spelarar" element={<Spelarar />} />
+        <Route path="/system" element={<System />} />
         <Route path="/utskrift" element={<Utskrift />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

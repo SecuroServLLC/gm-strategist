@@ -63,6 +63,7 @@ export default function Sessions() {
       recap: form.recap,
       notes: form.notes,
       prep_notes: form.prep_notes,
+      mode: form.mode,
     });
     setSessions((prev) => prev.map((s) => (s.id === id ? updated : s)));
   };
@@ -154,6 +155,7 @@ export default function Sessions() {
         <SessionDetail
           session={selected}
           priorSession={priorSession}
+          modes={(campaign?.modes || []).map((m) => m.name)}
           onSave={handleSave}
           onDelete={handleDelete}
           onAiPrepare={handleAiPrepare}

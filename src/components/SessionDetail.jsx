@@ -10,7 +10,7 @@ import { Trash2, Save, Sparkles, Clock, BookOpen, ListChecks, NotebookPen } from
 
 const STATUS_LABELS = { planned: "Planlagt", playing: "Pågår", done: "Spilt" };
 
-export default function SessionDetail({ session, priorSession, onSave, onDelete, onAiPrepare, aiPreparing }) {
+export default function SessionDetail({ session, priorSession, onSave, onDelete, onAiPrepare, aiPreparing, modes }) {
   const [form, setForm] = useState(session);
 
   useEffect(() => { setForm(session); }, [session]);
@@ -82,7 +82,7 @@ export default function SessionDetail({ session, priorSession, onSave, onDelete,
           </Card>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <div>
             <Label className="mb-1.5 block">Status</Label>
             <Select value={form.status} onValueChange={(v) => update("status", v)}>
@@ -98,7 +98,17 @@ export default function SessionDetail({ session, priorSession, onSave, onDelete,
             <Label className="mb-1.5 block">Spilledato</Label>
             <Input type="date" value={form.play_date || ""} onChange={(e) => update("play_date", e.target.value)} />
           </div>
-        </div>
+          <div>
+            <Label className="mb-1.5 block">Modus</Label>
+            <Select value={form.mode || "none"} onValueChange={(v) => update("mode", v === "none" ? "" : v)}>
+              <SelectTrigger><SelectValue placeholder="Ikke valgt" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Ikke valgt</SelectItem>
+                {(modes || []).map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          </div>
 
         <div>
           <Label className="mb-1.5 flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> Sammendrag – hva skjedde</Label>

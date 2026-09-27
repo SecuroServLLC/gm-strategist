@@ -26,6 +26,10 @@
       ],
       "default": "planned"
     },
+    "mode": {
+      "type": "string",
+      "description": "Spillemodus for \u00f8kta (fra kampanjens modusar)"
+    },
     "recap": {
       "type": "string",
       "description": "Kort sammendrag av hva som skjedde denne \u00f8kten"

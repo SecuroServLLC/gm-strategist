@@ -45,6 +45,96 @@
         "complete"
       ],
       "default": "draft"
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "abbr": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "default": [],
+      "description": "Eigendefinerte attributtar for regelverket"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "attribute": {
+            "type": "string",
+            "description": "Knytt til eit attributt-navn"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "default": [],
+      "description": "Eigendefinerte ferdigheter"
+    },
+    "dice_config": {
+      "type": "object",
+      "properties": {
+        "core_dice": {
+          "type": "string",
+          "description": "f.eks. 1d20, 3d6, 2d10"
+        },
+        "difficulty_default": {
+          "type": "number",
+          "description": "Standard DC/vanske"
+        },
+        "success_threshold": {
+          "type": "string",
+          "description": "Suksess/fiasco-reglar"
+        },
+        "advantage_rule": {
+          "type": "string",
+          "description": "Fordel/ulempe-regel"
+        }
+      },
+      "description": "Terningmekanikk for regelverket"
+    },
+    "modes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "default": [],
+      "description": "Spillemodusar (utforsk/kamp/sosial/kvile...)"
+    },
+    "difficulty": {
+      "type": "string",
+      "description": "Vanskegrad: lettvint/standard/brutalt \u2013 fritekst"
     }
   },
   "required": [

@@ -1,17 +1,20 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords } from "lucide-react";
+import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords, Library, UserPlus, Cog } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "Oversikt", icon: LayoutDashboard, end: true },
+  { to: "/", label: "Kampanjar", icon: Library, end: true },
+  { to: "/oversikt", label: "Oversikt", icon: LayoutDashboard },
   { to: "/kampanje", label: "Rød tråd", icon: ScrollText },
   { to: "/historie", label: "Historie-flyt", icon: Workflow },
   { to: "/karakterer", label: "Karakterer", icon: Users },
   { to: "/kart", label: "Kart", icon: MapIcon },
   { to: "/sesjoner", label: "Økter", icon: BookOpen },
   { to: "/gruppe", label: "Følget", icon: Backpack },
+  { to: "/spelarar", label: "Spelarar", icon: UserPlus },
   { to: "/spill", label: "Spill", icon: Swords },
+  { to: "/system", label: "System", icon: Cog },
   { to: "/utskrift", label: "Utskrift", icon: Printer },
 ];
 

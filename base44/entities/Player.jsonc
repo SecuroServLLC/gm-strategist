@@ -1,0 +1,33 @@
+{
+  "name": "Player",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Faktisk namn p\u00e5 personen"
+    },
+    "contact": {
+      "type": "string",
+      "description": "Epost, telefon, discord..."
+    },
+    "role": {
+      "type": "string",
+      "default": "Spelar",
+      "description": "Spelar, GM, Co-GM... (fritekst)"
+    },
+    "character_id": {
+      "type": "string",
+      "description": "Karakter dei speler (valgfritt)"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "name"
+  ]
+}
