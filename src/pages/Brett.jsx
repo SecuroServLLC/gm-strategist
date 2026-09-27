@@ -14,6 +14,7 @@ import FlowOverlay from "@/components/board/FlowOverlay";
 import FlowPanel from "@/components/board/FlowPanel";
 import KeyLockPanel from "@/components/board/KeyLockPanel";
 import KeyLockOverlay from "@/components/board/KeyLockOverlay";
+import RoguelikePanel from "@/components/board/RoguelikePanel";
 
 const CELL = 28;
 const COLS = 60;
@@ -31,6 +32,9 @@ export default function Brett() {
   const [analyzing, setAnalyzing] = useState(false);
   const [keyLock, setKeyLock] = useState(null);
   const [keyLockLoading, setKeyLockLoading] = useState(false);
+  const [nodesResult, setNodesResult] = useState(null);
+  const [nodesLoading, setNodesLoading] = useState(false);
+  const [visited, setVisited] = useState([]);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -58,8 +62,32 @@ export default function Brett() {
     if (p.door_id) badgesMap[p.door_id] = "lock";
     if (p.key_room_id) badgesMap[p.key_room_id] = "key";
   });
+  const nodesMap = (nodesResult?.nodes || []).reduce((m, n) => { m[n.room_id] = n; return m; }, {});
+  const branches = nodesResult?.branches || [];
+  const entrance = nodesResult?.entrance_id;
+  const visitedSet = new Set(visited);
+  const reachable = (() => {
+    const r = new Set(entrance ? [entrance] : []);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      branches.forEach((b) => { if (r.has(b.from) && !r.has(b.to)) { r.add(b.to); changed = true; } });
+    }
+    return r;
+  })();
+  const available = visited.length === 0
+    ? (entrance ? [entrance] : [])
+    : Array.from(new Set(branches.filter((b) => visitedSet.has(b.from) && !visitedSet.has(b.to)).map((b) => b.to)));
+  const availableSet = new Set(available);
+  const pathStateOf = (id) => {
+    if (!nodesResult) return null;
+    if (visitedSet.has(id)) return "visited";
+    if (availableSet.has(id)) return "available";
+    if (!reachable.has(id)) return "locked";
+    return null;
+  };
 
-  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); };
+  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); };
 
   const handleAnalyze = async () => {
     if (!style || boardItems.length < 2) return;
@@ -91,6 +119,24 @@ export default function Brett() {
       setKeyLockLoading(false);
     }
   };
+
+  const handleNodes = async () => {
+    if (boardItems.length < 2) return;
+    setNodesLoading(true);
+    try {
+      const res = await base44.functions.invoke("roguelikeNodes", {
+        rooms: boardItems.map((r) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, color: r.color, tags: r.tags, x: r.x, y: r.y, w: r.w, h: r.h })),
+      });
+      setNodesResult(res.data);
+      setVisited([]);
+    } catch (e) {
+      setNodesResult({ nodes: [], branches: [], entrance_id: null });
+    } finally {
+      setNodesLoading(false);
+    }
+  };
+  const handleVisit = (id) => setVisited((p) => (p.includes(id) ? p : [...p, id]));
+  const handleResetPath = () => setVisited([]);
 
   const handleDrop = async (e) => {
     e.preventDefault();
@@ -136,6 +182,8 @@ export default function Brett() {
     setSelectedId(null);
     setAnalysis(null);
     setKeyLock(null);
+    setNodesResult(null);
+    setVisited([]);
   };
 
   if (loading) return <div className="h-full flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
@@ -166,7 +214,7 @@ export default function Brett() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border overflow-x-auto scrollbar-thin">
             {boards.map((b) => (
-              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
+              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
             ))}
             <div className="flex items-center gap-1.5 ml-2">
               <Input value={newBoard} onChange={(e) => setNewBoard(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBoard()} placeholder="Nytt brett…" className="h-8 w-32" />
@@ -184,6 +232,9 @@ export default function Brett() {
             <FlowPanel style={style} analyzing={analyzing} analysis={analysis} onAnalyze={handleAnalyze} roomCount={boardItems.length} />
             {style === "metroidvania" && (
               <KeyLockPanel keyLock={keyLock} loading={keyLockLoading} onAnalyze={handleKeyLock} roomCount={boardItems.length} hasDoors={boardItems.some((r) => r.element_key === "locked_door")} />
+            )}
+            {style === "roguelike" && (
+              <RoguelikePanel nodesResult={nodesResult} loading={nodesLoading} onAnalyze={handleNodes} roomCount={boardItems.length} visited={visited} onVisit={handleVisit} onReset={handleResetPath} />
             )}
           </div>
 
@@ -204,13 +255,16 @@ export default function Brett() {
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/60 text-sm pointer-events-none">Dra elementer hit fra sidemenyen…</div>
               )}
               {boardItems.map((it) => (
-                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={badgesMap[it.id]} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
+                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={badgesMap[it.id]} nodeType={nodesMap[it.id]?.node_type} pathState={pathStateOf(it.id)} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
               ))}
               {analysis?.connections && (
                 <FlowOverlay rooms={boardItems} connections={analysis.connections} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
               )}
               {keyLock?.keyPlacements?.length > 0 && (
                 <KeyLockOverlay rooms={boardItems} placements={keyLock.keyPlacements} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
+              {nodesResult?.branches?.length > 0 && (
+                <FlowOverlay rooms={boardItems} connections={nodesResult.branches.map((b) => ({ from: b.from, to: b.to, kind: "normal" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
               )}
             </div>
           </div>

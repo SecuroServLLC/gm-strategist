@@ -125,3 +125,14 @@ export const LINK_KINDS = {
   shortcut: { stroke: "#38bdf8", dash: "2 4", width: 2 },
   boss: { stroke: "#f43f5e", dash: "", width: 3.5 },
 };
+
+export const NODE_TYPES = {
+  combat: { label: "Kamp", color: "red" },
+  elite: { label: "Elitekamp", color: "red" },
+  boss: { label: "Sjefskamp", color: "red" },
+  rest: { label: "Hvile", color: "green" },
+  merchant: { label: "Kjøpmann", color: "amber" },
+  treasure: { label: "Skatt", color: "amber" },
+  event: { label: "Hendelse", color: "purple" },
+  trap: { label: "Felle", color: "slate" },
+};

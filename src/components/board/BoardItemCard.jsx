@@ -2,12 +2,13 @@ import React from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ICON_MAP } from "@/lib/boardIcons";
-import { COLOR_CLASSES, ROLE_BADGES } from "@/lib/boardLibrary";
+import { COLOR_CLASSES, ROLE_BADGES, NODE_TYPES } from "@/lib/boardLibrary";
 
-export default function BoardItemCard({ item, selected, role, cellSize, onSelect, onMove, onResize, onCommit, onDelete }) {
+export default function BoardItemCard({ item, selected, role, nodeType, pathState, cellSize, onSelect, onMove, onResize, onCommit, onDelete }) {
   const cc = COLOR_CLASSES[item.color] || COLOR_CLASSES.slate;
   const Icon = ICON_MAP[item.icon] || ICON_MAP.MapPin;
   const rb = role ? ROLE_BADGES[role] : null;
+  const nt = nodeType ? NODE_TYPES[nodeType] : null;
 
   const startMove = (e) => {
     e.stopPropagation();
@@ -57,7 +58,9 @@ export default function BoardItemCard({ item, selected, role, cellSize, onSelect
       className={cn(
         "absolute rounded-lg border flex flex-col items-center justify-center gap-1 p-1 cursor-move select-none transition-shadow",
         cc.chip,
-        selected ? "ring-2 " + cc.ring : (rb ? rb.ring : "")
+        selected ? "ring-2 " + cc.ring : (pathState === "available" ? "ring-2 ring-emerald-400" : (rb ? rb.ring : "")),
+        pathState === "visited" && "opacity-50",
+        pathState === "locked" && "opacity-40 grayscale"
       )}
     >
       {rb && (
@@ -65,6 +68,9 @@ export default function BoardItemCard({ item, selected, role, cellSize, onSelect
       )}
       <Icon className="w-5 h-5 shrink-0" />
       <span className="text-[10px] leading-tight text-center truncate w-full px-0.5">{item.label}</span>
+      {nt && (
+        <span className={cn("absolute bottom-0.5 left-1/2 -translate-x-1/2 text-[8px] px-1 rounded-sm font-medium leading-tight whitespace-nowrap", COLOR_CLASSES[nt.color].chip)}>{nt.label}</span>
+      )}
       <button
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
