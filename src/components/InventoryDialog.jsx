@@ -17,7 +17,7 @@ const CATEGORIES = [
 
 const empty = { name: "", category: "misc", quantity: 1, unit: "", value: 0, carried_by: "", description: "" };
 
-export default function InventoryDialog({ open, item, onOpenChange, onSave }) {
+export default function InventoryDialog({ open, item, onOpenChange, onSave, members }) {
   const [form, setForm] = useState(item || empty);
   useEffect(() => { setForm(item || empty); }, [item, open]);
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -59,7 +59,13 @@ export default function InventoryDialog({ open, item, onOpenChange, onSave }) {
           </div>
           <div>
             <Label className="mb-1.5 block">Bæres av</Label>
-            <Input value={form.carried_by || ""} onChange={(e) => update("carried_by", e.target.value)} placeholder="karakternavn…" />
+            <Select value={form.carried_by || "none"} onValueChange={(v) => update("carried_by", v === "none" ? "" : v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Felleslager</SelectItem>
+                {(members || []).map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label className="mb-1.5 block">Beskrivelse</Label>

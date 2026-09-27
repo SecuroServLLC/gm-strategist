@@ -34,7 +34,7 @@
     },
     "carried_by": {
       "type": "string",
-      "description": "Hvem som b\u00e6rer gjenstanden"
+      "description": "PartyMember-id som b\u00e6rer gjenstanden; tom = felleslager"
     },
     "description": {
       "type": "string"

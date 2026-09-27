@@ -53,6 +53,56 @@
       "default": 1,
       "description": "Antall brikker (for tokens)"
     },
+    "current_hp": {
+      "type": "number",
+      "description": "N\u00e5v\u00e6rende HP under spilling"
+    },
+    "max_hp": {
+      "type": "number",
+      "description": "Maks HP"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rounds": {
+            "type": "number",
+            "description": "Gjenv\u00e6rende runder; 0 = permanent (teller ikke ned)"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "default": [],
+      "description": "Aktive tilstander/effekter med nedtelling"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "current": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "default": [],
+      "description": "Per-rest ressurser (ability charges); nullstilles ved kvile"
+    },
     "notes": {
       "type": "string"
     }

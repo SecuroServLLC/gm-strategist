@@ -138,7 +138,7 @@ export default function Gruppe() {
             ) : (
               <div className="space-y-2">
                 {items.map((i) => (
-                  <InventoryRow key={i.id} item={i} onQty={changeQty} onEdit={(it) => setItemDialog({ open: true, item: it })} onDelete={deleteItem} />
+                  <InventoryRow key={i.id} item={i} members={members} onQty={changeQty} onEdit={(it) => setItemDialog({ open: true, item: it })} onDelete={deleteItem} />
                 ))}
               </div>
             )}
@@ -146,7 +146,7 @@ export default function Gruppe() {
         </Tabs>
 
         <PartyMemberDialog open={memberDialog.open} member={memberDialog.member} characters={characters} onOpenChange={(o) => setMemberDialog({ open: o, member: null })} onSave={saveMember} />
-        <InventoryDialog open={itemDialog.open} item={itemDialog.item} onOpenChange={(o) => setItemDialog({ open: o, item: null })} onSave={saveItem} />
+        <InventoryDialog open={itemDialog.open} item={itemDialog.item} members={members} onOpenChange={(o) => setItemDialog({ open: o, item: null })} onSave={saveItem} />
       </div>
     </div>
   );

@@ -1,0 +1,35 @@
+{
+  "name": "SessionEvent",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Hvilken \u00f8kt hendelsen h\u00f8rer til"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "note",
+        "roll",
+        "loot",
+        "combat",
+        "milestone",
+        "other"
+      ],
+      "default": "note",
+      "description": "Type hendelse for fargekoding av tidslinjen"
+    },
+    "text": {
+      "type": "string",
+      "description": "Hva som skjedde"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "session_id",
+    "text"
+  ]
+}

@@ -5,7 +5,7 @@ import { Minus, Plus, Pencil, Trash2 } from "lucide-react";
 
 const CAT_LABEL = { weapon: "Våpen", armor: "Rustning", consumable: "Forbruksvare", valuable: "Verdi", currency: "Mynt", misc: "Div" };
 
-export default function InventoryRow({ item, onQty, onEdit, onDelete }) {
+export default function InventoryRow({ item, onQty, onEdit, onDelete, members }) {
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/30 transition-colors group">
       <div className="flex-1 min-w-0">
@@ -14,7 +14,7 @@ export default function InventoryRow({ item, onQty, onEdit, onDelete }) {
           <Badge variant="secondary" className="text-[10px] py-0">{CAT_LABEL[item.category] || item.category}</Badge>
         </div>
         <p className="text-xs text-muted-foreground">
-          {item.carried_by ? `Bæres av ${item.carried_by}` : "Felleslager"}
+          {(() => { const c = (members || []).find((m) => m.id === item.carried_by); const label = c ? c.name : (item.carried_by || ""); return item.carried_by ? `Bæres av ${label}` : "Felleslager"; })()}
           {item.value > 0 && ` · ${item.value}${item.unit ? " " + item.unit : ""}/stk`}
         </p>
       </div>
