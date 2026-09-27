@@ -17,6 +17,7 @@ import KeyLockOverlay from "@/components/board/KeyLockOverlay";
 import RoguelikePanel from "@/components/board/RoguelikePanel";
 import HubSpokePanel from "@/components/board/HubSpokePanel";
 import GauntletPanel from "@/components/board/GauntletPanel";
+import SolutionsDialog from "@/components/board/SolutionsDialog";
 
 const CELL = 28;
 const COLS = 60;
@@ -41,6 +42,9 @@ export default function Brett() {
   const [hubSpokeLoading, setHubSpokeLoading] = useState(false);
   const [gauntlet, setGauntlet] = useState(null);
   const [gauntletLoading, setGauntletLoading] = useState(false);
+  const [solutions, setSolutions] = useState(null);
+  const [solutionsLoading, setSolutionsLoading] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -161,6 +165,36 @@ export default function Brett() {
     }
   };
 
+  const handleSolutions = async () => {
+    if (!selected || selected.category !== "hazard") return;
+    setSolutionsLoading(true);
+    setSolutionsOpen(true);
+    try {
+      const cx = selected.x + selected.w / 2, cy = selected.y + selected.h / 2;
+      const nearby = items
+        .filter((r) => r.id !== selected.id && r.board === activeBoard)
+        .map((r) => ({ r, d: Math.abs((r.x + r.w / 2) - cx) + Math.abs((r.y + r.h / 2) - cy) }))
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 8)
+        .map(({ r }) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, color: r.color, tags: r.tags, x: r.x, y: r.y }));
+      let inventory = [];
+      try {
+        const inv = await base44.entities.InventoryItem.filter({ campaign_id: campaign.id });
+        inventory = (inv || []).map((it) => ({ name: it.name, category: it.category, quantity: it.quantity }));
+      } catch (e) { inventory = []; }
+      const res = await base44.functions.invoke("multipleSolutions", {
+        obstacle: { id: selected.id, label: selected.label, element_key: selected.element_key, category: selected.category, color: selected.color, tags: selected.tags, x: selected.x, y: selected.y, w: selected.w, h: selected.h },
+        nearby_rooms: nearby,
+        inventory,
+      });
+      setSolutions(res.data);
+    } catch (e) {
+      setSolutions({ solutions: [], placements: [], notes: ["Kunne ikke generere løsninger — prøv igjen."] });
+    } finally {
+      setSolutionsLoading(false);
+    }
+  };
+
   const handleGauntlet = async () => {
     if (boardItems.length < 2) return;
     setGauntletLoading(true);
@@ -248,7 +282,7 @@ export default function Brett() {
 
       <div className="flex-1 flex min-h-0">
         <aside className="w-60 shrink-0 border-r border-border bg-card/40 p-3">
-          <BoardSidebar selected={selected} />
+        <BoardSidebar selected={selected} isObstacle={selected?.category === "hazard"} solving={solutionsLoading} onSolve={handleSolutions} />
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
@@ -325,6 +359,7 @@ export default function Brett() {
           </div>
         </div>
       </div>
+      <SolutionsDialog open={solutionsOpen} onClose={() => setSolutionsOpen(false)} obstacleLabel={selected?.label} data={solutions} loading={solutionsLoading} />
     </div>
   );
 }

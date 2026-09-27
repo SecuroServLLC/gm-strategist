@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BOARD_ELEMENTS, CATEGORY_LABELS, COLOR_CLASSES, isCompatible } from "@/lib/boardLibrary";
 import { ICON_MAP } from "@/lib/boardIcons";
+import { Button } from "@/components/ui/button";
 
 const CATS = ["terrain", "enemy", "npc", "building", "hazard", "item"];
 
-export default function BoardSidebar({ selected }) {
+export default function BoardSidebar({ selected, isObstacle, solving, onSolve }) {
   const [open, setOpen] = useState({ terrain: true, enemy: true, npc: true, building: true, hazard: true, item: true });
 
   return (
     <div className="h-full overflow-y-auto scrollbar-thin pr-1">
+      {isObstacle && (
+        <Button onClick={onSolve} disabled={solving} size="sm" variant="outline" className="w-full mb-2 gap-2 border-primary/40 text-primary hover:bg-primary/10">
+          <Lightbulb className="w-4 h-4" /> {solving ? "Genererer…" : "Flere løsninger"}
+        </Button>
+      )}
       <div className="text-xs text-muted-foreground mb-2 px-1 leading-relaxed">
         {selected
           ? <span>Matcher for <span className="text-foreground font-medium">{selected.label}</span> — like elementer lyser, ille_passende tones ned.</span>
