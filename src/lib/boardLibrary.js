@@ -95,3 +95,26 @@ export function isCompatible(a, b) {
   const at = a.tags || [], bt = b.tags || [];
   return at.some((t) => bt.includes(t));
 }
+
+export const DUNGEON_STYLES = [
+  { key: "metroidvania", label: "Metroidvania", subtitle: "Puslespill", icon: "KeyRound", description: "Lukkede område som åpnes med nøkler og evner. Legg vekt på nøkkelrom, snarveier og tilbakegang.", preferredColors: ["blue", "purple"] },
+  { key: "roguelike", label: "Roguelike", subtitle: "Noder", icon: "Network", description: "Noder med flere valg og forgreininger. Varierte rom, kort vei mellom noder, uforutsigbarhet.", preferredColors: ["red", "green"] },
+  { key: "hubspoke", label: "Hub & Spoke", subtitle: "Labyrint", icon: "Share2", description: "Sentral hub som stråler ut til grener. Hub-rom i midten, sidegrener labyrintiske.", preferredColors: ["amber", "slate"] },
+  { key: "gauntlet", label: "Gauntlet", subtitle: "Lineær", icon: "Route", description: "Lineær trase med økende vanske mot en sjefskamp. Få snarveier, tydelig progresjon.", preferredColors: ["red", "amber"] },
+];
+
+export const ROLE_BADGES = {
+  hub: { ring: "ring-2 ring-primary", label: "Hub", badge: "bg-primary/85 text-primary-foreground" },
+  boss: { ring: "ring-2 ring-rose-500", label: "Sjef", badge: "bg-rose-500/85 text-rose-50" },
+  key: { ring: "ring-2 ring-amber-400", label: "Nøkkel", badge: "bg-amber-400/85 text-amber-950" },
+  shortcut: { ring: "ring-2 ring-sky-400", label: "Snarvei", badge: "bg-sky-400/85 text-sky-950" },
+  entrance: { ring: "ring-2 ring-emerald-400", label: "Inngang", badge: "bg-emerald-400/85 text-emerald-950" },
+  exit: { ring: "ring-2 ring-purple-400", label: "Utgang", badge: "bg-purple-400/85 text-purple-950" },
+};
+
+export const LINK_KINDS = {
+  normal: { stroke: "#94a3b8", dash: "", width: 2 },
+  key: { stroke: "#fbbf24", dash: "6 4", width: 2.5 },
+  shortcut: { stroke: "#38bdf8", dash: "2 4", width: 2 },
+  boss: { stroke: "#f43f5e", dash: "", width: 3.5 },
+};

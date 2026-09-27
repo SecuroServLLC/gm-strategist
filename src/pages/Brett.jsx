@@ -9,6 +9,9 @@ import { MapPin, Plus, Library } from "lucide-react";
 import { COLOR_CLASSES, COLOR_LEGEND } from "@/lib/boardLibrary";
 import BoardSidebar from "@/components/board/BoardSidebar";
 import BoardItemCard from "@/components/board/BoardItemCard";
+import StyleSelector from "@/components/board/StyleSelector";
+import FlowOverlay from "@/components/board/FlowOverlay";
+import FlowPanel from "@/components/board/FlowPanel";
 
 const CELL = 28;
 const COLS = 60;
@@ -21,6 +24,9 @@ export default function Brett() {
   const [activeBoard, setActiveBoard] = useState("Hovedbrett");
   const [selectedId, setSelectedId] = useState(null);
   const [newBoard, setNewBoard] = useState("");
+  const [style, setStyle] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
+  const [analyzing, setAnalyzing] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -42,6 +48,25 @@ export default function Brett() {
 
   const boardItems = items.filter((i) => i.board === activeBoard);
   const selected = boardItems.find((i) => i.id === selectedId) || null;
+  const rolesMap = (analysis?.roles || []).reduce((m, r) => { m[r.room_id] = r.role; return m; }, {});
+
+  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); };
+
+  const handleAnalyze = async () => {
+    if (!style || boardItems.length < 2) return;
+    setAnalyzing(true);
+    try {
+      const res = await base44.functions.invoke("analyzeDungeonFlow", {
+        campaign_id: campaign.id, style,
+        rooms: boardItems.map((r) => ({ id: r.id, label: r.label, category: r.category, color: r.color, tags: r.tags, x: r.x, y: r.y, w: r.w, h: r.h })),
+      });
+      setAnalysis(res.data);
+    } catch (e) {
+      setAnalysis({ suggestions: ["Kunne ikke analysere flyt. Prøv igjen."] });
+    } finally {
+      setAnalyzing(false);
+    }
+  };
 
   const handleDrop = async (e) => {
     e.preventDefault();
@@ -85,6 +110,7 @@ export default function Brett() {
     setActiveBoard(name);
     setNewBoard("");
     setSelectedId(null);
+    setAnalysis(null);
   };
 
   if (loading) return <div className="h-full flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
@@ -115,7 +141,7 @@ export default function Brett() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border overflow-x-auto scrollbar-thin">
             {boards.map((b) => (
-              <button key={b} onClick={() => { setActiveBoard(b); setSelectedId(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
+              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
             ))}
             <div className="flex items-center gap-1.5 ml-2">
               <Input value={newBoard} onChange={(e) => setNewBoard(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBoard()} placeholder="Nytt brett…" className="h-8 w-32" />
@@ -126,6 +152,11 @@ export default function Brett() {
                 <span key={k} className="flex items-center gap-1"><span className={cn("w-2.5 h-2.5 rounded-full", COLOR_CLASSES[k].dot)} /> {v}</span>
               ))}
             </div>
+          </div>
+
+          <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border flex-wrap">
+            <StyleSelector style={style} onSelect={chooseStyle} />
+            <FlowPanel style={style} analyzing={analyzing} analysis={analysis} onAnalyze={handleAnalyze} roomCount={boardItems.length} />
           </div>
 
           <div className="flex-1 overflow-auto scrollbar-thin bg-background story-canvas-bg" onClick={() => setSelectedId(null)}>
@@ -145,8 +176,11 @@ export default function Brett() {
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/60 text-sm pointer-events-none">Dra elementer hit fra sidemenyen…</div>
               )}
               {boardItems.map((it) => (
-                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
+                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={rolesMap[it.id]} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
               ))}
+              {analysis?.connections && (
+                <FlowOverlay rooms={boardItems} connections={analysis.connections} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
             </div>
           </div>
         </div>
