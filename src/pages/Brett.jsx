@@ -15,6 +15,7 @@ import FlowPanel from "@/components/board/FlowPanel";
 import KeyLockPanel from "@/components/board/KeyLockPanel";
 import KeyLockOverlay from "@/components/board/KeyLockOverlay";
 import RoguelikePanel from "@/components/board/RoguelikePanel";
+import HubSpokePanel from "@/components/board/HubSpokePanel";
 
 const CELL = 28;
 const COLS = 60;
@@ -35,6 +36,8 @@ export default function Brett() {
   const [nodesResult, setNodesResult] = useState(null);
   const [nodesLoading, setNodesLoading] = useState(false);
   const [visited, setVisited] = useState([]);
+  const [hubSpoke, setHubSpoke] = useState(null);
+  const [hubSpokeLoading, setHubSpokeLoading] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -86,8 +89,9 @@ export default function Brett() {
     if (!reachable.has(id)) return "locked";
     return null;
   };
+  if (hubSpoke?.hub_id) badgesMap[hubSpoke.hub_id] = "hub";
 
-  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); };
+  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); };
 
   const handleAnalyze = async () => {
     if (!style || boardItems.length < 2) return;
@@ -138,6 +142,21 @@ export default function Brett() {
   const handleVisit = (id) => setVisited((p) => (p.includes(id) ? p : [...p, id]));
   const handleResetPath = () => setVisited([]);
 
+  const handleHubSpoke = async () => {
+    if (boardItems.length < 2) return;
+    setHubSpokeLoading(true);
+    try {
+      const res = await base44.functions.invoke("hubSpokeAnalysis", {
+        rooms: boardItems.map((r) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, color: r.color, tags: r.tags, x: r.x, y: r.y, w: r.w, h: r.h })),
+      });
+      setHubSpoke(res.data);
+    } catch (e) {
+      setHubSpoke(null);
+    } finally {
+      setHubSpokeLoading(false);
+    }
+  };
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const raw = e.dataTransfer.getData("application/json");
@@ -184,6 +203,7 @@ export default function Brett() {
     setKeyLock(null);
     setNodesResult(null);
     setVisited([]);
+    setHubSpoke(null);
   };
 
   if (loading) return <div className="h-full flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
@@ -214,7 +234,7 @@ export default function Brett() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border overflow-x-auto scrollbar-thin">
             {boards.map((b) => (
-              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
+              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
             ))}
             <div className="flex items-center gap-1.5 ml-2">
               <Input value={newBoard} onChange={(e) => setNewBoard(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBoard()} placeholder="Nytt brett…" className="h-8 w-32" />
@@ -235,6 +255,9 @@ export default function Brett() {
             )}
             {style === "roguelike" && (
               <RoguelikePanel nodesResult={nodesResult} loading={nodesLoading} onAnalyze={handleNodes} roomCount={boardItems.length} visited={visited} onVisit={handleVisit} onReset={handleResetPath} />
+            )}
+            {style === "hubspoke" && (
+              <HubSpokePanel hubSpoke={hubSpoke} loading={hubSpokeLoading} onAnalyze={handleHubSpoke} roomCount={boardItems.length} />
             )}
           </div>
 
@@ -265,6 +288,12 @@ export default function Brett() {
               )}
               {nodesResult?.branches?.length > 0 && (
                 <FlowOverlay rooms={boardItems} connections={nodesResult.branches.map((b) => ({ from: b.from, to: b.to, kind: "normal" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
+              {hubSpoke?.corridors?.length > 0 && (
+                <FlowOverlay rooms={boardItems} connections={hubSpoke.corridors.map((c) => ({ from: c.from, to: c.to, kind: "normal" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
+              {hubSpoke?.shortcuts?.length > 0 && (
+                <FlowOverlay rooms={boardItems} connections={hubSpoke.shortcuts.map((s) => ({ from: s.from, to: s.to, kind: "shortcut" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
               )}
             </div>
           </div>
