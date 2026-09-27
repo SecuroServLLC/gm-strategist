@@ -58,7 +58,7 @@ Krav:
     const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: llmPrompt,
       response_json_schema: CHARACTER_SCHEMA,
-      model: 'gpt_6_luna'
+      model: 'gpt_5_6_luna'
     });
 
     let character = llm;

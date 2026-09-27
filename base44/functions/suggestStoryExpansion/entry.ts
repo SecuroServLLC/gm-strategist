@@ -57,7 +57,7 @@ Foreslå utvidelser som:
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: llmPrompt,
       response_json_schema: EXPANSION_SCHEMA,
-      model: 'gpt_6_luna'
+      model: 'gpt_5_6_luna'
     });
 
     return Response.json(result);
