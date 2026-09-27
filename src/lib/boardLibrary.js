@@ -8,12 +8,9 @@ export const COLOR_CLASSES = {
 };
 
 export const COLOR_LEGEND = {
-  green: "Natur / trygt",
-  red: "Farer / kamp",
-  blue: "Magi / vann",
-  amber: "Sosialt / bebyggelse",
-  purple: "Magi / overnaturlig",
-  slate: "Mørkt / undergrunn",
+  green: "Trygg / Miljø",
+  blue: "Sosialt / NPC",
+  red: "Far / Kamp",
 };
 
 export const CATEGORY_LABELS = {

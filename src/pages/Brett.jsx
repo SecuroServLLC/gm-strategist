@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useCampaign } from "@/hooks/useCampaign";
@@ -21,6 +21,10 @@ import SolutionsDialog from "@/components/board/SolutionsDialog";
 import NpcSocialDialog from "@/components/board/NpcSocialDialog";
 import ViolenceReportDialog from "@/components/board/ViolenceReportDialog";
 import CoercionReportDialog from "@/components/board/CoercionReportDialog";
+import RelationsOverlay from "@/components/board/RelationsOverlay";
+import RelationsPanel from "@/components/board/RelationsPanel";
+import { semanticColorFor, computeRelations } from "@/lib/boardRelations";
+
 
 const CELL = 28;
 const COLS = 60;
@@ -57,6 +61,7 @@ export default function Brett() {
   const [coercion, setCoercion] = useState(null);
   const [coercionLoading, setCoercionLoading] = useState(false);
   const [coercionOpen, setCoercionOpen] = useState(false);
+  const [showRelations, setShowRelations] = useState(true);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -77,6 +82,7 @@ export default function Brett() {
   }, [campaign?.id]);
 
   const boardItems = items.filter((i) => i.board === activeBoard);
+  const relations = useMemo(() => (showRelations ? computeRelations(boardItems) : []), [showRelations, items, activeBoard]);
   const selected = boardItems.find((i) => i.id === selectedId) || null;
   const rolesMap = (analysis?.roles || []).reduce((m, r) => { m[r.room_id] = r.role; return m; }, {});
   const badgesMap = { ...rolesMap };
@@ -328,7 +334,7 @@ export default function Brett() {
     try {
       const created = await base44.entities.BoardItem.create({
         campaign_id: campaign.id, board: activeBoard, category: el.category, element_key: el.key,
-        label: el.label, color: el.color, icon: el.icon, tags: el.tags, x, y, w: 2, h: 2,
+        label: el.label, color: semanticColorFor(el.category, el.key), icon: el.icon, tags: el.tags, x, y, w: 2, h: 2,
       });
       setItems((p) => [...p, created]);
       setSelectedId(created.id);
@@ -410,6 +416,7 @@ export default function Brett() {
 
           <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border flex-wrap">
             <StyleSelector style={style} onSelect={chooseStyle} />
+            <RelationsPanel active={showRelations} onToggle={() => setShowRelations((s) => !s)} count={relations.length} />
             <FlowPanel style={style} analyzing={analyzing} analysis={analysis} onAnalyze={handleAnalyze} roomCount={boardItems.length} />
             {style === "metroidvania" && (
               <KeyLockPanel keyLock={keyLock} loading={keyLockLoading} onAnalyze={handleKeyLock} roomCount={boardItems.length} hasDoors={boardItems.some((r) => r.element_key === "locked_door")} />
@@ -461,6 +468,9 @@ export default function Brett() {
               )}
               {gauntlet?.sequence?.length > 1 && (
                 <FlowOverlay rooms={boardItems} connections={gauntlet.sequence.slice(1).map((s, i) => ({ from: gauntlet.sequence[i].room_id, to: s.room_id, kind: i + 1 === gauntlet.sequence.length - 1 ? "boss" : "normal" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
+              {showRelations && relations.length > 0 && (
+                <RelationsOverlay rooms={boardItems} relations={relations} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
               )}
             </div>
           </div>
