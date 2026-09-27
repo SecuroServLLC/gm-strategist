@@ -1,7 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Shield, AlertTriangle, Sparkles, Scale, Coins, Dices, ScrollText, Eye, Heart, BadgeDollarSign } from "lucide-react";
-import ViolenceCard from "@/components/board/ViolenceCard";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 
@@ -123,8 +122,6 @@ export default function NpcSocialDialog({ open, onClose, npcLabel, data, loading
                 </div>
               );
             })}
-
-            {data?.violence && <ViolenceCard violence={data.violence} />}
 
             {hooks.length > 0 && (
               <div className="rounded-lg border border-primary/30 bg-primary/5 p-2.5">

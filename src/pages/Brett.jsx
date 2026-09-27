@@ -19,6 +19,7 @@ import HubSpokePanel from "@/components/board/HubSpokePanel";
 import GauntletPanel from "@/components/board/GauntletPanel";
 import SolutionsDialog from "@/components/board/SolutionsDialog";
 import NpcSocialDialog from "@/components/board/NpcSocialDialog";
+import ViolenceReportDialog from "@/components/board/ViolenceReportDialog";
 
 const CELL = 28;
 const COLS = 60;
@@ -49,6 +50,9 @@ export default function Brett() {
   const [social, setSocial] = useState(null);
   const [socialLoading, setSocialLoading] = useState(false);
   const [socialOpen, setSocialOpen] = useState(false);
+  const [violence, setViolence] = useState(null);
+  const [violenceLoading, setViolenceLoading] = useState(false);
+  const [violenceOpen, setViolenceOpen] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -230,6 +234,38 @@ export default function Brett() {
     }
   };
 
+  const handleViolence = async () => {
+    if (!selected || !["enemy", "npc", "hazard"].includes(selected.category)) return;
+    setViolenceLoading(true);
+    setViolenceOpen(true);
+    setViolence(null);
+    try {
+      const cx = selected.x + selected.w / 2, cy = selected.y + selected.h / 2;
+      const nearby = items
+        .filter((r) => r.id !== selected.id && r.board === activeBoard)
+        .map((r) => ({ r, d: Math.abs((r.x + r.w / 2) - cx) + Math.abs((r.y + r.h / 2) - cy) }))
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 8)
+        .map(({ r }) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, tags: r.tags }));
+      let inventory = [];
+      try {
+        const inv = await base44.entities.InventoryItem.filter({ campaign_id: campaign.id });
+        inventory = (inv || []).map((it) => ({ name: it.name, category: it.category, quantity: it.quantity }));
+      } catch (e) { inventory = []; }
+      const res = await base44.functions.invoke("violenceReport", {
+        target: { id: selected.id, label: selected.label, element_key: selected.element_key, category: selected.category, tags: selected.tags, x: selected.x, y: selected.y, w: selected.w, h: selected.h },
+        nearby_rooms: nearby,
+        inventory,
+        context: { tone: campaign?.tone, setting: campaign?.setting, premise: campaign?.premise },
+      });
+      setViolence(res.data);
+    } catch (e) {
+      setViolence({ tactical_terrain: [], loot: [], notes: ["Kunne ikke generere vold-rapport — prøv igjen."] });
+    } finally {
+      setViolenceLoading(false);
+    }
+  };
+
   const handleGauntlet = async () => {
     if (boardItems.length < 2) return;
     setGauntletLoading(true);
@@ -317,7 +353,7 @@ export default function Brett() {
 
       <div className="flex-1 flex min-h-0">
         <aside className="w-60 shrink-0 border-r border-border bg-card/40 p-3">
-        <BoardSidebar selected={selected} isObstacle={selected?.category === "hazard"} solving={solutionsLoading} onSolve={handleSolutions} isNpc={selected?.category === "npc"} socialLoading={socialLoading} onSocial={handleSocial} />
+        <BoardSidebar selected={selected} isObstacle={selected?.category === "hazard"} solving={solutionsLoading} onSolve={handleSolutions} isNpc={selected?.category === "npc"} socialLoading={socialLoading} onSocial={handleSocial} isViolence={["enemy", "npc", "hazard"].includes(selected?.category)} violenceLoading={violenceLoading} onViolence={handleViolence} />
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
@@ -396,6 +432,7 @@ export default function Brett() {
       </div>
       <SolutionsDialog open={solutionsOpen} onClose={() => setSolutionsOpen(false)} obstacleLabel={selected?.label} data={solutions} loading={solutionsLoading} />
       <NpcSocialDialog open={socialOpen} onClose={() => setSocialOpen(false)} npcLabel={selected?.label} data={social} loading={socialLoading} />
+      <ViolenceReportDialog open={violenceOpen} onClose={() => setViolenceOpen(false)} targetLabel={selected?.label} data={violence} loading={violenceLoading} />
     </div>
   );
 }
