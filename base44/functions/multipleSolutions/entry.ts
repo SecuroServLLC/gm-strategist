@@ -37,6 +37,13 @@ Prinsipper:
 - consequence: en dynamisk konsekvens av å velge denne veien (f.eks. "Eksplosjonen bråker og tiltrekker monstre fra neste rom", "Dirking tar tid og øker risiko for oppdagelse"). Valgene skal ha noe å si for spillet.
 - placements: for løsninger som er partial/missing, foreslå konkrete ressurser GM bør plassere i et nærliggende rom (room_label, item, reason) for å gjøre løsningen mulig.
 - Legg vekt på å bruke elementene som FAKTISK ligger i nærheten (les tags/element_key) — f.eks. et rom med "fire"/"volcano" gjør brenne-løsningen enklere.
+- I tillegg, inkluder en "violence"-blokk: VOLD / BRUTE FORCE som fullverdig kategori for å ødelegge/sprekke hindringen med rå kraft. Fyll ut:
+  - environmental_tactics: hvordan nærliggende rom kan brukes (f.eks. brennbare tønner, rasfare, fallhøyde).
+  - noise_level: silent/low/medium/high/extreme (hvor mye lyd sprengingen/smashingen lager).
+  - blood: blodsøl (ofte "ingen" for en hindring, men f.eks. splintre/sprekker).
+  - alerted_enemies: hvem som blir varslet og fra hvor.
+  - remains: hva som skjer med hindringens rester etterpå.
+  - loot: hva spillerne sitter igjen med (ofte tomt for en dør, men kanskje mekanisme-del eller ingenting).
 
 Svar KUN som JSON.`;
 
@@ -82,6 +89,31 @@ Svar KUN som JSON.`;
               type: "object",
               properties: { room_label: { type: "string" }, item: { type: "string" }, reason: { type: "string" } },
               required: ["item", "reason"],
+            },
+          },
+          violence: {
+            type: "object",
+            properties: {
+              environmental_tactics: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: { tactic: { type: "string" }, room_label: { type: "string" }, detail: { type: "string" } },
+                  required: ["tactic"],
+                },
+              },
+              noise_level: { type: "string", enum: ["silent", "low", "medium", "high", "extreme"] },
+              blood: { type: "string" },
+              alerted_enemies: { type: "string" },
+              remains: { type: "string" },
+              loot: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: { item: { type: "string" }, condition: { type: "string" }, note: { type: "string" } },
+                  required: ["item"],
+                },
+              },
             },
           },
           notes: { type: "array", items: { type: "string" } },

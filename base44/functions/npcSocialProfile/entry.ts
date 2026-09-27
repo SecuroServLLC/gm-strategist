@@ -39,6 +39,13 @@ Prinsipper:
 - failure_consequence: HVA som skjer hvis svindelen feiler — konkret og spill-relevant (f.eks. vakten slår alarm, krever dobbel bestikkelse for å holde tett, blir fiendtlig og henter forsterkninger, konfiskerer gjenstander).
 - Bruk nærliggende rom og inventar der det er naturlig (f.eks. et vertshus = gambling, et dokument i kontor = forfalskning).
 - hooks: 2-3 rollespill-kroker GM kan bruke.
+- I tillegg, inkluder en "violence"-blokk: VOLD / BRUTE FORCE som en fullverdig løsningskategori for å ta livet av / slå ut NPC-en med makt. Fyll ut:
+  - environmental_tactics: hvordan SELVE ROMMET kan brukes i kampen (feller i nærliggende rom, høydeforskjeller, brennbare tønner, flankemuligheter) — referer konkrete nærliggende rom.
+  - noise_level: silent/low/medium/high/extreme (hvor mye støy slåsskampen lager).
+  - blood: blodsøl — beskriv hvor synlig og hvor mye.
+  - alerted_enemies: om/hvem andre fiender som blir varslet (fra hvilke rom).
+  - remains: hva som skjer med liket/restene etterpå (kan dukke opp, skape mistanke, eller gjemmes).
+  - loot: hva spillerne faktisk sitter igjen med etter kampen — f.eks. en nøkkel, skadd utstyr, mynter, eller kanskje en ettersøkt-plakat på NPC-en selv.
 
 Svar KUN som JSON.`;
 
@@ -84,6 +91,31 @@ Svar KUN som JSON.`;
             },
           },
           hooks: { type: "array", items: { type: "string" } },
+          violence: {
+            type: "object",
+            properties: {
+              environmental_tactics: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: { tactic: { type: "string" }, room_label: { type: "string" }, detail: { type: "string" } },
+                  required: ["tactic"],
+                },
+              },
+              noise_level: { type: "string", enum: ["silent", "low", "medium", "high", "extreme"] },
+              blood: { type: "string" },
+              alerted_enemies: { type: "string" },
+              remains: { type: "string" },
+              loot: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: { item: { type: "string" }, condition: { type: "string" }, note: { type: "string" } },
+                  required: ["item"],
+                },
+              },
+            },
+          },
           notes: { type: "array", items: { type: "string" } },
         },
         required: ["personality", "weakness", "trust_score", "manipulations"],

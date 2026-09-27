@@ -1,6 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Lightbulb, AlertTriangle, MapPin, Sparkles } from "lucide-react";
+import ViolenceCard from "@/components/board/ViolenceCard";
 import { cn } from "@/lib/utils";
 
 const APPROACH = {
@@ -72,6 +73,8 @@ export default function SolutionsDialog({ open, onClose, obstacleLabel, data, lo
                 </div>
               );
             })}
+
+            {data?.violence && <ViolenceCard violence={data.violence} />}
 
             {placements.length > 0 && (
               <div className="rounded-lg border border-sky-500/30 bg-sky-500/5 p-2.5">
