@@ -1,0 +1,65 @@
+{
+  "name": "Character",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "archetype": {
+      "type": "string",
+      "description": "Custom klassisk arketype, f.eks. 'Skyggevever'"
+    },
+    "race": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "protagonist",
+        "ally",
+        "antagonist",
+        "npc",
+        "contact",
+        "mentor"
+      ],
+      "default": "npc"
+    },
+    "background": {
+      "type": "string"
+    },
+    "personality": {
+      "type": "string"
+    },
+    "stats": {
+      "type": "object",
+      "description": "Seks attributter 1-20: kraft, smidighet, utholdenhet, intelligens, visdom, utstralning"
+    },
+    "abilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "appearance": {
+      "type": "string"
+    },
+    "hook": {
+      "type": "string",
+      "description": "Kobling til kampanjens r\u00f8de tr\u00e5d"
+    },
+    "portrait_url": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "description": "GM-notater"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "name"
+  ]
+}

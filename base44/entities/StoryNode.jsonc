@@ -1,0 +1,68 @@
+{
+  "name": "StoryNode",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "parent_id": {
+      "type": "string",
+      "description": "Foreldrenode \u2013 null for rotnoden"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Kort oppsummering p\u00e5 kartet"
+    },
+    "node_type": {
+      "type": "string",
+      "enum": [
+        "scene",
+        "choice",
+        "dice_challenge",
+        "event",
+        "climax",
+        "ending"
+      ],
+      "default": "scene"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detaljert scenebeskrivelse for GM"
+    },
+    "dice_suggestion": {
+      "type": "string",
+      "description": "Foresl\u00e5tt terningkast, f.eks. 'Smidighet DC 14'"
+    },
+    "success_outcome": {
+      "type": "string"
+    },
+    "failure_outcome": {
+      "type": "string"
+    },
+    "branch_label": {
+      "type": "string",
+      "description": "Etikett p\u00e5 innkommende kant"
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "position_x": {
+      "type": "number",
+      "default": 0
+    },
+    "position_y": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "campaign_id",
+    "title"
+  ]
+}

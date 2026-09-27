@@ -1,0 +1,53 @@
+{
+  "name": "Campaign",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "premise": {
+      "type": "string",
+      "description": "Den r\u00f8de tr\u00e5den \u2013 hovedfortellingen som binder kampanjen sammen"
+    },
+    "setting": {
+      "type": "string",
+      "description": "Verden, tidsalder, geografi"
+    },
+    "tone": {
+      "type": "string",
+      "description": "Stemning: m\u00f8rk, episk, komisk, etc."
+    },
+    "themes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hint GM b\u00f8r s\u00e5 underveis"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Begrensninger \u2013 hva GM b\u00f8r unng\u00e5 eller nekte"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "complete"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

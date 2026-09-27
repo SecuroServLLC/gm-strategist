@@ -1,0 +1,52 @@
+{
+  "name": "MapItem",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "location_type": {
+      "type": "string",
+      "enum": [
+        "city",
+        "dungeon",
+        "wilderness",
+        "tavern",
+        "temple",
+        "fortress",
+        "ruins",
+        "region",
+        "other"
+      ],
+      "default": "other"
+    },
+    "description": {
+      "type": "string"
+    },
+    "location_notes": {
+      "type": "string",
+      "description": "GM-notater om lokasjonen"
+    },
+    "landmarks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "connections": {
+      "type": "string",
+      "description": "Hva lokasjonen kobes til i verdenen"
+    },
+    "sketch_url": {
+      "type": "string",
+      "description": "Opplastet kartbilde eller AI-skisse"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "title"
+  ]
+}
