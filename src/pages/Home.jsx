@@ -5,23 +5,24 @@ import { useCampaign } from "@/hooks/useCampaign";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Sparkles, Dices, BookOpen } from "lucide-react";
+import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Sparkles, Dices, BookOpen, Backpack } from "lucide-react";
 
 export default function Home() {
   const { campaign, loading } = useCampaign();
-  const [counts, setCounts] = useState({ nodes: 0, characters: 0, maps: 0, sessions: 0 });
+  const [counts, setCounts] = useState({ nodes: 0, characters: 0, maps: 0, sessions: 0, party: 0 });
 
   useEffect(() => {
     if (!campaign) return;
     (async () => {
       try {
-        const [nodes, characters, maps, sessions] = await Promise.all([
+        const [nodes, characters, maps, sessions, party] = await Promise.all([
           base44.entities.StoryNode.filter({ campaign_id: campaign.id }),
           base44.entities.Character.filter({ campaign_id: campaign.id }),
           base44.entities.MapItem.filter({ campaign_id: campaign.id }),
           base44.entities.Session.filter({ campaign_id: campaign.id }),
+          base44.entities.PartyMember.filter({ campaign_id: campaign.id }),
         ]);
-        setCounts({ nodes: nodes.length, characters: characters.length, maps: maps.length, sessions: sessions.length });
+        setCounts({ nodes: nodes.length, characters: characters.length, maps: maps.length, sessions: sessions.length, party: party.length });
       } catch (e) {}
     })();
   }, [campaign]);
@@ -88,12 +89,13 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
               {[
                 { to: "/historie", label: "Historienoder", value: counts.nodes, icon: Workflow, desc: "Scener, valg og terningutfall" },
                 { to: "/karakterer", label: "Karakterer", value: counts.characters, icon: Users, desc: "Karakterkort og arketyper" },
                 { to: "/kart", label: "Kart", value: counts.maps, icon: MapIcon, desc: "Lokasjoner og skisser" },
                 { to: "/sesjoner", label: "Økter", value: counts.sessions, icon: BookOpen, desc: "Spilte økter og notater" },
+                { to: "/gruppe", label: "Følget", value: counts.party, icon: Backpack, desc: "Følgesvenner og inventar" },
               ].map((s) => {
                 const Icon = s.icon;
                 return (
@@ -123,6 +125,7 @@ export default function Home() {
                   { to: "/karakterer", icon: Users, label: "Generer karakterer", desc: "La AIen lage unike karakterkort med portrett." },
                   { to: "/kart", icon: MapIcon, label: "Lag kartgalleriet", desc: "10–15 kart med notater og referanseskisser." },
                   { to: "/sesjoner", icon: BookOpen, label: "Planlegg økter", desc: "Flere økter per kampanje – notater bæres inn i neste økt." },
+                  { to: "/gruppe", icon: Backpack, label: "Sett opp følget", desc: "Karakterer og brikker på laget, pluss inventar og gull." },
                   ].map((a) => {
                   const Icon = a.icon;
                   return (

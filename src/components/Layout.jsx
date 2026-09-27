@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen } from "lucide-react";
+import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -10,6 +10,7 @@ const NAV = [
   { to: "/karakterer", label: "Karakterer", icon: Users },
   { to: "/kart", label: "Kart", icon: MapIcon },
   { to: "/sesjoner", label: "Økter", icon: BookOpen },
+  { to: "/gruppe", label: "Følget", icon: Backpack },
 ];
 
 export default function Layout() {

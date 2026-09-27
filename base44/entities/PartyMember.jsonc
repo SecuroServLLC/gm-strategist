@@ -1,0 +1,49 @@
+{
+  "name": "PartyMember",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "character_id": {
+      "type": "string",
+      "description": "Referanse til Character hvis navngitt; null for frittst\u00e5ende brikke"
+    },
+    "name": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "character",
+        "token"
+      ],
+      "default": "character",
+      "description": "character = navngitt, token = fysisk brikke"
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "absent",
+        "dead"
+      ],
+      "default": "active"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 1,
+      "description": "Antall brikker (for tokens)"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "name"
+  ]
+}

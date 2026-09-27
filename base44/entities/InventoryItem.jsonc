@@ -1,0 +1,50 @@
+{
+  "name": "InventoryItem",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "weapon",
+        "armor",
+        "consumable",
+        "valuable",
+        "currency",
+        "misc"
+      ],
+      "default": "misc"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 1
+    },
+    "unit": {
+      "type": "string",
+      "description": "M\u00e5leenhet, f.eks. gull, s\u00f8lv, stk"
+    },
+    "value": {
+      "type": "number",
+      "description": "Verdi per enhet i standardmynt"
+    },
+    "carried_by": {
+      "type": "string",
+      "description": "Hvem som b\u00e6rer gjenstanden"
+    },
+    "description": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "name"
+  ]
+}
