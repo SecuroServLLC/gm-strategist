@@ -76,6 +76,36 @@
       linear-gradient(90deg, hsl(35 14% 14% / 0.6) 1px, transparent 1px);
     background-size: 32px 32px;
   }
+  .a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 10mm;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6mm;
+    background: #ffffff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  }
+  .a6-card {
+    border: 1.5px solid #b3a98c;
+    border-radius: 6px;
+    padding: 5mm;
+    background: linear-gradient(180deg, #fbf6e9, #f1ead6);
+    color: #2b2620;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  html, body { background: #fff !important; height: auto !important; overflow: visible !important; }
+  .print-root { overflow: visible !important; height: auto !important; }
+  .a4-page { box-shadow: none !important; page-break-after: always; break-after: page; }
+  .a4-page:last-child { page-break-after: auto; break-after: auto; }
+  .a6-card { break-inside: avoid; }
 }
 
 @layer utilities {

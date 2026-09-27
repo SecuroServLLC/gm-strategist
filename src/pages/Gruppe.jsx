@@ -41,7 +41,7 @@ export default function Gruppe() {
     if (payload.id) {
       const updated = await base44.entities.PartyMember.update(payload.id, {
         kind: payload.kind, name: payload.name, character_id: payload.character_id || null,
-        status: payload.status, quantity: payload.quantity, description: payload.description,
+        status: payload.status, quantity: payload.quantity, token_type: payload.token_type || "animal", description: payload.description,
       });
       setMembers((p) => p.map((m) => (m.id === payload.id ? updated : m)));
     } else {

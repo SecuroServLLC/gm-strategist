@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack } from "lucide-react";
+import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -11,12 +11,13 @@ const NAV = [
   { to: "/kart", label: "Kart", icon: MapIcon },
   { to: "/sesjoner", label: "Økter", icon: BookOpen },
   { to: "/gruppe", label: "Følget", icon: Backpack },
+  { to: "/utskrift", label: "Utskrift", icon: Printer },
 ];
 
 export default function Layout() {
   return (
     <div className="min-h-screen flex bg-background text-foreground">
-      <aside className="w-64 shrink-0 border-r border-sidebar-border bg-sidebar-background flex flex-col">
+      <aside className="no-print w-64 shrink-0 border-r border-sidebar-border bg-sidebar-background flex flex-col">
         <div className="px-6 py-7 border-b border-sidebar-border">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-amber-700 flex items-center justify-center shadow-lg shadow-primary/20">

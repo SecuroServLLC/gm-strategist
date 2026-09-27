@@ -15,6 +15,7 @@ import Characters from "@/pages/Characters";
 import Maps from "@/pages/Maps";
 import Sessions from "@/pages/Sessions";
 import Gruppe from "@/pages/Gruppe";
+import Utskrift from "@/pages/Utskrift";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route path="/kart" element={<Maps />} />
         <Route path="/sesjoner" element={<Sessions />} />
         <Route path="/gruppe" element={<Gruppe />} />
+        <Route path="/utskrift" element={<Utskrift />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

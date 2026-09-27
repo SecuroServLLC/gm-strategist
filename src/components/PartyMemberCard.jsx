@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
+import { TOKEN_TYPES } from "@/lib/tokenTypes";
 
 const KIND_LABEL = { character: "Karakter", token: "Brikke" };
 const STATUS_STYLE = {
@@ -13,6 +14,8 @@ const STATUS_STYLE = {
 const STATUS_LABEL = { active: "Aktiv", absent: "Fraværende", dead: "Død" };
 
 export default function PartyMemberCard({ member, onEdit, onDelete }) {
+  const tokenDef = member.kind === "token" ? (TOKEN_TYPES[member.token_type] || TOKEN_TYPES.animal) : null;
+  const TokenIcon = tokenDef?.Icon;
   return (
     <Card className="glass-card hover:border-primary/40 transition-colors group">
       <CardContent className="p-5">
@@ -29,7 +32,7 @@ export default function PartyMemberCard({ member, onEdit, onDelete }) {
             <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => onDelete(member.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
           </div>
         </div>
-        <h3 className="font-heading text-lg leading-tight mb-1">{member.name}</h3>
+        <h3 className="font-heading text-lg leading-tight mb-1 flex items-center gap-1.5">{TokenIcon && <TokenIcon className="w-4 h-4 text-primary/70" />}{member.name}</h3>
         {member.description && <p className="text-sm text-muted-foreground line-clamp-3">{member.description}</p>}
       </CardContent>
     </Card>

@@ -5,7 +5,7 @@ import { useCampaign } from "@/hooks/useCampaign";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Sparkles, Dices, BookOpen, Backpack } from "lucide-react";
+import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Sparkles, Dices, BookOpen, Backpack, Printer } from "lucide-react";
 
 export default function Home() {
   const { campaign, loading } = useCampaign();
@@ -126,6 +126,7 @@ export default function Home() {
                   { to: "/kart", icon: MapIcon, label: "Lag kartgalleriet", desc: "10–15 kart med notater og referanseskisser." },
                   { to: "/sesjoner", icon: BookOpen, label: "Planlegg økter", desc: "Flere økter per kampanje – notater bæres inn i neste økt." },
                   { to: "/gruppe", icon: Backpack, label: "Sett opp følget", desc: "Karakterer og brikker på laget, pluss inventar og gull." },
+                  { to: "/utskrift", icon: Printer, label: "Print A6-ark", desc: "NPC-kort og brikkekort, fire per A4-side." },
                   ].map((a) => {
                   const Icon = a.icon;
                   return (

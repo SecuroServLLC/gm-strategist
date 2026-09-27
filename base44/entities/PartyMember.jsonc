@@ -21,6 +21,21 @@
       "default": "character",
       "description": "character = navngitt, token = fysisk brikke"
     },
+    "token_type": {
+      "type": "string",
+      "enum": [
+        "animal",
+        "beast",
+        "humanoid",
+        "undead",
+        "construct",
+        "critter",
+        "flying",
+        "enemy"
+      ],
+      "default": "animal",
+      "description": "Brikke-type (vises med ikon p\u00e5 utskriftsark)"
+    },
     "description": {
       "type": "string"
     },

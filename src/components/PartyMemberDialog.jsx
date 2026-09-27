@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TOKEN_TYPES } from "@/lib/tokenTypes";
 
-const empty = { kind: "character", name: "", character_id: "", status: "active", quantity: 1, description: "", notes: "" };
+const empty = { kind: "character", name: "", character_id: "", status: "active", quantity: 1, token_type: "animal", description: "", notes: "" };
 
 export default function PartyMemberDialog({ open, member, characters, onOpenChange, onSave }) {
   const [form, setForm] = useState(member || empty);
@@ -59,6 +60,17 @@ export default function PartyMemberDialog({ open, member, characters, onOpenChan
             <Label className="mb-1.5 block">Navn</Label>
             <Input value={form.name || ""} onChange={(e) => update("name", e.target.value)} placeholder={isToken ? "f.eks. 'Vaktbrikke'" : "Karakternavn"} />
           </div>
+          {isToken && (
+            <div>
+              <Label className="mb-1.5 block">Type</Label>
+              <Select value={form.token_type} onValueChange={(v) => update("token_type", v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {Object.entries(TOKEN_TYPES).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="mb-1.5 block">Status</Label>

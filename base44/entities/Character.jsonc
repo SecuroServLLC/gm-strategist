@@ -10,7 +10,7 @@
     },
     "archetype": {
       "type": "string",
-      "description": "Custom klassisk arketype, f.eks. 'Skyggevever'"
+      "description": "Custom klassisk arketype/profesjon, f.eks. 'Farmer', 'Skyggevever'"
     },
     "race": {
       "type": "string"
@@ -37,11 +37,16 @@
       "type": "object",
       "description": "Seks attributter 1-20: kraft, smidighet, utholdenhet, intelligens, visdom, utstralning"
     },
+    "hp": {
+      "type": "number",
+      "description": "Hit points / livspoeng"
+    },
     "abilities": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Evner/profesjoner \u2013 vises som opptil 3 linjer p\u00e5 utskriftsark"
     },
     "appearance": {
       "type": "string"
