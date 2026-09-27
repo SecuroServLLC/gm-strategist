@@ -34,18 +34,18 @@ ${nearLines}
 Gruppens inventar:
 ${invLines}
 
-Rapporten skal ha TRE felt:
+Rapporten skal alltid ha disse TRE faste punktene:
 
-⚔️ 1. tactical_terrain: 2-3 konkrete ting i rommet/nærommet spillerne kan utnytte i kampen (ustabile kasser, stup, hengende lykter, smale ganger, brennbare tønner, høydeforskjeller, feller). Bruk HELST nærliggende rom (referer room_label). Hver med: feature (navn) og detail (hvordan utnyttes).
+1. TAKTISK MILJØ (tactical_terrain): 2-3 konkrete ting i rommet/nærommet spillerne kan bruke i slåsskampen (ustabile kasser, stup, hengende lykter, smale ganger, brennbare tønner, høydeforskjeller, feller). Bruk HELST nærliggende rom (referer room_label). Hver med: feature (navn) og detail (hvordan utnyttes i kampen).
 
-🚨 2. Ripple effects (støy og konsekvenser):
-  - noise_level: silent/low/medium/high/extreme — hvor mye støy bråket/slåsskampen/sprengningen lager.
+2. STØY OG RIPPLE EFFECTS (støy og konsekvenser):
+  - noise_level: silent/low/medium/high/extreme — hvor mye bråk slåsskampen/sprengningen lager.
   - blood: blodsøl — hvor synlig, hvor mye (for en hindring: splintre/rivninger i stedet).
-  - alerted_enemies: blei noen i naborommet varslet? HVEM og fra HVILKET rom (bruk room_label). "Ingen" hvis stille nok.
-  - remains: hva skjer med liket / restene etterpå — setter det igjen blodspor? Må det gjemmes? (for en hindring: røy/skader som avslører tvang).
-  - aftermath: etterslep — får det konsekvenser utover rommet? F.eks. en ettersøkt-plakat på spillerne, hevngjerrig fraksjon, mistenkelig vaktsjef.
+  - alerted_enemies: blir naborommene varslet? HVEM og fra HVILKET rom (bruk room_label). "Ingen" hvis stille nok.
+  - remains: hva skjer med likene/blodsporene etterpå — setter de igjen spor? Må de gjemmes? (for en hindring: røy/skader som avslører tvang).
+  - aftermath: etterslep — får spillerne et etterslep eller en ettersøkt-plakat? Konsekvenser utover rommet: ettersøkt-plakat på spillerne, hevngjerrig fraksjon, mistenkelig vaktsjef.
 
-💰 3. loot: nøyaktig hva som kan plukkes opp etter kampen — nøkler, skadd ELLER brukbar rustning/våpen, mynter og verdisaker fra lommene. Hver med: item (navn), category (weapon/armor/consumable/valuable/currency/key/misc), condition (usket/skadd/intakt/ødelagt) og note.
+3. UDBYTTE / LOOT: nøyaktig hva de sitter igjen med etter kampen — nøkler, skadd ELLER brukbar rustning/våpen, mynter og verdisaker fra lommene. Hver med: item (navn), category (weapon/armor/consumable/valuable/currency/key/misc), condition (usket/skadd/intakt/ødelagt) og note.
 
 Vær konkret og spill-relevant. Svar KUN som JSON.`;
 

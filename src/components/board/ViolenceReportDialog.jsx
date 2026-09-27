@@ -34,8 +34,8 @@ export default function ViolenceReportDialog({ open, onClose, targetLabel, data,
             <div className="rounded-lg border border-rose-500/40 bg-rose-500/5 p-3">
               <div className="flex items-center gap-1.5 mb-2">
                 <Flame className="w-4 h-4 text-rose-400" />
-                <span className="text-sm font-medium text-rose-300">⚔️ Miljøet i kampen</span>
-                <span className="text-[10px] text-muted-foreground">(Tactical Terrain)</span>
+                <span className="text-sm font-medium text-rose-300">1. Taktisk Miljø</span>
+                <span className="text-[10px] text-muted-foreground">— hva i rommet kan brukes i slåsskampen</span>
               </div>
               {terrain.length > 0 ? (
                 <div className="space-y-1.5">
@@ -56,8 +56,8 @@ export default function ViolenceReportDialog({ open, onClose, targetLabel, data,
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 p-3">
               <div className="flex items-center gap-1.5 mb-2">
                 <BellRing className="w-4 h-4 text-amber-400" />
-                <span className="text-sm font-medium text-amber-300">🚨 Støy og konsekvenser</span>
-                <span className="text-[10px] text-muted-foreground">(Ripple Effects)</span>
+                <span className="text-sm font-medium text-amber-300">2. Støy og Ripple Effects</span>
+                <span className="text-[10px] text-muted-foreground">— bråk, varsling, lik/blodspor, etterslep</span>
                 <span className={cn("ml-auto text-[10px] font-semibold flex items-center gap-1", noise.color)}>
                   <Volume2 className="w-3 h-3" /> {noise.label}
                 </span>
@@ -94,8 +94,8 @@ export default function ViolenceReportDialog({ open, onClose, targetLabel, data,
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 p-3">
               <div className="flex items-center gap-1.5 mb-2">
                 <Coins className="w-4 h-4 text-amber-400" />
-                <span className="text-sm font-medium text-amber-300">💰 Utbytte</span>
-                <span className="text-[10px] text-muted-foreground">(Loot & Spoils)</span>
+                <span className="text-sm font-medium text-amber-300">3. Utbytte (Loot)</span>
+                <span className="text-[10px] text-muted-foreground">— nøkler, skadd utstyr, verdisaker</span>
               </div>
               {loot.length > 0 ? (
                 <div className="space-y-1.5">
