@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Lightbulb, Shield, Swords } from "lucide-react";
+import { ChevronDown, ChevronRight, Lightbulb, Shield, Swords, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BOARD_ELEMENTS, CATEGORY_LABELS, COLOR_CLASSES, isCompatible } from "@/lib/boardLibrary";
 import { ICON_MAP } from "@/lib/boardIcons";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const CATS = ["terrain", "enemy", "npc", "building", "hazard", "item"];
 
-export default function BoardSidebar({ selected, isObstacle, solving, onSolve, isNpc, socialLoading, onSocial, isViolence, violenceLoading, onViolence }) {
+export default function BoardSidebar({ selected, isObstacle, solving, onSolve, isNpc, socialLoading, onSocial, isViolence, violenceLoading, onViolence, isCoercion, coercionLoading, onCoercion }) {
   const [open, setOpen] = useState({ terrain: true, enemy: true, npc: true, building: true, hazard: true, item: true });
 
   return (
@@ -25,6 +25,11 @@ export default function BoardSidebar({ selected, isObstacle, solving, onSolve, i
       {isViolence && (
         <Button onClick={onViolence} disabled={violenceLoading} size="sm" variant="outline" className="w-full mb-2 gap-2 border-rose-500/40 text-rose-300 hover:bg-rose-500/10">
           <Swords className="w-4 h-4" /> {violenceLoading ? "Genererer…" : "Vold / Brute Force"}
+        </Button>
+      )}
+      {isCoercion && (
+        <Button onClick={onCoercion} disabled={coercionLoading} size="sm" variant="outline" className="w-full mb-2 gap-2 border-amber-500/40 text-amber-300 hover:bg-amber-500/10">
+          <Zap className="w-4 h-4" /> {coercionLoading ? "Genererer…" : "Trusler / Press"}
         </Button>
       )}
       <div className="text-xs text-muted-foreground mb-2 px-1 leading-relaxed">

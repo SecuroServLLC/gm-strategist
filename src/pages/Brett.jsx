@@ -20,6 +20,7 @@ import GauntletPanel from "@/components/board/GauntletPanel";
 import SolutionsDialog from "@/components/board/SolutionsDialog";
 import NpcSocialDialog from "@/components/board/NpcSocialDialog";
 import ViolenceReportDialog from "@/components/board/ViolenceReportDialog";
+import CoercionReportDialog from "@/components/board/CoercionReportDialog";
 
 const CELL = 28;
 const COLS = 60;
@@ -53,6 +54,9 @@ export default function Brett() {
   const [violence, setViolence] = useState(null);
   const [violenceLoading, setViolenceLoading] = useState(false);
   const [violenceOpen, setViolenceOpen] = useState(false);
+  const [coercion, setCoercion] = useState(null);
+  const [coercionLoading, setCoercionLoading] = useState(false);
+  const [coercionOpen, setCoercionOpen] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -266,6 +270,38 @@ export default function Brett() {
     }
   };
 
+  const handleCoercion = async () => {
+    if (!selected || selected.category !== "npc") return;
+    setCoercionLoading(true);
+    setCoercionOpen(true);
+    setCoercion(null);
+    try {
+      const cx = selected.x + selected.w / 2, cy = selected.y + selected.h / 2;
+      const nearby = items
+        .filter((r) => r.id !== selected.id && r.board === activeBoard)
+        .map((r) => ({ r, d: Math.abs((r.x + r.w / 2) - cx) + Math.abs((r.y + r.h / 2) - cy) }))
+        .sort((a, b) => a.d - b.d)
+        .slice(0, 8)
+        .map(({ r }) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, tags: r.tags }));
+      let inventory = [];
+      try {
+        const inv = await base44.entities.InventoryItem.filter({ campaign_id: campaign.id });
+        inventory = (inv || []).map((it) => ({ name: it.name, category: it.category, quantity: it.quantity }));
+      } catch (e) { inventory = []; }
+      const res = await base44.functions.invoke("coercionReport", {
+        npc: { id: selected.id, label: selected.label, element_key: selected.element_key, category: selected.category, tags: selected.tags, x: selected.x, y: selected.y, w: selected.w, h: selected.h },
+        nearby_rooms: nearby,
+        inventory,
+        context: { tone: campaign?.tone, setting: campaign?.setting, premise: campaign?.premise },
+      });
+      setCoercion(res.data);
+    } catch (e) {
+      setCoercion({ escalation: [], notes: ["Kunne ikke generere trussel-rapport — prøv igjen."] });
+    } finally {
+      setCoercionLoading(false);
+    }
+  };
+
   const handleGauntlet = async () => {
     if (boardItems.length < 2) return;
     setGauntletLoading(true);
@@ -353,7 +389,7 @@ export default function Brett() {
 
       <div className="flex-1 flex min-h-0">
         <aside className="w-60 shrink-0 border-r border-border bg-card/40 p-3">
-        <BoardSidebar selected={selected} isObstacle={selected?.category === "hazard"} solving={solutionsLoading} onSolve={handleSolutions} isNpc={selected?.category === "npc"} socialLoading={socialLoading} onSocial={handleSocial} isViolence={["enemy", "npc", "hazard"].includes(selected?.category)} violenceLoading={violenceLoading} onViolence={handleViolence} />
+        <BoardSidebar selected={selected} isObstacle={selected?.category === "hazard"} solving={solutionsLoading} onSolve={handleSolutions} isNpc={selected?.category === "npc"} socialLoading={socialLoading} onSocial={handleSocial} isViolence={["enemy", "npc", "hazard"].includes(selected?.category)} violenceLoading={violenceLoading} onViolence={handleViolence} isCoercion={selected?.category === "npc"} coercionLoading={coercionLoading} onCoercion={handleCoercion} />
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
@@ -433,6 +469,7 @@ export default function Brett() {
       <SolutionsDialog open={solutionsOpen} onClose={() => setSolutionsOpen(false)} obstacleLabel={selected?.label} data={solutions} loading={solutionsLoading} />
       <NpcSocialDialog open={socialOpen} onClose={() => setSocialOpen(false)} npcLabel={selected?.label} data={social} loading={socialLoading} />
       <ViolenceReportDialog open={violenceOpen} onClose={() => setViolenceOpen(false)} targetLabel={selected?.label} data={violence} loading={violenceLoading} />
+      <CoercionReportDialog open={coercionOpen} onClose={() => setCoercionOpen(false)} npcLabel={selected?.label} data={coercion} loading={coercionLoading} />
     </div>
   );
 }
