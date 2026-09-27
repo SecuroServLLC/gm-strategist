@@ -7,13 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Plus, Bot, Pencil, Trash2, Sparkles } from "lucide-react";
+import { Plus, Bot, Pencil, Trash2, Sparkles, RefreshCw, Link2, User, Gauge, Coins, Cloud, Gem } from "lucide-react";
 import FactionDialog from "@/components/FactionDialog";
 import CoDmResult from "@/components/CoDmResult";
 import PlayerHooksCard from "@/components/meddm/PlayerHooksCard";
 import SchrodingerNpcCard from "@/components/meddm/SchrodingerNpcCard";
 import PacingCard from "@/components/meddm/PacingCard";
+import EconomyCard from "@/components/meddm/EconomyCard";
+import TravelWeatherCard from "@/components/meddm/TravelWeatherCard";
+import LootCard from "@/components/meddm/LootCard";
 
 function FactionPower({ power }) {
   const p = Math.max(0, Math.min(100, power || 0));
@@ -25,6 +27,16 @@ function FactionPower({ power }) {
   );
 }
 
+const TOOLS = [
+  { id: "ripple", label: "Ripple", icon: RefreshCw },
+  { id: "hooks", label: "Spillerkroker", icon: Link2 },
+  { id: "npc", label: "Nød-NPC", icon: User },
+  { id: "tempo", label: "Tempo", icon: Gauge },
+  { id: "okonomi", label: "Økonomi", icon: Coins },
+  { id: "reise", label: "Reise & vær", icon: Cloud },
+  { id: "loot", label: "Loot", icon: Gem },
+];
+
 export default function MedDm() {
   const { campaign, loading } = useCampaign();
   const [factions, setFactions] = useState([]);
@@ -35,6 +47,7 @@ export default function MedDm() {
   const [analyzing, setAnalyzing] = useState(false);
   const [dialog, setDialog] = useState({ open: false, faction: null });
   const [applied, setApplied] = useState({});
+  const [activeTool, setActiveTool] = useState("ripple");
 
   useEffect(() => {
     if (!campaign) return;
@@ -174,35 +187,39 @@ export default function MedDm() {
 
           <div className="lg:col-span-3 space-y-4">
             <h2 className="font-heading text-xl">Forberedelser &amp; med-DM</h2>
-            <Tabs defaultValue="ripple" className="w-full">
-              <TabsList className="grid grid-cols-4 w-full">
-                <TabsTrigger value="ripple">Ripple</TabsTrigger>
-                <TabsTrigger value="hooks">Spillerkroker</TabsTrigger>
-                <TabsTrigger value="npc">Nød-NPC</TabsTrigger>
-                <TabsTrigger value="tempo">Tempo</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="ripple" className="space-y-4 mt-4">
-                <Card className="glass-card">
-                  <CardContent className="p-5 space-y-3">
-                    <div>
-                      <Label className="mb-1.5 block text-sm">Hva gjorde spillerne sist?</Label>
-                      <Textarea rows={3} value={event} onChange={(e) => setEvent(e.target.value)} placeholder={latestWithRecap ? `Bruk oppsummeringa fra økt ${latestWithRecap.session_number}, eller skriv selv…` : "f.eks. «De brente ned lageret til smuglerne og friga gisselet»"} />
-                      {latestWithRecap && !event && <p className="text-xs text-muted-foreground mt-1">Tomt felt bruker oppsummeringa fra økt {latestWithRecap.session_number}.</p>}
-                    </div>
-                    <Button className="gap-1.5" onClick={analyze} disabled={analyzing || (!event.trim() && !latestWithRecap)}>
-                      <Sparkles className="w-4 h-4" /> {analyzing ? "Med-DM tenker…" : "Kjør ripple-effekt"}
-                    </Button>
-                  </CardContent>
-                </Card>
-                {analyzing && <div className="flex items-center justify-center py-10"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>}
-                {result && !analyzing && <CoDmResult result={result} applied={applied} onApplyFaction={applyFactionUpdate} onApplyNpc={applyNpcAgenda} onSaveComplications={saveComplications} />}
-              </TabsContent>
-
-              <TabsContent value="hooks" className="mt-4"><PlayerHooksCard campaign={campaign} /></TabsContent>
-              <TabsContent value="npc" className="mt-4"><SchrodingerNpcCard campaign={campaign} /></TabsContent>
-              <TabsContent value="tempo" className="mt-4"><PacingCard campaign={campaign} /></TabsContent>
-            </Tabs>
+            <div className="flex flex-wrap gap-2">
+              {TOOLS.map((t) => (
+                <Button key={t.id} variant={activeTool === t.id ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setActiveTool(t.id)}>
+                  <t.icon className="w-4 h-4" /> {t.label}
+                </Button>
+              ))}
+            </div>
+            <div className="mt-2">
+              {activeTool === "ripple" && (
+                <div className="space-y-4">
+                  <Card className="glass-card">
+                    <CardContent className="p-5 space-y-3">
+                      <div>
+                        <Label className="mb-1.5 block text-sm">Hva gjorde spillerne sist?</Label>
+                        <Textarea rows={3} value={event} onChange={(e) => setEvent(e.target.value)} placeholder={latestWithRecap ? `Bruk oppsummeringa fra økt ${latestWithRecap.session_number}, eller skriv selv…` : "f.eks. «De brente ned lageret til smuglerne og friga gisselet»"} />
+                        {latestWithRecap && !event && <p className="text-xs text-muted-foreground mt-1">Tomt felt bruker oppsummeringa fra økt {latestWithRecap.session_number}.</p>}
+                      </div>
+                      <Button className="gap-1.5" onClick={analyze} disabled={analyzing || (!event.trim() && !latestWithRecap)}>
+                        <Sparkles className="w-4 h-4" /> {analyzing ? "Med-DM tenker…" : "Kjør ripple-effekt"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                  {analyzing && <div className="flex items-center justify-center py-10"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>}
+                  {result && !analyzing && <CoDmResult result={result} applied={applied} onApplyFaction={applyFactionUpdate} onApplyNpc={applyNpcAgenda} onSaveComplications={saveComplications} />}
+                </div>
+              )}
+              {activeTool === "hooks" && <PlayerHooksCard campaign={campaign} />}
+              {activeTool === "npc" && <SchrodingerNpcCard campaign={campaign} />}
+              {activeTool === "tempo" && <PacingCard campaign={campaign} />}
+              {activeTool === "okonomi" && <EconomyCard campaign={campaign} />}
+              {activeTool === "reise" && <TravelWeatherCard campaign={campaign} />}
+              {activeTool === "loot" && <LootCard campaign={campaign} />}
+            </div>
           </div>
         </div>
       </div>
