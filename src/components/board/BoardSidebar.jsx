@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { BOARD_ELEMENTS, CATEGORY_LABELS, COLOR_CLASSES, isCompatible } from "@/lib/boardLibrary";
 import { ICON_MAP } from "@/lib/boardIcons";
 
-const CATS = ["terrain", "enemy", "npc", "building", "hazard"];
+const CATS = ["terrain", "enemy", "npc", "building", "hazard", "item"];
 
 export default function BoardSidebar({ selected }) {
-  const [open, setOpen] = useState({ terrain: true, enemy: true, npc: true, building: true, hazard: true });
+  const [open, setOpen] = useState({ terrain: true, enemy: true, npc: true, building: true, hazard: true, item: true });
 
   return (
     <div className="h-full overflow-y-auto scrollbar-thin pr-1">

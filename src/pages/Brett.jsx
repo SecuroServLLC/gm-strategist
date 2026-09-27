@@ -12,6 +12,8 @@ import BoardItemCard from "@/components/board/BoardItemCard";
 import StyleSelector from "@/components/board/StyleSelector";
 import FlowOverlay from "@/components/board/FlowOverlay";
 import FlowPanel from "@/components/board/FlowPanel";
+import KeyLockPanel from "@/components/board/KeyLockPanel";
+import KeyLockOverlay from "@/components/board/KeyLockOverlay";
 
 const CELL = 28;
 const COLS = 60;
@@ -27,6 +29,8 @@ export default function Brett() {
   const [style, setStyle] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [keyLock, setKeyLock] = useState(null);
+  const [keyLockLoading, setKeyLockLoading] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -49,8 +53,13 @@ export default function Brett() {
   const boardItems = items.filter((i) => i.board === activeBoard);
   const selected = boardItems.find((i) => i.id === selectedId) || null;
   const rolesMap = (analysis?.roles || []).reduce((m, r) => { m[r.room_id] = r.role; return m; }, {});
+  const badgesMap = { ...rolesMap };
+  (keyLock?.keyPlacements || []).forEach((p) => {
+    if (p.door_id) badgesMap[p.door_id] = "lock";
+    if (p.key_room_id) badgesMap[p.key_room_id] = "key";
+  });
 
-  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); };
+  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); };
 
   const handleAnalyze = async () => {
     if (!style || boardItems.length < 2) return;
@@ -65,6 +74,21 @@ export default function Brett() {
       setAnalysis({ suggestions: ["Kunne ikke analysere flyt. Prøv igjen."] });
     } finally {
       setAnalyzing(false);
+    }
+  };
+
+  const handleKeyLock = async () => {
+    if (boardItems.length < 2) return;
+    setKeyLockLoading(true);
+    try {
+      const res = await base44.functions.invoke("keyLockAnalysis", {
+        rooms: boardItems.map((r) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, color: r.color, tags: r.tags, x: r.x, y: r.y, w: r.w, h: r.h })),
+      });
+      setKeyLock(res.data);
+    } catch (e) {
+      setKeyLock({ keyPlacements: [], skipWarnings: ["Kunne ikke analysere nøkkel-lås. Prøv igjen."], notes: [] });
+    } finally {
+      setKeyLockLoading(false);
     }
   };
 
@@ -111,6 +135,7 @@ export default function Brett() {
     setNewBoard("");
     setSelectedId(null);
     setAnalysis(null);
+    setKeyLock(null);
   };
 
   if (loading) return <div className="h-full flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
@@ -141,7 +166,7 @@ export default function Brett() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border overflow-x-auto scrollbar-thin">
             {boards.map((b) => (
-              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
+              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
             ))}
             <div className="flex items-center gap-1.5 ml-2">
               <Input value={newBoard} onChange={(e) => setNewBoard(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBoard()} placeholder="Nytt brett…" className="h-8 w-32" />
@@ -157,6 +182,9 @@ export default function Brett() {
           <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border flex-wrap">
             <StyleSelector style={style} onSelect={chooseStyle} />
             <FlowPanel style={style} analyzing={analyzing} analysis={analysis} onAnalyze={handleAnalyze} roomCount={boardItems.length} />
+            {style === "metroidvania" && (
+              <KeyLockPanel keyLock={keyLock} loading={keyLockLoading} onAnalyze={handleKeyLock} roomCount={boardItems.length} hasDoors={boardItems.some((r) => r.element_key === "locked_door")} />
+            )}
           </div>
 
           <div className="flex-1 overflow-auto scrollbar-thin bg-background story-canvas-bg" onClick={() => setSelectedId(null)}>
@@ -176,10 +204,13 @@ export default function Brett() {
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/60 text-sm pointer-events-none">Dra elementer hit fra sidemenyen…</div>
               )}
               {boardItems.map((it) => (
-                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={rolesMap[it.id]} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
+                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={badgesMap[it.id]} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
               ))}
               {analysis?.connections && (
                 <FlowOverlay rooms={boardItems} connections={analysis.connections} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
+              {keyLock?.keyPlacements?.length > 0 && (
+                <KeyLockOverlay rooms={boardItems} placements={keyLock.keyPlacements} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
               )}
             </div>
           </div>

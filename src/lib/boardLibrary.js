@@ -22,6 +22,7 @@ export const CATEGORY_LABELS = {
   npc: "NPC-er",
   building: "Bygninger",
   hazard: "Farer / feller",
+  item: "Nøkler / gjenstander",
 };
 
 export const BOARD_ELEMENTS = [
@@ -86,6 +87,11 @@ export const BOARD_ELEMENTS = [
   { key: "spike_pit", label: "Spikergrøft", category: "hazard", color: "red", icon: "AlertTriangle", tags: ["trap"] },
   { key: "blocked_road", label: "Stengt vei", category: "hazard", color: "slate", icon: "MapPin", tags: ["mountain"] },
   { key: "curse", label: "Forbannelse", category: "hazard", color: "purple", icon: "Eye", tags: ["magic", "trap", "dark"] },
+  { key: "locked_door", label: "Låst dør", category: "hazard", color: "amber", icon: "Lock", tags: ["lock", "key", "barrier"] },
+  // Nøkler / gjenstander
+  { key: "magic_key", label: "Magisk nøkkel", category: "item", color: "amber", icon: "KeyRound", tags: ["key", "item"] },
+  { key: "grapple", label: "Krok", category: "item", color: "amber", icon: "Anchor", tags: ["key", "item"] },
+  { key: "rune_stone", label: "Rune-stein", category: "item", color: "purple", icon: "Gem", tags: ["key", "magic", "item"] },
 ];
 
 // To elementer "passer sammen" hvis de deler minst én tag ELLER har samme farge.
@@ -110,6 +116,7 @@ export const ROLE_BADGES = {
   shortcut: { ring: "ring-2 ring-sky-400", label: "Snarvei", badge: "bg-sky-400/85 text-sky-950" },
   entrance: { ring: "ring-2 ring-emerald-400", label: "Inngang", badge: "bg-emerald-400/85 text-emerald-950" },
   exit: { ring: "ring-2 ring-purple-400", label: "Utgang", badge: "bg-purple-400/85 text-purple-950" },
+  lock: { ring: "ring-2 ring-amber-500", label: "Låst", badge: "bg-amber-500/85 text-amber-50" },
 };
 
 export const LINK_KINDS = {
