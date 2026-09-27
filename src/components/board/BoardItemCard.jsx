@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { ICON_MAP } from "@/lib/boardIcons";
 import { COLOR_CLASSES, ROLE_BADGES, NODE_TYPES } from "@/lib/boardLibrary";
 
-export default function BoardItemCard({ item, selected, role, nodeType, pathState, cellSize, onSelect, onMove, onResize, onCommit, onDelete }) {
+export default function BoardItemCard({ item, selected, role, nodeType, pathState, order, boss, cellSize, onSelect, onMove, onResize, onCommit, onDelete }) {
   const cc = COLOR_CLASSES[item.color] || COLOR_CLASSES.slate;
   const Icon = ICON_MAP[item.icon] || ICON_MAP.MapPin;
   const rb = role ? ROLE_BADGES[role] : null;
@@ -70,6 +70,9 @@ export default function BoardItemCard({ item, selected, role, nodeType, pathStat
       <span className="text-[10px] leading-tight text-center truncate w-full px-0.5">{item.label}</span>
       {nt && (
         <span className={cn("absolute bottom-0.5 left-1/2 -translate-x-1/2 text-[8px] px-1 rounded-sm font-medium leading-tight whitespace-nowrap", COLOR_CLASSES[nt.color].chip)}>{nt.label}</span>
+      )}
+      {order != null && (
+        <span className={cn("absolute top-0.5 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center", boss ? "bg-rose-500 text-rose-50" : "bg-primary/85 text-primary-foreground")}>{order + 1}</span>
       )}
       <button
         onPointerDown={(e) => e.stopPropagation()}

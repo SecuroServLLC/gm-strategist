@@ -16,6 +16,7 @@ import KeyLockPanel from "@/components/board/KeyLockPanel";
 import KeyLockOverlay from "@/components/board/KeyLockOverlay";
 import RoguelikePanel from "@/components/board/RoguelikePanel";
 import HubSpokePanel from "@/components/board/HubSpokePanel";
+import GauntletPanel from "@/components/board/GauntletPanel";
 
 const CELL = 28;
 const COLS = 60;
@@ -38,6 +39,8 @@ export default function Brett() {
   const [visited, setVisited] = useState([]);
   const [hubSpoke, setHubSpoke] = useState(null);
   const [hubSpokeLoading, setHubSpokeLoading] = useState(false);
+  const [gauntlet, setGauntlet] = useState(null);
+  const [gauntletLoading, setGauntletLoading] = useState(false);
   const canvasRef = useRef(null);
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -90,8 +93,9 @@ export default function Brett() {
     return null;
   };
   if (hubSpoke?.hub_id) badgesMap[hubSpoke.hub_id] = "hub";
+  const seqMap = (gauntlet?.sequence || []).reduce((m, s) => { m[s.room_id] = s; return m; }, {});
 
-  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); };
+  const chooseStyle = (s) => { setStyle(s); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); setGauntlet(null); };
 
   const handleAnalyze = async () => {
     if (!style || boardItems.length < 2) return;
@@ -157,6 +161,21 @@ export default function Brett() {
     }
   };
 
+  const handleGauntlet = async () => {
+    if (boardItems.length < 2) return;
+    setGauntletLoading(true);
+    try {
+      const res = await base44.functions.invoke("gauntletBalance", {
+        rooms: boardItems.map((r) => ({ id: r.id, label: r.label, element_key: r.element_key, category: r.category, color: r.color, tags: r.tags, x: r.x, y: r.y, w: r.w, h: r.h })),
+      });
+      setGauntlet(res.data);
+    } catch (e) {
+      setGauntlet(null);
+    } finally {
+      setGauntletLoading(false);
+    }
+  };
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const raw = e.dataTransfer.getData("application/json");
@@ -204,6 +223,7 @@ export default function Brett() {
     setNodesResult(null);
     setVisited([]);
     setHubSpoke(null);
+    setGauntlet(null);
   };
 
   if (loading) return <div className="h-full flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
@@ -234,7 +254,7 @@ export default function Brett() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border overflow-x-auto scrollbar-thin">
             {boards.map((b) => (
-              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
+              <button key={b}               onClick={() => { setActiveBoard(b); setSelectedId(null); setAnalysis(null); setKeyLock(null); setNodesResult(null); setVisited([]); setHubSpoke(null); setGauntlet(null); }} className={cn("px-3 py-1.5 rounded-md text-sm whitespace-nowrap border transition-colors", b === activeBoard ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground")}>{b}</button>
             ))}
             <div className="flex items-center gap-1.5 ml-2">
               <Input value={newBoard} onChange={(e) => setNewBoard(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBoard()} placeholder="Nytt brett…" className="h-8 w-32" />
@@ -259,6 +279,9 @@ export default function Brett() {
             {style === "hubspoke" && (
               <HubSpokePanel hubSpoke={hubSpoke} loading={hubSpokeLoading} onAnalyze={handleHubSpoke} roomCount={boardItems.length} />
             )}
+            {style === "gauntlet" && (
+              <GauntletPanel gauntlet={gauntlet} loading={gauntletLoading} onAnalyze={handleGauntlet} roomCount={boardItems.length} />
+            )}
           </div>
 
           <div className="flex-1 overflow-auto scrollbar-thin bg-background story-canvas-bg" onClick={() => setSelectedId(null)}>
@@ -278,7 +301,7 @@ export default function Brett() {
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/60 text-sm pointer-events-none">Dra elementer hit fra sidemenyen…</div>
               )}
               {boardItems.map((it) => (
-                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={badgesMap[it.id]} nodeType={nodesMap[it.id]?.node_type} pathState={pathStateOf(it.id)} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
+                <BoardItemCard key={it.id} item={it} selected={it.id === selectedId} role={badgesMap[it.id]} nodeType={nodesMap[it.id]?.node_type} pathState={pathStateOf(it.id)} order={seqMap[it.id]?.order} boss={seqMap[it.id]?.challenge_type === "boss"} cellSize={CELL} onSelect={setSelectedId} onMove={onMove} onResize={onResize} onCommit={onCommit} onDelete={onDelete} />
               ))}
               {analysis?.connections && (
                 <FlowOverlay rooms={boardItems} connections={analysis.connections} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
@@ -294,6 +317,9 @@ export default function Brett() {
               )}
               {hubSpoke?.shortcuts?.length > 0 && (
                 <FlowOverlay rooms={boardItems} connections={hubSpoke.shortcuts.map((s) => ({ from: s.from, to: s.to, kind: "shortcut" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
+              )}
+              {gauntlet?.sequence?.length > 1 && (
+                <FlowOverlay rooms={boardItems} connections={gauntlet.sequence.slice(1).map((s, i) => ({ from: gauntlet.sequence[i].room_id, to: s.room_id, kind: i + 1 === gauntlet.sequence.length - 1 ? "boss" : "normal" }))} cellSize={CELL} width={COLS * CELL} height={ROWS * CELL} />
               )}
             </div>
           </div>
