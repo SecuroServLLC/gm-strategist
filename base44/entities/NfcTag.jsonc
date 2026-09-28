@@ -1,0 +1,31 @@
+{
+  "name": "NfcTag",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "tag_id": {
+      "type": "string",
+      "description": "Unik ID fra NFC-tag (serialNumber)"
+    },
+    "target_type": {
+      "type": "string",
+      "enum": [
+        "character",
+        "party_member"
+      ],
+      "description": "Hva tag-en er koblet til"
+    },
+    "target_id": {
+      "type": "string",
+      "description": "ID p\u00e5 Character eller PartyMember"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "tag_id",
+    "target_type",
+    "target_id"
+  ]
+}
