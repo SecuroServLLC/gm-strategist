@@ -33,10 +33,10 @@ function SectionLabel({ children }) {
   );
 }
 
-export default function CharacterDialog({ open, onOpenChange, character, campaignId, setting, onSaved }) {
+export default function CharacterDialog({ open, onOpenChange, character, campaignId, setting, onSaved, prefill }) {
   const [form, setForm] = useState(EMPTY);
   const [prompt, setPrompt] = useState("");
-  const [withPortrait, setWithPortrait] = useState(true);
+  const [portraitLoading, setPortraitLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [abilitiesText, setAbilitiesText] = useState("");
@@ -46,11 +46,15 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
       setForm({ ...EMPTY, ...character, stats: character.stats || {} });
       setAbilitiesText((character.abilities || []).join("\n"));
       setPrompt("");
+    } else if (prefill) {
+      setForm({ ...EMPTY, ...prefill, stats: prefill.stats || {}, portrait_url: prefill.portrait_url || "" });
+      setAbilitiesText((prefill.abilities || []).join("\n"));
+      setPrompt("");
     } else {
       setForm(EMPTY);
       setAbilitiesText("");
     }
-  }, [character, open]);
+  }, [character, prefill, open]);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const setStat = (k, v) => setForm((f) => ({ ...f, stats: { ...f.stats, [k]: v } }));
@@ -59,14 +63,14 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
     if (!prompt.trim()) return;
     setGenerating(true);
     try {
-      const res = await base44.functions.invoke("generateCharacter", { prompt, setting, withPortrait });
-      const c = res.data?.character;
+      const res = await base44.functions.invoke("generateCharacter", { prompt, setting });
+      const c = res.data?.characters?.[0] || res.data?.character;
       if (c) {
         setForm((f) => ({
           ...EMPTY,
           ...c,
           stats: c.stats || {},
-          portrait_url: c.portrait_url || f.portrait_url,
+          portrait_url: f.portrait_url,
         }));
         setAbilitiesText((c.abilities || []).join("\n"));
       }
@@ -74,6 +78,25 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
       alert("Kunne ikke generere: " + e.message);
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const generatePortrait = async () => {
+    setPortraitLoading(true);
+    try {
+      const res = await base44.functions.invoke("generatePortrait", {
+        name: form.name,
+        race: form.race,
+        appearance: form.appearance,
+        archetype: form.archetype,
+      });
+      const url = res.data?.portrait_url;
+      if (url) set("portrait_url", url);
+      else alert("Kunne ikke generere portrett.");
+    } catch (e) {
+      alert("Portrett feilet: " + e.message);
+    } finally {
+      setPortraitLoading(false);
     }
   };
 
@@ -127,7 +150,7 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border shrink-0">
           <SheetTitle className="font-heading text-xl flex items-center gap-2">
             <Wand2 className="w-5 h-5 text-primary" />
-            {character ? "Rediger karakter" : "Generer karakter"}
+            {character ? "Rediger karakter" : prefill ? "Tilpass karakter" : "Generer karakter"}
           </SheetTitle>
         </SheetHeader>
 
@@ -135,23 +158,18 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
           <div className="px-6 py-5 space-y-5">
             {/* AI prompt */}
             <div className="rounded-xl border border-primary/25 bg-accent/30 p-4 space-y-3">
-              <Label className="text-sm flex items-center gap-1.5 text-primary"><Sparkles className="w-4 h-4" /> Beskriv karakteren</Label>
+              <Label className="text-sm flex items-center gap-1.5 text-primary"><Sparkles className="w-4 h-4" /> Rask generering (én)</Label>
               <Textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={2}
                 placeholder="f.eks. 'En eldre tyvekjeltemester med et sjakkspill-tema og en dyp hemmelighet'"
               />
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                  <Switch checked={withPortrait} onCheckedChange={setWithPortrait} />
-                  Generer portrett
-                </label>
-                <Button onClick={generate} disabled={generating || !prompt.trim()} className="gap-2">
-                  {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  {generating ? "Genererer..." : "Generer med AI"}
-                </Button>
-              </div>
+              <Button onClick={generate} disabled={generating || !prompt.trim()} className="gap-2 w-full">
+                {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                {generating ? "Genererer..." : "Generer én karakter"}
+              </Button>
+              <p className="text-[11px] text-muted-foreground">For flere forslag og mer tilpasning, bruk «Foreslå karakterer» fra karakter-siden.</p>
             </div>
 
             {/* Portrait */}
@@ -164,9 +182,12 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
                 )}
               </div>
               <div className="flex-1 flex flex-col justify-center gap-2">
-                <Label className="text-xs">Last opp eget portrett (valgfritt)</Label>
-                <label className="inline-flex items-center gap-2 text-sm cursor-pointer text-primary hover:underline">
-                  <Upload className="w-4 h-4" /> Velg bilde
+                <Label className="text-xs">Portrett</Label>
+                <button onClick={generatePortrait} disabled={portraitLoading || (!form.name && !form.appearance)} className="inline-flex items-center gap-2 text-sm text-primary hover:underline disabled:opacity-50 text-left">
+                  {portraitLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />} Generer portrett med AI
+                </button>
+                <label className="inline-flex items-center gap-2 text-sm cursor-pointer text-muted-foreground hover:text-foreground">
+                  <Upload className="w-4 h-4" /> Last opp eget bilde
                   <input type="file" accept="image/*" className="hidden" onChange={onUpload} />
                 </label>
               </div>

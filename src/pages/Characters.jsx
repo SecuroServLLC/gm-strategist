@@ -4,9 +4,10 @@ import { base44 } from "@/api/base44Client";
 import { useCampaign } from "@/hooks/useCampaign";
 import CharacterCard from "@/components/CharacterCard";
 import CharacterDialog from "@/components/CharacterDialog";
+import CharacterGenerator from "@/components/CharacterGenerator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Plus, ScrollText, Loader2 } from "lucide-react";
+import { Users, Plus, ScrollText, Loader2, Dices } from "lucide-react";
 
 const ROLE_OPTIONS = [
   { value: "all", label: "Alle" },
@@ -25,6 +26,8 @@ export default function Characters() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [roleFilter, setRoleFilter] = useState("all");
+  const [genOpen, setGenOpen] = useState(false);
+  const [prefill, setPrefill] = useState(null);
 
   const filtered = roleFilter === "all" ? characters : characters.filter((c) => c.role === roleFilter);
 
@@ -41,8 +44,9 @@ export default function Characters() {
 
   useEffect(() => { load(); }, [load]);
 
-  const openNew = () => { setEditing(null); setDialogOpen(true); };
+  const openNew = () => { setEditing(null); setPrefill(null); setDialogOpen(true); };
   const openEdit = (c) => { setEditing(c); setDialogOpen(true); };
+  const openGenerator = () => { setGenOpen(true); };
 
   if (loading) {
     return (
@@ -79,9 +83,14 @@ export default function Characters() {
             <h1 className="font-heading text-4xl">Karakterkort</h1>
             <p className="text-muted-foreground mt-1">{characters.length} karakterer · AI-genererte, skreddersydd for ditt system.</p>
           </div>
-          <Button onClick={openNew} className="gap-2">
-            <Plus className="w-4 h-4" /> Generer karakter
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={openNew} className="gap-2">
+              <Plus className="w-4 h-4" /> Ny karakter
+            </Button>
+            <Button onClick={openGenerator} variant="outline" className="gap-2">
+              <Dices className="w-4 h-4" /> Foreslå karakterer
+            </Button>
+          </div>
         </div>
 
         {characters.length > 0 && (
@@ -125,9 +134,17 @@ export default function Characters() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         character={editing}
+        prefill={prefill}
         campaignId={campaign.id}
         setting={campaign.setting}
         onSaved={load}
+      />
+
+      <CharacterGenerator
+        open={genOpen}
+        onOpenChange={setGenOpen}
+        setting={campaign.setting}
+        onPick={(c) => { setPrefill(c); setGenOpen(false); setDialogOpen(true); }}
       />
     </div>
   );
