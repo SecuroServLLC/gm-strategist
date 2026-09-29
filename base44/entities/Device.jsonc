@@ -4,16 +4,17 @@
   "properties": {
     "device_id": {
       "type": "string",
-      "description": "Permanent kode \u2013 4 tegn for terminal, 16 hex for gamedisplay/game"
+      "description": "Permanent kode \u2013 4 tegn for terminal, 6 tegn for player, 16 hex for gamedisplay/game"
     },
     "device_type": {
       "type": "string",
       "enum": [
         "terminal",
+        "player",
         "gamedisplay",
         "game"
       ],
-      "description": "terminal=spillernettbrett, gamedisplay=felles skjerm, game=\u00f8kt-hub"
+      "description": "terminal=GM-nettbrett (gamecard, ingen login), player=egen enhet (/joingame, login), gamedisplay=felles skjerm, game=\u00f8kt-hub"
     },
     "label": {
       "type": "string",
@@ -30,11 +31,11 @@
     },
     "campaign_id": {
       "type": "string",
-      "description": "Settes n\u00e5r enheten slippes inn"
+      "description": "Settes n\u00e5r enheten slippes inn / opprettes for en spiller"
     },
     "party_member_id": {
       "type": "string",
-      "description": "For terminal: hvilken f\u00f8lgesvenn tabletten representerer"
+      "description": "For terminal/player: hvilken f\u00f8lgesvenn enheten representerer"
     }
   },
   "required": [

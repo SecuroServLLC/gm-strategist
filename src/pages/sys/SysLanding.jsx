@@ -8,16 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetDescription } from "@/components/ui/sheet";
-import { Tablet, Plus, Copy, Trash2, ExternalLink, Monitor, Gamepad2, Loader2, LogIn, UserPlus } from "lucide-react";
+import { Tablet, Plus, Copy, Trash2, ExternalLink, Monitor, Gamepad2, Loader2, LogIn, UserPlus, Smartphone } from "lucide-react";
 import { deviceLink, genDeviceId } from "@/lib/deviceIds";
 
 const TYPE_META = {
   terminal: { label: "Terminal", icon: Tablet },
+  player: { label: "Spiller", icon: Smartphone },
   gamedisplay: { label: "Spilledisplay", icon: Monitor },
   game: { label: "Spill", icon: Gamepad2 },
 };
 
 const isActive = (d) => d.status === "active" || (!d.status && !!d.campaign_id);
+const SHOW_CODE = (t) => t === "terminal" || t === "player";
 
 export default function SysLanding() {
   const { campaign, loading } = useCampaign();
@@ -27,7 +29,7 @@ export default function SysLanding() {
   const [admitTarget, setAdmitTarget] = useState(null);
   const [admitPm, setAdmitPm] = useState("");
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ device_type: "terminal", label: "" });
+  const [form, setForm] = useState({ device_type: "terminal", label: "", party_member_id: "" });
 
   const load = useCallback(async () => {
     const [d, m] = await Promise.all([
@@ -53,12 +55,14 @@ export default function SysLanding() {
         payload.status = "pending";
       } else {
         if (!campaign) { alert("Opprett en kampanje først."); return; }
+        if (form.device_type === "player" && !form.party_member_id) { alert("Velg en følgesvenn for spiller-lenken."); return; }
         payload.status = "active";
         payload.campaign_id = campaign.id;
+        if (form.device_type === "player") payload.party_member_id = form.party_member_id;
       }
       await base44.entities.Device.create(payload);
       setCreateOpen(false);
-      setForm({ device_type: "terminal", label: "" });
+      setForm({ device_type: "terminal", label: "", party_member_id: "" });
       await load();
     } catch (e) {
       alert("Feil: " + e.message);
@@ -107,6 +111,7 @@ export default function SysLanding() {
     const meta = TYPE_META[d.device_type] || TYPE_META.terminal;
     const Icon = meta.icon;
     const link = deviceLink(d.device_type, d.device_id);
+    const pm = partyMembers.find((m) => m.id === d.party_member_id);
     return (
       <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card/40">
         <div className="w-10 h-10 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
@@ -116,11 +121,12 @@ export default function SysLanding() {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-medium truncate">{d.label}</p>
             <Badge variant="outline" className="border-primary/40 text-primary text-[10px]">{meta.label}</Badge>
-            {d.device_type === "terminal" && (
+            {SHOW_CODE(d.device_type) && (
               <span className="font-mono text-sm tracking-widest text-foreground/90 bg-accent/60 border border-border rounded px-2 py-0.5">{d.device_id}</span>
             )}
           </div>
           <p className="text-xs text-muted-foreground font-mono truncate">{link}</p>
+          {pm && <p className="text-xs text-muted-foreground">Spiller: {pm.name}</p>}
         </div>
         <div className="flex items-center gap-1 shrink-0">
           {children}
@@ -142,7 +148,7 @@ export default function SysLanding() {
         <div className="flex items-end justify-between gap-4 mb-6">
           <div>
             <h1 className="font-heading text-3xl">Enheter</h1>
-            <p className="text-muted-foreground text-sm">Admin styrer alt. Lag terminaler og slipp spillere inn.</p>
+            <p className="text-muted-foreground text-sm">Admin styrer alt. Én terminal per spiller, eller del en /joingame-lenke.</p>
           </div>
           <Button className="gap-1.5" onClick={() => setCreateOpen(true)}><Plus className="w-4 h-4" /> Ny enhet</Button>
         </div>
@@ -165,20 +171,16 @@ export default function SysLanding() {
         <div>
           <h2 className="font-heading text-lg mb-2">Aktive enheter ({active.length})</h2>
           {active.length === 0 ? (
-            <Card className="glass-card"><CardContent className="p-8 text-center text-muted-foreground">Ingen aktive enheter. Lag en terminal og slipp inn en spiller.</CardContent></Card>
+            <Card className="glass-card"><CardContent className="p-8 text-center text-muted-foreground">Ingen aktive enheter. Lag en terminal eller en spiller-lenke.</CardContent></Card>
           ) : (
             <div className="space-y-2">
-              {active.map((d) => {
-                const pm = partyMembers.find((m) => m.id === d.party_member_id);
-                return (
-                  <Row key={d.id} d={d}>
-                    {pm && <span className="text-xs text-muted-foreground hidden sm:inline mr-1">{pm.name}</span>}
-                    {d.device_type === "terminal" && (
-                      <Button variant="ghost" size="sm" onClick={() => unlink(d)} title="Tilbake til venting">Koble fra</Button>
-                    )}
-                  </Row>
-                );
-              })}
+              {active.map((d) => (
+                <Row key={d.id} d={d}>
+                  {d.device_type === "terminal" && (
+                    <Button variant="ghost" size="sm" onClick={() => unlink(d)} title="Tilbake til venting">Koble fra</Button>
+                  )}
+                </Row>
+              ))}
             </div>
           )}
         </div>
@@ -188,15 +190,16 @@ export default function SysLanding() {
         <SheetContent side="right" className="w-full sm:max-w-md flex flex-col">
           <SheetHeader>
             <SheetTitle>Ny enhet</SheetTitle>
-            <SheetDescription>Terminaler starter som ventende. Skjermer blir aktive med en gang.</SheetDescription>
+            <SheetDescription>Terminaler starter som ventende. Spiller-lenker og skjermer blir aktive med en gang.</SheetDescription>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto scrollbar-thin space-y-4 mt-4 pr-1">
             <div>
               <Label className="mb-1.5 block">Type</Label>
-              <Select value={form.device_type} onValueChange={(v) => setForm((f) => ({ ...f, device_type: v }))}>
+              <Select value={form.device_type} onValueChange={(v) => setForm((f) => ({ ...f, device_type: v, party_member_id: "" }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="terminal">Terminal – spillernettbrett</SelectItem>
+                  <SelectItem value="terminal">Terminal – GM-nettbrett (gamecard)</SelectItem>
+                  <SelectItem value="player">Spiller – egen enhet (/joingame, login)</SelectItem>
                   <SelectItem value="gamedisplay">Spilledisplay – felles skjerm</SelectItem>
                   <SelectItem value="game">Spill – økt-hub</SelectItem>
                 </SelectContent>
@@ -206,9 +209,22 @@ export default function SysLanding() {
               <Label className="mb-1.5 block">Navn (valgfritt)</Label>
               <Input value={form.label} onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))} placeholder={TYPE_META[form.device_type].label} />
             </div>
+            {form.device_type === "player" && (
+              <div>
+                <Label className="mb-1.5 block">Følgesvenn (spilleren)</Label>
+                <Select value={form.party_member_id} onValueChange={(v) => setForm((f) => ({ ...f, party_member_id: v }))}>
+                  <SelectTrigger><SelectValue placeholder="Velg spiller…" /></SelectTrigger>
+                  <SelectContent>
+                    {partyMembers.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <p className="text-xs text-muted-foreground">
               {form.device_type === "terminal"
                 ? "Terminalen får en 4-tegns kode og vises i ventelisten til du slipper den inn."
+                : form.device_type === "player"
+                ? "Spilleren får en /joingame-lenke og må logge inn på egen enhet."
                 : "Skjermen blir aktiv umiddelbart med 16 hex-sifre."}
             </p>
           </div>

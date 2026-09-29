@@ -20,10 +20,13 @@ export function genHex(len) {
 }
 
 export function genDeviceId(type) {
-  return type === "terminal" ? genCode(4) : genHex(16);
+  if (type === "terminal") return genCode(4);
+  if (type === "player") return genCode(6);
+  return genHex(16);
 }
 
 export function deviceLink(type, id) {
+  if (type === "player") return `/joingame/PlayerID=${id}`;
   const key = type === "terminal" ? "TerminalID" : type === "gamedisplay" ? "GameDispID" : "GameID";
   const path = type === "terminal" ? "terminal" : type === "gamedisplay" ? "gamedisplay" : "game";
   return `/sys/${path}/${key}=${id}`;

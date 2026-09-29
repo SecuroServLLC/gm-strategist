@@ -33,6 +33,7 @@ import SysLanding from "@/pages/sys/SysLanding";
 import SysTerminal from "@/pages/sys/SysTerminal";
 import SysGameDisplay from "@/pages/sys/SysGameDisplay";
 import SysGame from "@/pages/sys/SysGame";
+import JoinGame from "@/pages/sys/JoinGame";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
       <Route path="/sys/terminal/:deviceId" element={<SysTerminal />} />
       <Route path="/sys/gamedisplay/:deviceId" element={<SysGameDisplay />} />
       <Route path="/sys/game/:deviceId" element={<SysGame />} />
+      <Route path="/joingame/:code" element={<JoinGame />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
