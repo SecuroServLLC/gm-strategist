@@ -1,0 +1,34 @@
+{
+  "name": "Device",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "description": "Permanent hex-ID (8 hex for terminal, 16 hex for gamedisplay/game)"
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "terminal",
+        "gamedisplay",
+        "game"
+      ],
+      "description": "Enhetstype: terminal=spillernettbrett, gamedisplay=felles skjerm, game=\u00f8kt-hub"
+    },
+    "label": {
+      "type": "string",
+      "description": "Egendefinert navn p\u00e5 enheten"
+    },
+    "campaign_id": {
+      "type": "string"
+    },
+    "party_member_id": {
+      "type": "string",
+      "description": "For terminal: hvilken f\u00f8lgesvenn tabletten representerer"
+    }
+  },
+  "required": [
+    "device_id",
+    "device_type"
+  ]
+}

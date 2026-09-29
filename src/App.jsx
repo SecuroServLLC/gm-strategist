@@ -29,6 +29,10 @@ import System from "@/pages/System";
 import MedDm from "@/pages/MedDm";
 import Brett from "@/pages/Brett";
 import Lab from "@/pages/Lab";
+import SysLanding from "@/pages/sys/SysLanding";
+import SysTerminal from "@/pages/sys/SysTerminal";
+import SysGameDisplay from "@/pages/sys/SysGameDisplay";
+import SysGame from "@/pages/sys/SysGame";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -60,6 +64,9 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/sys/terminal/:deviceId" element={<SysTerminal />} />
+      <Route path="/sys/gamedisplay/:deviceId" element={<SysGameDisplay />} />
+      <Route path="/sys/game/:deviceId" element={<SysGame />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -77,6 +84,7 @@ const AuthenticatedApp = () => {
           <Route path="/med-dm" element={<MedDm />} />
           <Route path="/brett" element={<Brett />} />
           <Route path="/lab" element={<Lab />} />
+          <Route path="/sys" element={<SysLanding />} />
           <Route path="/utskrift" element={<Utskrift />} />
         </Route>
       </Route>

@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords, Library, UserPlus, Cog, Bot, LayoutGrid, FlaskConical } from "lucide-react";
+import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords, Library, UserPlus, Cog, Bot, LayoutGrid, FlaskConical, Tablet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -19,6 +19,7 @@ const NAV = [
   { to: "/system", label: "System", icon: Cog },
   { to: "/utskrift", label: "Utskrift", icon: Printer },
   { to: "/lab", label: "Lab", icon: FlaskConical },
+  { to: "/sys", label: "Enheter", icon: Tablet },
 ];
 
 export default function Layout() {
