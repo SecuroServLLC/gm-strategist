@@ -1,7 +1,7 @@
 import React from "react";
 import { Image } from "@/components/ui/image";
 import { Badge } from "@/components/ui/badge";
-import { Users } from "lucide-react";
+import { Users, ShieldCheck, ShieldOff } from "lucide-react";
 
 const ROLE_COLORS = {
   protagonist: "border-amber-500/40 text-amber-300",
@@ -23,12 +23,26 @@ const ROLE_LABELS = {
 
 const STAT_KEYS = ["kraft", "smidighet", "utholdenhet", "intelligens", "visdom", "utstralning"];
 
-export default function CharacterCard({ character, onClick }) {
+function ClaimBadge({ character }) {
+  if (character.role === "antagonist") {
+    return <Badge variant="outline" className="bg-background/70 backdrop-blur border-rose-500/40 text-rose-300">Ikke claimbar</Badge>;
+  }
+  const s = character.claim_status;
+  if (s === "open") return <Badge variant="outline" className="bg-background/70 backdrop-blur border-emerald-500/40 text-emerald-300">Ledig for claim</Badge>;
+  if (s === "claimed") return <Badge variant="outline" className="bg-background/70 backdrop-blur border-amber-500/40 text-amber-300">Claimet</Badge>;
+  return <Badge variant="outline" className="bg-background/70 backdrop-blur border-slate-500/40 text-slate-300">Ikke godkjent</Badge>;
+}
+
+export default function CharacterCard({ character, onClick, onToggleApprove, approving }) {
   const stats = character.stats || {};
+  const isAntagonist = character.role === "antagonist";
+  const claimed = character.claim_status === "claimed";
+  const open = character.claim_status === "open";
+
   return (
-    <button
+    <div
       onClick={onClick}
-      className="text-left glass-card rounded-2xl overflow-hidden hover:border-primary/40 transition-all group hover:-translate-y-0.5 w-full h-full flex flex-col"
+      className="text-left glass-card rounded-2xl overflow-hidden hover:border-primary/40 transition-all group hover:-translate-y-0.5 w-full h-full flex flex-col cursor-pointer"
     >
       <div className="relative h-44 overflow-hidden bg-accent/30 shrink-0">
         {character.portrait_url ? (
@@ -42,6 +56,9 @@ export default function CharacterCard({ character, onClick }) {
           <Badge variant="outline" className={`bg-background/70 backdrop-blur capitalize ${ROLE_COLORS[character.role] || ROLE_COLORS.npc}`}>
             {ROLE_LABELS[character.role] || character.role}
           </Badge>
+        </div>
+        <div className="absolute top-2.5 right-2.5">
+          <ClaimBadge character={character} />
         </div>
       </div>
       <div className="p-4 flex-1 flex flex-col">
@@ -60,7 +77,17 @@ export default function CharacterCard({ character, onClick }) {
         <p className="text-xs text-muted-foreground italic line-clamp-2 border-t border-border pt-2 mt-auto">
           {character.hook || "Ingen hook ennå."}
         </p>
+
+        {!isAntagonist && !claimed && onToggleApprove && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleApprove(character); }}
+            disabled={approving}
+            className={`mt-3 inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-colors disabled:opacity-50 ${open ? "border-amber-500/40 text-amber-300 hover:bg-amber-500/10" : "border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"}`}
+          >
+            {open ? <><ShieldOff className="w-3.5 h-3.5" /> Trekk tilbake godkjenning</> : <><ShieldCheck className="w-3.5 h-3.5" /> Godkjenn for claim</>}
+          </button>
+        )}
       </div>
-    </button>
+    </div>
   );
 }

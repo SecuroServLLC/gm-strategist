@@ -128,7 +128,7 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
         hook: form.hook,
         portrait_url: form.portrait_url,
         notes: form.notes,
-        claim_status: form.claim_status || "closed",
+        claim_status: form.role === "antagonist" ? "closed" : (form.claim_status || "closed"),
       };
       if (character) {
         await base44.entities.Character.update(character.id, payload);
@@ -201,7 +201,7 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
               </div>
               <div>
                 <Label className="text-xs">Rolle</Label>
-                <Select value={form.role} onValueChange={(v) => set("role", v)}>
+                <Select value={form.role} onValueChange={(v) => setForm((f) => ({ ...f, role: v, ...(v === "antagonist" ? { claim_status: "closed" } : {}) }))}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>{ROLES.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}</SelectContent>
                 </Select>
@@ -220,9 +220,10 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="closed">Lukket – ikke claimbar</SelectItem>
-                    <SelectItem value="open">Ledig – kan claimes av spiller</SelectItem>
+                    <SelectItem value="open" disabled={form.role === "antagonist"}>Ledig – kan claimes av spiller</SelectItem>
                   </SelectContent>
                 </Select>
+                {form.role === "antagonist" && <p className="text-[10px] text-rose-400 mt-1">Antagonister og fiender kan ikke godkjennes for claim.</p>}
               </div>
             </div>
 

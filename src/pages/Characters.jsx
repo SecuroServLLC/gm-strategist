@@ -28,6 +28,7 @@ export default function Characters() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [genOpen, setGenOpen] = useState(false);
   const [prefill, setPrefill] = useState(null);
+  const [approvingId, setApprovingId] = useState(null);
 
   const filtered = roleFilter === "all" ? characters : characters.filter((c) => c.role === roleFilter);
 
@@ -47,6 +48,19 @@ export default function Characters() {
   const openNew = () => { setEditing(null); setPrefill(null); setDialogOpen(true); };
   const openEdit = (c) => { setEditing(c); setDialogOpen(true); };
   const openGenerator = () => { setGenOpen(true); };
+
+  const toggleApprove = async (c) => {
+    setApprovingId(c.id);
+    try {
+      const next = c.claim_status === "open" ? "closed" : "open";
+      await base44.entities.Character.update(c.id, { claim_status: next });
+      load();
+    } catch (e) {
+      alert("Kunne ikke oppdatere: " + e.message);
+    } finally {
+      setApprovingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -124,7 +138,7 @@ export default function Characters() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {filtered.map((c) => (
-              <CharacterCard key={c.id} character={c} onClick={() => openEdit(c)} />
+              <CharacterCard key={c.id} character={c} onClick={() => openEdit(c)} onToggleApprove={toggleApprove} approving={approvingId === c.id} />
             ))}
           </div>
         )}
