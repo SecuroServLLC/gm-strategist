@@ -1,7 +1,15 @@
+const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // unngår tvetydige I, O, 0, 1
+
 export function normalizeDeviceId(raw) {
   if (!raw) return "";
   if (raw.includes("=")) return raw.split("=").pop();
   return raw;
+}
+
+export function genCode(len = 4) {
+  let out = "";
+  for (let i = 0; i < len; i++) out += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+  return out;
 }
 
 export function genHex(len) {
@@ -11,8 +19,8 @@ export function genHex(len) {
   return out;
 }
 
-export function deviceIdLength(type) {
-  return type === "terminal" ? 8 : 16;
+export function genDeviceId(type) {
+  return type === "terminal" ? genCode(4) : genHex(16);
 }
 
 export function deviceLink(type, id) {

@@ -4,7 +4,7 @@
   "properties": {
     "device_id": {
       "type": "string",
-      "description": "Permanent hex-ID (8 hex for terminal, 16 hex for gamedisplay/game)"
+      "description": "Permanent kode \u2013 4 tegn for terminal, 16 hex for gamedisplay/game"
     },
     "device_type": {
       "type": "string",
@@ -13,14 +13,24 @@
         "gamedisplay",
         "game"
       ],
-      "description": "Enhetstype: terminal=spillernettbrett, gamedisplay=felles skjerm, game=\u00f8kt-hub"
+      "description": "terminal=spillernettbrett, gamedisplay=felles skjerm, game=\u00f8kt-hub"
     },
     "label": {
       "type": "string",
       "description": "Egendefinert navn p\u00e5 enheten"
     },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active"
+      ],
+      "default": "pending",
+      "description": "pending=venter p\u00e5 GM, active=sluppet inn"
+    },
     "campaign_id": {
-      "type": "string"
+      "type": "string",
+      "description": "Settes n\u00e5r enheten slippes inn"
     },
     "party_member_id": {
       "type": "string",
