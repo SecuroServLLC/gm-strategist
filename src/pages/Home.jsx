@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Library, Plus, Sparkles, Trash2, CreditCard } from "lucide-react";
 import CampaignCard from "@/components/CampaignCard";
-import CampaignDialog from "@/components/CampaignDialog";
+import CreationWizard from "@/components/CreationWizard";
+import CharacterWizard from "@/components/CharacterWizard";
 import DeleteCampaignDialog from "@/components/DeleteCampaignDialog";
 import TrashDialog from "@/components/TrashDialog";
 import SubscriptionPanel from "@/components/SubscriptionPanel";
@@ -19,6 +20,7 @@ export default function Home() {
   const [trashOpen, setTrashOpen] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [charWizard, setCharWizard] = useState(null);
 
   const limit = campaignLimit();
 
@@ -65,11 +67,17 @@ export default function Home() {
             </div>
             )}
             </div>
-            <CampaignDialog
-            open={dialogOpen}
-            onOpenChange={setDialogOpen}
-            activeCount={campaigns.length}
-            onSaved={(c) => { setActive(c.id); setDialogOpen(false); navigate("/oversikt"); }}
+            <CreationWizard
+              open={dialogOpen}
+              onOpenChange={setDialogOpen}
+              activeCount={campaigns.length}
+              onSaved={(c) => { setActive(c.id); setDialogOpen(false); setCharWizard(c); }}
+            />
+            <CharacterWizard
+              open={!!charWizard}
+              onOpenChange={(o) => !o && setCharWizard(null)}
+              campaign={charWizard}
+              onDone={() => { setCharWizard(null); navigate("/oversikt"); }}
             />
             <DeleteCampaignDialog
             open={!!deleteTarget}
