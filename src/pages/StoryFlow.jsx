@@ -156,7 +156,7 @@ export default function StoryFlow() {
             <ScrollText className="w-10 h-10 text-primary mx-auto mb-4" />
             <h2 className="font-heading text-2xl mb-2">Ingen kampanje</h2>
             <p className="text-muted-foreground mb-5">Du må opprette den røde tråden før du kan bygge historie-flyten.</p>
-            <Link to="/kampanje"><Button className="gap-2"><ScrollText className="w-4 h-4" /> Opprett rød tråd</Button></Link>
+            <Link to="/campaign"><Button className="gap-2"><ScrollText className="w-4 h-4" /> Opprett rød tråd</Button></Link>
           </CardContent>
         </Card>
       </div>

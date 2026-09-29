@@ -24,7 +24,7 @@ export default function Home() {
 
   const limit = campaignLimit();
 
-  const open = (c) => { setActive(c.id); navigate("/oversikt"); };
+  const open = (c) => { setActive(c.id); navigate("/dashboard"); };
 
   if (loading) {
     return (<div className="h-full flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>);
@@ -77,7 +77,7 @@ export default function Home() {
               open={!!charWizard}
               onOpenChange={(o) => !o && setCharWizard(null)}
               campaign={charWizard}
-              onDone={() => { setCharWizard(null); navigate("/oversikt"); }}
+              onDone={() => { setCharWizard(null); navigate("/dashboard"); }}
             />
             <DeleteCampaignDialog
             open={!!deleteTarget}

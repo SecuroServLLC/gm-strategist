@@ -105,7 +105,7 @@ export default function Sessions() {
         <div className="text-center">
           <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
           <p className="mb-4">Du trenger en kampanje før du kan planlegge økter.</p>
-          <Link to="/kampanje"><Button variant="outline">Opprett rød tråd</Button></Link>
+          <Link to="/campaign"><Button variant="outline">Opprett rød tråd</Button></Link>
         </div>
       </div>
     );

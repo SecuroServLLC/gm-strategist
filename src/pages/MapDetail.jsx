@@ -112,10 +112,10 @@ export default function MapDetail() {
       };
       if (isNew) {
         const created = await base44.entities.MapItem.create(payload);
-        navigate("/kart");
+        navigate("/maps");
       } else {
         await base44.entities.MapItem.update(mapId, payload);
-        navigate("/kart");
+        navigate("/maps");
       }
     } catch (e) {
       alert("Lagring feilet: " + e.message);
@@ -145,7 +145,7 @@ export default function MapDetail() {
       <div className="max-w-5xl mx-auto px-8 py-8">
         <div className="flex items-center gap-3 mb-6">
           <Button variant="ghost" size="icon" asChild>
-            <Link to="/kart"><ArrowLeft className="w-4 h-4" /></Link>
+            <Link to="/maps"><ArrowLeft className="w-4 h-4" /></Link>
           </Button>
           <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
             <MapIcon className="w-4 h-4 text-primary" /> Kart
@@ -240,7 +240,7 @@ export default function MapDetail() {
             </div>
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
-              <Button variant="ghost" asChild><Link to="/kart">Avbryt</Link></Button>
+              <Button variant="ghost" asChild><Link to="/maps">Avbryt</Link></Button>
               <Button onClick={save} disabled={saving} className="gap-2">
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {isNew ? "Opprett kart" : "Lagre"}

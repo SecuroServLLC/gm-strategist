@@ -72,22 +72,22 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/oversikt" element={<Oversikt />} />
-          <Route path="/kampanje" element={<Campaign />} />
-          <Route path="/historie" element={<StoryFlow />} />
-          <Route path="/karakterer" element={<Characters />} />
-          <Route path="/kart" element={<Maps />} />
-          <Route path="/kart/:mapId" element={<MapDetail />} />
-          <Route path="/sesjoner" element={<Sessions />} />
-          <Route path="/gruppe" element={<Gruppe />} />
-          <Route path="/spill" element={<Spill />} />
-          <Route path="/spelarar" element={<Spelarar />} />
+          <Route path="/dashboard" element={<Oversikt />} />
+          <Route path="/campaign" element={<Campaign />} />
+          <Route path="/story" element={<StoryFlow />} />
+          <Route path="/characters" element={<Characters />} />
+          <Route path="/maps" element={<Maps />} />
+          <Route path="/maps/:mapId" element={<MapDetail />} />
+          <Route path="/sessions" element={<Sessions />} />
+          <Route path="/group" element={<Gruppe />} />
+          <Route path="/play" element={<Spill />} />
+          <Route path="/players" element={<Spelarar />} />
           <Route path="/system" element={<System />} />
-          <Route path="/med-dm" element={<MedDm />} />
-          <Route path="/brett" element={<Brett />} />
+          <Route path="/co-dm" element={<MedDm />} />
+          <Route path="/board" element={<Brett />} />
           <Route path="/lab" element={<Lab />} />
           <Route path="/sys" element={<SysLanding />} />
-          <Route path="/utskrift" element={<Utskrift />} />
+          <Route path="/print" element={<Utskrift />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

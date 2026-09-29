@@ -81,7 +81,7 @@ export default function Spill() {
         <div className="text-center">
           <Swords className="w-10 h-10 mx-auto mb-3 opacity-40" />
           <p className="mb-4">Du trenger en kampanje før du kan spille.</p>
-          <Link to="/kampanje"><Button variant="outline">Opprett rød tråd</Button></Link>
+          <Link to="/campaign"><Button variant="outline">Opprett rød tråd</Button></Link>
         </div>
       </div>
     );
@@ -103,7 +103,7 @@ export default function Spill() {
           <CardContent className="p-4 flex items-center gap-3 flex-wrap">
             <span className="text-sm text-muted-foreground flex items-center gap-1.5"><BookOpen className="w-4 h-4" /> Aktiv økt:</span>
             {sessions.length === 0 ? (
-              <span className="text-sm text-muted-foreground">Ingen økt enda. <Link to="/sesjoner" className="text-primary underline">Opprett en</Link>.</span>
+              <span className="text-sm text-muted-foreground">Ingen økt enda. <Link to="/sessions" className="text-primary underline">Opprett en</Link>.</span>
             ) : (
               <Select value={sessionId || ""} onValueChange={setSessionId}>
                 <SelectTrigger className="w-64"><SelectValue placeholder="Velg økt" /></SelectTrigger>
@@ -125,7 +125,7 @@ export default function Spill() {
 
           <TabsContent value="play">
             {activeMembers.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-10">Ingen aktive følgesvenner. Legg til de på <Link to="/gruppe" className="text-primary underline">Følget</Link>-siden.</p>
+              <p className="text-sm text-muted-foreground text-center py-10">Ingen aktive følgesvenner. Legg til de på <Link to="/group" className="text-primary underline">Følget</Link>-siden.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {activeMembers.map((m) => <PlayCard key={m.id} member={m} onUpdate={updateMember} />)}
@@ -135,7 +135,7 @@ export default function Spill() {
 
           <TabsContent value="loot">
             {members.length === 0 && items.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-10">Ingen utrusting enda. Legg til gjenstander på <Link to="/gruppe" className="text-primary underline">Følget</Link>-siden, så kan du dra dem mellom karakterer her.</p>
+              <p className="text-sm text-muted-foreground text-center py-10">Ingen utrusting enda. Legg til gjenstander på <Link to="/group" className="text-primary underline">Følget</Link>-siden, så kan du dra dem mellom karakterer her.</p>
             ) : (
               <LoadoutBoard members={members} items={items} onMoveItem={moveItem} />
             )}

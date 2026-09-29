@@ -42,7 +42,7 @@ export default function Maps() {
             <ScrollText className="w-10 h-10 text-primary mx-auto mb-4" />
             <h2 className="font-heading text-2xl mb-2">Ingen kampanje</h2>
             <p className="text-muted-foreground mb-5">Opprett den røde tråden før du bygger kartgalleriet.</p>
-            <Link to="/kampanje"><Button className="gap-2"><ScrollText className="w-4 h-4" /> Opprett rød tråd</Button></Link>
+            <Link to="/campaign"><Button className="gap-2"><ScrollText className="w-4 h-4" /> Opprett rød tråd</Button></Link>
           </CardContent>
         </Card>
       </div>
@@ -61,7 +61,7 @@ export default function Maps() {
             <h1 className="font-heading text-4xl">Kartgalleri</h1>
             <p className="text-muted-foreground mt-1">{maps.length} kart · mål mot 10–15 komplette lokasjoner.</p>
           </div>
-          <Button onClick={() => navigate("/kart/new")} className="gap-2">
+          <Button onClick={() => navigate("/maps/new")} className="gap-2">
             <Plus className="w-4 h-4" /> Nytt kart
           </Button>
         </div>
@@ -73,13 +73,13 @@ export default function Maps() {
             <CardContent className="p-12 text-center">
               <MapIcon className="w-12 h-12 text-primary/30 mx-auto mb-3" />
               <p className="text-muted-foreground mb-4">Ingen kart enda. Generer et konsept eller last opp din egen skisse.</p>
-              <Button onClick={() => navigate("/kart/new")} className="gap-2"><Plus className="w-4 h-4" /> Nytt kart</Button>
+              <Button onClick={() => navigate("/maps/new")} className="gap-2"><Plus className="w-4 h-4" /> Nytt kart</Button>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {maps.map((m) => (
-              <MapCard key={m.id} map={m} onClick={() => navigate(`/kart/${m.id}`)} />
+              <MapCard key={m.id} map={m} onClick={() => navigate(`/maps/${m.id}`)} />
             ))}
           </div>
         )}

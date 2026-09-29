@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Workflow, Users, Map as MapIcon, ScrollText, ArrowRight, Dices, BookOpen, Backpack, Printer, Swords, UserPlus, Cog, Library, Bot, Trash2, Monitor, Laptop } from "lucide-react";
 import DeleteCampaignDialog from "@/components/DeleteCampaignDialog";
 
-const MODE_LABEL = { digital: "Digital", physical: "Fysisk", hybrid: "Hybrid" };
+const MODE_LABEL = { digital: "Digital", physical: "Physical", hybrid: "Hybrid" };
 const MODE_ICON = { digital: Monitor, physical: Dices, hybrid: Laptop };
 
 export default function Oversikt() {
@@ -43,32 +43,32 @@ export default function Oversikt() {
       <div className="h-full flex items-center justify-center text-muted-foreground">
         <div className="text-center">
           <Library className="w-10 h-10 mx-auto mb-3 opacity-40" />
-          <p className="mb-4">Velg eller opprett en kampanje først.</p>
-          <Link to="/"><Button variant="outline">Til kampanjene</Button></Link>
+          <p className="mb-4">Pick or create a campaign first.</p>
+          <Link to="/"><Button variant="outline">To campaigns</Button></Link>
         </div>
       </div>
     );
   }
 
   const stats = [
-    { to: "/historie", label: "Historienoder", value: counts.nodes, icon: Workflow, desc: "Scener, valg og terningutfall" },
-    { to: "/karakterer", label: "Karakterer", value: counts.characters, icon: Users, desc: "Karakterkort og arketyper" },
-    { to: "/kart", label: "Kart", value: counts.maps, icon: MapIcon, desc: "Lokasjoner og skisser" },
-    { to: "/sesjoner", label: "Økter", value: counts.sessions, icon: BookOpen, desc: "Spilte økter og notater" },
-    { to: "/gruppe", label: "Følget", value: counts.party, icon: Backpack, desc: "Følgesvenner og inventar" },
-    { to: "/spelarar", label: "Spillere", value: counts.players, icon: UserPlus, desc: "Hvem som er med" },
+    { to: "/story", label: "Story Nodes", value: counts.nodes, icon: Workflow, desc: "Scenes, choices and dice outcomes" },
+    { to: "/characters", label: "Characters", value: counts.characters, icon: Users, desc: "Character cards and archetypes" },
+    { to: "/maps", label: "Maps", value: counts.maps, icon: MapIcon, desc: "Locations and sketches" },
+    { to: "/sessions", label: "Sessions", value: counts.sessions, icon: BookOpen, desc: "Played sessions and notes" },
+    { to: "/group", label: "The Party", value: counts.party, icon: Backpack, desc: "Companions and inventory" },
+    { to: "/players", label: "Players", value: counts.players, icon: UserPlus, desc: "Who's joining" },
   ];
   const actions = [
-    { to: "/historie", icon: Workflow, label: "Bygg historieflyt", desc: "Tegn opp scener, valg og terningkast i et flytskjema." },
-    { to: "/karakterer", icon: Users, label: "Generer karakterer", desc: "La AIen lage unike karakterkort med portrett." },
-    { to: "/kart", icon: MapIcon, label: "Lag kartgalleriet", desc: "10–15 kart med notater og referanseskisser." },
-    { to: "/system", icon: Cog, label: "Sett opp regelverket", desc: "Egendefinerte attributter, ferdigheter, terningmekanikk og moduser." },
-    { to: "/spelarar", icon: UserPlus, label: "Registrer spillere", desc: "Hvem som er med, og hvilken karakter de spiller." },
-    { to: "/sesjoner", icon: BookOpen, label: "Planlegg økter", desc: "Flere økter per kampanje – notater bæres inn i neste økt." },
-    { to: "/gruppe", icon: Backpack, label: "Sett opp følget", desc: "Karakterer og brikker på laget, pluss inventar og gull." },
-    { to: "/spill", icon: Swords, label: "Spill økta", desc: "HP, tilstander, ressurser, utrusting og hendelseslogg ved bordet." },
-    { to: "/med-dm", icon: Bot, label: "Kjør med-DM", desc: "Oppdater fraksjonsstatus, regn ut konsekvenser, få 3 komplikasjoner." },
-    { to: "/utskrift", icon: Printer, label: "Print A6-ark", desc: "NPC-kort og brikkekort, fire per A4-side." },
+    { to: "/story", icon: Workflow, label: "Build story flow", desc: "Sketch scenes, choices and dice rolls in a flowchart." },
+    { to: "/characters", icon: Users, label: "Generate characters", desc: "Let the AI create unique character cards with portraits." },
+    { to: "/maps", icon: MapIcon, label: "Build the map gallery", desc: "10–15 maps with notes and reference sketches." },
+    { to: "/system", icon: Cog, label: "Set up the ruleset", desc: "Custom attributes, skills, dice mechanics and modes." },
+    { to: "/players", icon: UserPlus, label: "Register players", desc: "Who's joining, and which character they play." },
+    { to: "/sessions", icon: BookOpen, label: "Plan sessions", desc: "Multiple sessions per campaign – notes carry into the next." },
+    { to: "/group", icon: Backpack, label: "Set up the party", desc: "Characters and tokens on the team, plus inventory and gold." },
+    { to: "/play", icon: Swords, label: "Play the session", desc: "HP, conditions, resources, loadout and event log at the table." },
+    { to: "/co-dm", icon: Bot, label: "Run with Co-DM", desc: "Update faction status, calculate consequences, get 3 complications." },
+    { to: "/print", icon: Printer, label: "Print A6 sheets", desc: "NPC cards and token cards, four per A4 page." },
   ];
 
   return (
@@ -76,10 +76,10 @@ export default function Oversikt() {
       <div className="max-w-5xl mx-auto px-8 py-10">
         <div className="flex items-center gap-3 mb-2">
           <Dices className="w-6 h-6 text-primary" />
-          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Oversikt</span>
+          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Dashboard</span>
         </div>
         <h1 className="font-heading text-4xl text-foreground mb-1">{campaign.title}</h1>
-        <p className="text-muted-foreground text-lg mb-10">Din kampanje i et nøtteskall.</p>
+        <p className="text-muted-foreground text-lg mb-10">Your campaign in a nutshell.</p>
 
         <Card className="glass-card mb-8">
           <CardContent className="p-7">
@@ -90,12 +90,12 @@ export default function Oversikt() {
                 {(() => { const MI = MODE_ICON[campaign.play_mode] || Monitor; return <Badge variant="secondary" className="gap-1 capitalize"><MI className="w-3 h-3" />{MODE_LABEL[campaign.play_mode] || "Digital"}</Badge>; })()}
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" className="gap-1.5 text-destructive hover:text-destructive" onClick={() => setDeleteOpen(true)}><Trash2 className="w-3.5 h-3.5" /> Papirkurv</Button>
-                <Link to="/kampanje"><Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">Rediger <ArrowRight className="w-3.5 h-3.5" /></Button></Link>
+                <Button variant="ghost" size="sm" className="gap-1.5 text-destructive hover:text-destructive" onClick={() => setDeleteOpen(true)}><Trash2 className="w-3.5 h-3.5" /> Trash</Button>
+                <Link to="/campaign"><Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">Edit <ArrowRight className="w-3.5 h-3.5" /></Button></Link>
               </div>
             </div>
-            <div className="flex items-center gap-2 mb-3 text-primary"><ScrollText className="w-4 h-4" /><span className="text-xs uppercase tracking-widest">Den røde tråden</span></div>
-            <p className="text-foreground/90 leading-relaxed whitespace-pre-line font-heading text-lg">{campaign.premise || "Ingen premiss satt enda."}</p>
+            <div className="flex items-center gap-2 mb-3 text-primary"><ScrollText className="w-4 h-4" /><span className="text-xs uppercase tracking-widest">The Red Thread</span></div>
+            <p className="text-foreground/90 leading-relaxed whitespace-pre-line font-heading text-lg">{campaign.premise || "No premise set yet."}</p>
           </CardContent>
         </Card>
 
@@ -116,7 +116,7 @@ export default function Oversikt() {
         </div>
 
         <Card className="glass-card">
-          <CardHeader><CardTitle className="text-lg">Videre planlegging</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-lg">Next steps</CardTitle></CardHeader>
           <CardContent className="space-y-2.5">
             {actions.map((a) => {
               const Icon = a.icon;

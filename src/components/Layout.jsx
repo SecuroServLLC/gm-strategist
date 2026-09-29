@@ -4,22 +4,22 @@ import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, Bo
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "Kampanjer", icon: Library, end: true },
-  { to: "/oversikt", label: "Oversikt", icon: LayoutDashboard },
-  { to: "/kampanje", label: "Rød tråd", icon: ScrollText },
-  { to: "/historie", label: "Historie-flyt", icon: Workflow },
-  { to: "/karakterer", label: "Karakterer", icon: Users },
-  { to: "/kart", label: "Kart", icon: MapIcon },
-  { to: "/sesjoner", label: "Økter", icon: BookOpen },
-  { to: "/gruppe", label: "Følget", icon: Backpack },
-  { to: "/spelarar", label: "Spillere", icon: UserPlus },
-  { to: "/spill", label: "Spill", icon: Swords },
-  { to: "/brett", label: "Brett", icon: LayoutGrid },
-  { to: "/med-dm", label: "Med-DM", icon: Bot },
+  { to: "/", label: "Campaigns", icon: Library, end: true },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/campaign", label: "Red Thread", icon: ScrollText },
+  { to: "/story", label: "Story Flow", icon: Workflow },
+  { to: "/characters", label: "Characters", icon: Users },
+  { to: "/maps", label: "Maps", icon: MapIcon },
+  { to: "/sessions", label: "Sessions", icon: BookOpen },
+  { to: "/group", label: "The Party", icon: Backpack },
+  { to: "/players", label: "Players", icon: UserPlus },
+  { to: "/play", label: "Play", icon: Swords },
+  { to: "/board", label: "Board", icon: LayoutGrid },
+  { to: "/co-dm", label: "Co-DM", icon: Bot },
   { to: "/system", label: "System", icon: Cog },
-  { to: "/utskrift", label: "Utskrift", icon: Printer },
+  { to: "/print", label: "Print", icon: Printer },
   { to: "/lab", label: "Lab", icon: FlaskConical },
-  { to: "/sys", label: "Enheter", icon: Tablet },
+  { to: "/sys", label: "Devices", icon: Tablet },
 ];
 
 export default function Layout() {
@@ -32,8 +32,8 @@ export default function Layout() {
               <Dices className="w-5 h-5 text-sidebar-background" strokeWidth={2.2} />
             </div>
             <div>
-              <h1 className="font-heading text-lg leading-none text-sidebar-foreground">GM Hovedkvarter</h1>
-              <p className="text-[11px] text-muted-foreground mt-1 tracking-wide uppercase">Planleggingsverksted</p>
+              <h1 className="font-heading text-lg leading-none text-sidebar-foreground">GM Headquarters</h1>
+              <p className="text-[11px] text-muted-foreground mt-1 tracking-wide uppercase">Planning Workshop</p>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function Layout() {
 
         <div className="px-5 py-4 border-t border-sidebar-border">
           <p className="text-[11px] text-muted-foreground leading-relaxed font-heading italic">
-            "Alt er lov. Resten planlegger du her."
+            "Anything goes. The rest you plan here."
           </p>
         </div>
       </aside>
