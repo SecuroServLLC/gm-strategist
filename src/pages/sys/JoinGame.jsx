@@ -4,13 +4,14 @@ import { useAuth } from "@/lib/AuthContext";
 import { useDevice } from "@/hooks/useDevice";
 import { useCampaignData } from "@/hooks/useCampaignData";
 import PlayerView from "@/components/sys/PlayerView";
+import ClaimPanel from "@/components/sys/ClaimPanel";
 import { Splash, Unknown } from "@/components/sys/SysStates";
 
 export default function JoinGame() {
   const { code } = useParams();
   const location = useLocation();
   const { isAuthenticated, isLoadingAuth } = useAuth();
-  const { device, loading } = useDevice(code);
+  const { device, loading, refetch } = useDevice(code);
   const data = useCampaignData(device?.campaign_id);
 
   if (isLoadingAuth) return <Splash />;
@@ -19,6 +20,9 @@ export default function JoinGame() {
   }
   if (loading || data.loading) return <Splash />;
   if (!device) return <Unknown note="Denne spill-lenken er ikke registrert." />;
+  if (!device.party_member_id) {
+    return <ClaimPanel device={device} campaign={data.campaign} onClaimed={refetch} />;
+  }
 
   return (
     <PlayerView

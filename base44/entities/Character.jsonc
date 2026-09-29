@@ -35,7 +35,7 @@
     },
     "stats": {
       "type": "object",
-      "description": "Seks attributter 1-20: kraft, smidighet, utholdenhet, intelligens, visdom, utstr\u00e5ling"
+      "description": "Seks attributter 1-20: kraft, smidighet, utholdenhet, intelligens, visdom, utstralning"
     },
     "hp": {
       "type": "number",
@@ -65,6 +65,20 @@
     "notes": {
       "type": "string",
       "description": "GM-notater"
+    },
+    "claim_status": {
+      "type": "string",
+      "enum": [
+        "closed",
+        "open",
+        "claimed"
+      ],
+      "default": "closed",
+      "description": "closed=ikke claimbar, open=ledig for spiller \u00e5 claime, claimed=allerede tatt"
+    },
+    "claimed_by": {
+      "type": "string",
+      "description": "PartyMember-id som har claimet karakteren"
     }
   },
   "required": [

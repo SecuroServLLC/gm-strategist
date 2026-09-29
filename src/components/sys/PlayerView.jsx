@@ -40,7 +40,7 @@ export default function PlayerView({ data, partyMemberId, code, headerTitle, bad
       </header>
 
       <main className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4">
-        {tab === "character" && <CharacterPanel character={character} partyMember={partyMember} />}
+        {tab === "character" && <CharacterPanel character={character} partyMember={partyMember} campaign={data.campaign} />}
         {tab === "team" && <TeamPanel partyMembers={data.partyMembers} characters={data.characters} />}
         {tab === "inventory" && <InventoryPanel inventory={data.inventory} memberId={partyMemberId} />}
         {tab === "map" && <MapPanel maps={data.maps} />}

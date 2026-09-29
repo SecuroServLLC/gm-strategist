@@ -29,8 +29,19 @@ export default function SysTerminal() {
   if (loading) return <Splash />;
   if (!device) return <Unknown note="Denne terminal-koden er ikke registrert." />;
   if (!isActive(device)) return <Waiting code={device.device_id} label={device.label} />;
+  if (!device.party_member_id) return <NoCharacter code={device.device_id} />;
 
   return <PlayerView data={data} partyMemberId={device.party_member_id} code={device.device_id} />;
+}
+
+function NoCharacter({ code }) {
+  return (
+    <div className="h-screen flex flex-col items-center justify-center px-6 text-center bg-background text-foreground">
+      <p className="font-mono text-2xl tracking-[0.25em] mb-6 text-muted-foreground">{code}</p>
+      <h1 className="font-heading text-2xl mb-2">Ingen karakter valgt</h1>
+      <p className="text-sm text-muted-foreground max-w-xs">Be GM velge en karakter for denne terminalen, eller claim en ledig karakter fra din egen enhet via /joingame-lenken.</p>
+    </div>
+  );
 }
 
 function Waiting({ code, label }) {

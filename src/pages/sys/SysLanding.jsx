@@ -55,10 +55,9 @@ export default function SysLanding() {
         payload.status = "pending";
       } else {
         if (!campaign) { alert("Opprett en kampanje først."); return; }
-        if (form.device_type === "player" && !form.party_member_id) { alert("Velg en følgesvenn for spiller-lenken."); return; }
         payload.status = "active";
         payload.campaign_id = campaign.id;
-        if (form.device_type === "player") payload.party_member_id = form.party_member_id;
+        if (form.device_type === "player" && form.party_member_id) payload.party_member_id = form.party_member_id;
       }
       await base44.entities.Device.create(payload);
       setCreateOpen(false);
@@ -126,7 +125,11 @@ export default function SysLanding() {
             )}
           </div>
           <p className="text-xs text-muted-foreground font-mono truncate">{link}</p>
-          {pm && <p className="text-xs text-muted-foreground">Spiller: {pm.name}</p>}
+          {pm ? (
+            <p className="text-xs text-muted-foreground">Spiller: {pm.name}</p>
+          ) : d.device_type === "player" ? (
+            <p className="text-xs text-amber-400">Ikke claimet enda</p>
+          ) : null}
         </div>
         <div className="flex items-center gap-1 shrink-0">
           {children}
@@ -211,9 +214,9 @@ export default function SysLanding() {
             </div>
             {form.device_type === "player" && (
               <div>
-                <Label className="mb-1.5 block">Følgesvenn (spilleren)</Label>
+                <Label className="mb-1.5 block">Følgesvenn (valgfritt – ellers claimer spilleren selv)</Label>
                 <Select value={form.party_member_id} onValueChange={(v) => setForm((f) => ({ ...f, party_member_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Velg spiller…" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="La stå tom for claim…" /></SelectTrigger>
                   <SelectContent>
                     {partyMembers.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
                   </SelectContent>
@@ -224,7 +227,7 @@ export default function SysLanding() {
               {form.device_type === "terminal"
                 ? "Terminalen får en 4-tegns kode og vises i ventelisten til du slipper den inn."
                 : form.device_type === "player"
-                ? "Spilleren får en /joingame-lenke og må logge inn på egen enhet."
+                ? "Spilleren får en /joingame-lenke. La følgesvenn stå tom så spilleren claimer en ledig karakter selv."
                 : "Skjermen blir aktiv umiddelbart med 16 hex-sifre."}
             </p>
           </div>

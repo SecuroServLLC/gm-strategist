@@ -1,8 +1,9 @@
 import React from "react";
 import { Image } from "@/components/ui/image";
 import { Heart, Sparkles } from "lucide-react";
+import StatBlock from "@/components/sys/StatBlock";
 
-export default function CharacterPanel({ character, partyMember }) {
+export default function CharacterPanel({ character, partyMember, campaign }) {
   const hp = partyMember?.current_hp ?? character?.hp;
   const maxHp = partyMember?.max_hp ?? character?.hp;
   const pct = maxHp ? Math.max(0, Math.min(100, (hp / maxHp) * 100)) : 0;
@@ -79,6 +80,11 @@ export default function CharacterPanel({ character, partyMember }) {
           <p className="text-sm text-muted-foreground">{character.background}</p>
         </div>
       )}
+
+      <div>
+        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Attributter</p>
+        <StatBlock character={character} campaign={campaign} />
+      </div>
     </div>
   );
 }

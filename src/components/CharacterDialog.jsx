@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Loader2, Save, Dices, Upload, Wand2 } from "lucide-react";
+import { DEFAULT_ATTRIBUTES } from "@/lib/attributes";
 
 const ROLES = [
   { value: "protagonist", label: "Protagonist" },
@@ -22,7 +23,7 @@ const ROLES = [
 
 const STAT_KEYS = ["kraft", "smidighet", "utholdenhet", "intelligens", "visdom", "utstralning"];
 
-const EMPTY = { name: "", archetype: "", race: "", role: "npc", background: "", personality: "", stats: {}, abilities: [], appearance: "", hook: "", portrait_url: "", notes: "" };
+const EMPTY = { name: "", archetype: "", race: "", role: "npc", background: "", personality: "", stats: {}, abilities: [], appearance: "", hook: "", portrait_url: "", notes: "", claim_status: "closed" };
 
 function SectionLabel({ children }) {
   return (
@@ -104,6 +105,7 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
         hook: form.hook,
         portrait_url: form.portrait_url,
         notes: form.notes,
+        claim_status: form.claim_status || "closed",
       };
       if (character) {
         await base44.entities.Character.update(character.id, payload);
@@ -191,20 +193,33 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
                 <Label className="text-xs">Race</Label>
                 <Input value={form.race} onChange={(e) => set("race", e.target.value)} className="mt-1" />
               </div>
+              <div>
+                <Label className="text-xs">Claim-status</Label>
+                <Select value={form.claim_status || "closed"} onValueChange={(v) => set("claim_status", v)}>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="closed">Lukket – ikke claimbar</SelectItem>
+                    <SelectItem value="open">Ledig – kan claimes av spiller</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <SectionLabel>Attributter (1–20)</SectionLabel>
-            <div className="grid grid-cols-6 gap-2">
-              {STAT_KEYS.map((k) => (
-                <div key={k} className="text-center">
-                  <Input
-                    type="number"
-                    min="1" max="20"
-                    value={form.stats[k] ?? ""}
-                    onChange={(e) => setStat(k, parseInt(e.target.value) || 0)}
-                    className="text-center font-heading text-lg h-12"
-                  />
-                  <div className="text-[9px] uppercase tracking-wide text-muted-foreground mt-1">{k.slice(0, 3)}</div>
+            <div className="grid grid-cols-2 gap-3">
+              {DEFAULT_ATTRIBUTES.map((a) => (
+                <div key={a.key} className="rounded-lg border border-border bg-card/30 p-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <Label className="text-xs">{a.name}</Label>
+                    <Input
+                      type="number"
+                      min="1" max="20"
+                      value={form.stats[a.key] ?? ""}
+                      onChange={(e) => setStat(a.key, parseInt(e.target.value) || 0)}
+                      className="w-16 h-9 text-center font-heading text-base"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-snug">{a.description}</p>
                 </div>
               ))}
             </div>
