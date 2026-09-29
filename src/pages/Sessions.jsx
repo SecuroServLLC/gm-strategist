@@ -153,6 +153,7 @@ export default function Sessions() {
 
       <div className="flex-1 min-w-0">
         <SessionDetail
+          key={selected?.id || "none"}
           session={selected}
           priorSession={priorSession}
           modes={(campaign?.modes || []).map((m) => m.name)}

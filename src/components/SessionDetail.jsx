@@ -15,7 +15,7 @@ export default function SessionDetail({ session, priorSession, onSave, onDelete,
 
   useEffect(() => { setForm(session); }, [session]);
 
-  if (!session) {
+  if (!session || !form) {
     return (
       <div className="h-full flex items-center justify-center text-muted-foreground">
         <div className="text-center">
