@@ -24,7 +24,10 @@ export default function useAiGameMaster(campaignId, sessionId, onRecorded) {
     queryFn: ({ pageParam }) => base44.entities.Character.filter({ campaign_id: campaignId }, { sort: 'name', limit: 50, fields: ['name'], cursor: pageParam }),
     getNextPageParam: (page) => page.has_more ? page.next_cursor : undefined,
   });
-  const refresh = () => client.invalidateQueries({ queryKey: key });
+  const refresh = () => Promise.all([
+    client.invalidateQueries({ queryKey: key }),
+    client.invalidateQueries({ queryKey: ['scene-soundscape', campaignId, sessionId] }),
+  ]);
   const invoke = async (operation, payload) => {
     if (lock.current) return false;
     lock.current = true; setBusy(true); setError('');

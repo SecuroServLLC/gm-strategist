@@ -13,6 +13,7 @@ import LoadoutBoard from "@/components/play/LoadoutBoard";
 import SessionLog from "@/components/play/SessionLog";
 import PlayMaps from "@/components/maps/PlayMaps";
 import AiGameMaster from "@/components/play/AiGameMaster";
+import SceneSoundscape from "@/components/audio/SceneSoundscape";
 
 export default function Spill() {
   const { campaign, loading } = useCampaign();
@@ -119,6 +120,8 @@ export default function Spill() {
             {sessionId && <Badge variant="secondary" className="ml-auto">{events.length} hendelser</Badge>}
           </CardContent>
         </Card>
+
+        {sessionId && <SceneSoundscape key={`${campaign.id}:${sessionId}`} campaignId={campaign.id} sessionId={sessionId} />}
 
         <Tabs defaultValue="play">
           <TabsList className="mb-6 flex h-auto flex-wrap justify-start">

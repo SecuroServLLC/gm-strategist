@@ -119,6 +119,40 @@
     "outcome": {
       "type": "string",
       "maxLength": 4000
+    },
+    "soundscape": {
+      "type": "string",
+      "enum": [
+        "cave",
+        "windy_hill",
+        "forest",
+        "tavern",
+        "storm",
+        "quiet"
+      ],
+      "description": "AI-selected audio for the current, established scene"
+    },
+    "success_soundscape": {
+      "type": "string",
+      "enum": [
+        "cave",
+        "windy_hill",
+        "forest",
+        "tavern",
+        "storm",
+        "quiet"
+      ]
+    },
+    "failure_soundscape": {
+      "type": "string",
+      "enum": [
+        "cave",
+        "windy_hill",
+        "forest",
+        "tavern",
+        "storm",
+        "quiet"
+      ]
     }
   },
   "required": [
