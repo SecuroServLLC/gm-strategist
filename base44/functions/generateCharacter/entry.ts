@@ -46,7 +46,7 @@ const POWER_RANGE = {
 function clampCount(n) {
   const v = parseInt(n);
   if (isNaN(v)) return 3;
-  return Math.max(1, Math.min(4, v));
+  return Math.max(1, Math.min(8, v));
 }
 
 export default async function(req) {

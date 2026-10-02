@@ -49,6 +49,25 @@ export default function Characters() {
   const openEdit = (c) => { setEditing(c); setDialogOpen(true); };
   const openGenerator = () => { setGenOpen(true); };
 
+  const addAllCharacters = async (suggestions) => {
+    const records = suggestions.map((c) => ({
+      name: c.name,
+      archetype: c.archetype,
+      race: c.race,
+      role: c.role,
+      background: c.background,
+      personality: c.personality,
+      stats: c.stats || {},
+      abilities: c.abilities || [],
+      appearance: c.appearance,
+      hook: c.hook,
+      claim_status: "closed",
+      campaign_id: campaign.id,
+    }));
+    await base44.entities.Character.bulkCreate(records);
+    await load();
+  };
+
   const toggleApprove = async (c) => {
     setApprovingId(c.id);
     try {
@@ -159,6 +178,7 @@ export default function Characters() {
         onOpenChange={setGenOpen}
         setting={campaign.setting}
         onPick={(c) => { setPrefill(c); setGenOpen(false); setDialogOpen(true); }}
+        onAddAll={addAllCharacters}
       />
     </div>
   );

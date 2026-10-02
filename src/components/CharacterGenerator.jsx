@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Loader2, Check, Dices } from "lucide-react";
+import { Sparkles, Loader2, Check, Dices, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DEFAULT_ATTRIBUTES } from "@/lib/attributes";
 
@@ -43,7 +43,7 @@ function StatLine({ stats }) {
   );
 }
 
-export default function CharacterGenerator({ open, onOpenChange, setting, onPick }) {
+export default function CharacterGenerator({ open, onOpenChange, setting, onPick, onAddAll }) {
   const [prompt, setPrompt] = useState("");
   const [count, setCount] = useState("3");
   const [tone, setTone] = useState("nøytral");
@@ -53,9 +53,26 @@ export default function CharacterGenerator({ open, onOpenChange, setting, onPick
   const [archetypeHint, setArchetypeHint] = useState("");
   const [generating, setGenerating] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [addingAll, setAddingAll] = useState(false);
+  const [added, setAdded] = useState(0);
 
   const toggleRole = (v) =>
     setRoles((rs) => (rs.includes(v) ? rs.filter((r) => r !== v) : [...rs, v]));
+
+  const addAll = async () => {
+    if (!suggestions.length || !onAddAll) return;
+    setAddingAll(true);
+    setAdded(0);
+    try {
+      await onAddAll(suggestions);
+      setAdded(suggestions.length);
+      setSuggestions([]);
+    } catch (e) {
+      alert("Kunne ikke legge til alle: " + e.message);
+    } finally {
+      setAddingAll(false);
+    }
+  };
 
   const generate = async () => {
     if (!prompt.trim()) return;
@@ -110,7 +127,7 @@ export default function CharacterGenerator({ open, onOpenChange, setting, onPick
                 <Select value={count} onValueChange={setCount}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {[1, 2, 3, 4].map((n) => (
+                    {[1, 2, 3, 4, 5, 6].map((n) => (
                       <SelectItem key={n} value={String(n)}>{n} karakter{n > 1 ? "er" : ""}</SelectItem>
                     ))}
                   </SelectContent>
@@ -166,11 +183,26 @@ export default function CharacterGenerator({ open, onOpenChange, setting, onPick
               {generating ? "Genererer forslag..." : `Foreslå ${count} karakterer`}
             </Button>
 
+            {added > 0 && (
+              <div className="rounded-lg border border-primary/30 bg-primary/10 p-3 text-sm text-primary">
+                {added} karakterer lagt til i kampanjen. Lukk for å se dem, eller generer flere.
+              </div>
+            )}
+
             {suggestions.length > 0 && (
               <div className="space-y-3 pt-2">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                  {suggestions.length} forslag – trykk «Bruk» for å ta en karakter inn i editoren
-                </p>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                    {suggestions.length} forslag
+                  </p>
+                  {onAddAll && (
+                    <Button onClick={addAll} disabled={addingAll} size="sm" className="gap-1.5">
+                      {addingAll ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Users className="w-3.5 h-3.5" />}
+                      {addingAll ? "Legger til alle…" : "Legg til alle"}
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground -mt-1">Trykk «Bruk» for å tilpasse én, eller «Legg til alle» for å opprette hele gruppen på én gang.</p>
                 {suggestions.map((c, i) => (
                   <div key={i} className="rounded-xl border border-border bg-card/40 p-4 space-y-3">
                     <div className="flex items-start justify-between gap-3">
