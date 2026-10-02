@@ -5,7 +5,7 @@ import { useCampaignData } from "@/hooks/useCampaignData";
 import LogFeed from "@/components/sys/LogFeed";
 import PlayerStatCard from "@/components/sys/PlayerStatCard";
 import { Splash, Unknown } from "@/components/sys/SysStates";
-import { Image } from "@/components/ui/image";
+import MapPanel from "@/components/sys/MapPanel";
 import { Monitor, Map as MapIcon, ScrollText, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,9 +31,7 @@ export default function SysGameDisplay() {
     .filter((x) => x.c);
   const extra = Math.max(0, allPlayers.length - 4);
 
-  const currentMap = [...(data.maps || [])].sort(
-    (a, b) => new Date(b.updated_date) - new Date(a.updated_date)
-  )[0];
+
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground">
@@ -86,21 +84,7 @@ export default function SysGameDisplay() {
         {on.map && (
           <section>
             <h2 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Kart</h2>
-            <div className="rounded-xl overflow-hidden border border-border bg-card/40">
-              {currentMap?.sketch_url ? (
-                <Image src={currentMap.sketch_url} fittingType="fit" className="w-full max-h-[55vh] object-contain" />
-              ) : (
-                <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
-                  {currentMap?.title || "Ingen kart"}
-                </div>
-              )}
-              {currentMap && (
-                <div className="p-3 border-t border-border">
-                  <p className="font-heading text-base">{currentMap.title}</p>
-                  {currentMap.description && <p className="text-xs text-muted-foreground mt-1">{currentMap.description}</p>}
-                </div>
-              )}
-            </div>
+            <MapPanel maps={data.maps} />
           </section>
         )}
 

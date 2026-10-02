@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useCampaign } from "@/hooks/useCampaign";
-import { Image } from "@/components/ui/image";
+import InteractiveMap from "@/components/maps/InteractiveMap";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -75,6 +75,7 @@ export default function MapDetail() {
           connections: d.connections || "",
           landmarks: d.landmarks || [],
           sketch_url: d.sketch_url || f.sketch_url,
+          interactive_state: f.interactive_state,
         }));
         setLandmarksText((d.landmarks || []).join("\n"));
       }
@@ -109,6 +110,7 @@ export default function MapDetail() {
         landmarks: landmarksText.split("\n").map((s) => s.trim()).filter(Boolean),
         connections: form.connections,
         sketch_url: form.sketch_url,
+        interactive_state: form.interactive_state || { fog_enabled: false, revealed: [], markers: [] },
       };
       if (isNew) {
         const created = await base44.entities.MapItem.create(payload);
@@ -157,22 +159,14 @@ export default function MapDetail() {
           {isNew ? "Nytt kart" : "Rediger kart"}
         </h1>
 
+        <section className="mb-6 space-y-3">
+          <h2 className="font-heading text-2xl">Interactive Map</h2>
+          <p className="text-sm text-muted-foreground">Place tokens and locations, then reveal areas as the party explores. Save using the map form below.</p>
+          <InteractiveMap key={mapId} map={{ ...form, campaign_id: campaign.id }} value={form.interactive_state} onChange={(value) => set("interactive_state", value)} />
+        </section>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Venstre: skisse + generering */}
           <div className="space-y-5">
-            <div className="rounded-xl border border-border bg-accent/30 overflow-hidden">
-              <div className="aspect-square w-full bg-accent/40 flex items-center justify-center">
-                {form.sketch_url ? (
-                  <Image src={form.sketch_url} fittingType="fill" className="w-full h-full" />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-muted-foreground/50">
-                    <MapIcon className="w-12 h-12" />
-                    <span className="text-sm">Ingen skisse</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
             <Card className="glass-card">
               <CardContent className="p-4 space-y-3">
                 <Label className="text-sm flex items-center gap-1.5 text-primary">

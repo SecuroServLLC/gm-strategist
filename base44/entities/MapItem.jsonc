@@ -43,6 +43,71 @@
     "sketch_url": {
       "type": "string",
       "description": "Opplastet kartbilde eller AI-skisse"
+    },
+    "interactive_state": {
+      "type": "object",
+      "properties": {
+        "fog_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "revealed": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 299
+          }
+        },
+        "markers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "token",
+                  "place"
+                ]
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "character_id": {
+                "type": "string"
+              },
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "visited": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "name",
+              "x",
+              "y"
+            ]
+          }
+        }
+      }
     }
   },
   "required": [

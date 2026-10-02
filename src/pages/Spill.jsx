@@ -11,6 +11,7 @@ import { Dices, BookOpen, Swords, Backpack, ScrollText } from "lucide-react";
 import PlayCard from "@/components/play/PlayCard";
 import LoadoutBoard from "@/components/play/LoadoutBoard";
 import SessionLog from "@/components/play/SessionLog";
+import PlayMaps from "@/components/maps/PlayMaps";
 
 export default function Spill() {
   const { campaign, loading } = useCampaign();
@@ -121,6 +122,7 @@ export default function Spill() {
             <TabsTrigger value="play" className="gap-1.5"><Swords className="w-4 h-4" /> Følget</TabsTrigger>
             <TabsTrigger value="loot" className="gap-1.5"><Backpack className="w-4 h-4" /> Utrusting</TabsTrigger>
             <TabsTrigger value="log" className="gap-1.5"><ScrollText className="w-4 h-4" /> Logg</TabsTrigger>
+            <TabsTrigger value="maps">Maps</TabsTrigger>
           </TabsList>
 
           <TabsContent value="play">
@@ -139,6 +141,10 @@ export default function Spill() {
             ) : (
               <LoadoutBoard members={members} items={items} onMoveItem={moveItem} />
             )}
+          </TabsContent>
+
+          <TabsContent value="maps">
+            <PlayMaps key={campaign.id} campaignId={campaign.id} />
           </TabsContent>
 
           <TabsContent value="log">
