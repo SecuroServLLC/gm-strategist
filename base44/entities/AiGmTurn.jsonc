@@ -1,0 +1,134 @@
+{
+  "name": "AiGmTurn",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "character_id": {
+      "type": "string"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "ruleset": {
+      "type": "string",
+      "enum": [
+        "dnd_2024"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "awaiting_roll",
+        "resolved"
+      ]
+    },
+    "test_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "ability_check",
+        "saving_throw",
+        "attack"
+      ]
+    },
+    "ability": {
+      "type": "string"
+    },
+    "skill": {
+      "type": "string"
+    },
+    "target": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 40
+    },
+    "modifier": {
+      "type": "integer",
+      "minimum": -20,
+      "maximum": 30
+    },
+    "roll_mode": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "advantage",
+        "disadvantage"
+      ]
+    },
+    "narrative": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "rule_note": {
+      "type": "string",
+      "maxLength": 1500
+    },
+    "success_outcome": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "failure_outcome": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "success_state": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "failure_state": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "scene_state": {
+      "type": "string",
+      "maxLength": 3000
+    },
+    "rolls": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20
+      },
+      "maxItems": 2
+    },
+    "selected_roll": {
+      "type": "integer"
+    },
+    "total": {
+      "type": "integer"
+    },
+    "success": {
+      "type": "boolean"
+    },
+    "critical": {
+      "type": "boolean"
+    },
+    "outcome": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  },
+  "required": [
+    "campaign_id",
+    "session_id",
+    "request_id",
+    "action",
+    "ruleset",
+    "status",
+    "test_type",
+    "narrative"
+  ]
+}

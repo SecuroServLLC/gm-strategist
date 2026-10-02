@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useCampaign } from "@/hooks/useCampaign";
@@ -12,6 +12,7 @@ import PlayCard from "@/components/play/PlayCard";
 import LoadoutBoard from "@/components/play/LoadoutBoard";
 import SessionLog from "@/components/play/SessionLog";
 import PlayMaps from "@/components/maps/PlayMaps";
+import AiGameMaster from "@/components/play/AiGameMaster";
 
 export default function Spill() {
   const { campaign, loading } = useCampaign();
@@ -20,6 +21,8 @@ export default function Spill() {
   const [sessions, setSessions] = useState([]);
   const [sessionId, setSessionId] = useState(null);
   const [events, setEvents] = useState([]);
+  const currentSession = useRef(sessionId);
+  currentSession.current = sessionId;
 
   useEffect(() => {
     if (!campaign) return;
@@ -118,11 +121,12 @@ export default function Spill() {
         </Card>
 
         <Tabs defaultValue="play">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex h-auto flex-wrap justify-start">
             <TabsTrigger value="play" className="gap-1.5"><Swords className="w-4 h-4" /> Følget</TabsTrigger>
             <TabsTrigger value="loot" className="gap-1.5"><Backpack className="w-4 h-4" /> Utrusting</TabsTrigger>
             <TabsTrigger value="log" className="gap-1.5"><ScrollText className="w-4 h-4" /> Logg</TabsTrigger>
             <TabsTrigger value="maps">Maps</TabsTrigger>
+            <TabsTrigger value="ai-gm">AI Game Master</TabsTrigger>
           </TabsList>
 
           <TabsContent value="play">
@@ -145,6 +149,16 @@ export default function Spill() {
 
           <TabsContent value="maps">
             <PlayMaps key={campaign.id} campaignId={campaign.id} />
+          </TabsContent>
+
+          <TabsContent value="ai-gm">
+            {sessionId ? (
+              <AiGameMaster key={sessionId} campaignId={campaign.id} sessionId={sessionId} onRecorded={(event) => {
+                if (event.session_id === currentSession.current) setEvents((current) => [...current.filter((item) => item.id !== event.id), event]);
+              }} />
+            ) : (
+              <p className="text-sm text-muted-foreground">Choose a session first. <Link to="/sessions" className="text-primary underline">Create a session</Link> to begin.</p>
+            )}
           </TabsContent>
 
           <TabsContent value="log">

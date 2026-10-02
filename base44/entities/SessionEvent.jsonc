@@ -9,6 +9,10 @@
       "type": "string",
       "description": "Hvilken \u00f8kt hendelsen h\u00f8rer til"
     },
+    "ai_turn_id": {
+      "type": "string",
+      "description": "Unik kobling til en AI-spillelederhandling, brukt til \u00e5 unng\u00e5 duplikater i loggen"
+    },
     "kind": {
       "type": "string",
       "enum": [
