@@ -5,8 +5,8 @@ import AiGmActionForm from '@/components/play/AiGmActionForm';
 import AiGmTurnCard from '@/components/play/AiGmTurnCard';
 import AiGmRollForm from '@/components/play/AiGmRollForm';
 
-export default function AiGameMaster({ campaignId, sessionId, onRecorded }) {
-  const gm = useAiGameMaster(campaignId, sessionId, onRecorded);
+export default function AiGameMaster({ campaignId, sessionId, onRecorded, onNarration }) {
+  const gm = useAiGameMaster(campaignId, sessionId, onRecorded, onNarration);
   if (gm.history.isLoading || gm.pending.isLoading || gm.characters.isLoading) return <p role="status" className="text-muted-foreground">Loading the Game Master…</p>;
   if (gm.history.isError || gm.pending.isError || gm.characters.isError) return <div role="alert" className="space-y-3"><p>Could not load the Game Master.</p><Button onClick={() => { gm.refresh(); gm.characters.refetch(); }}>Retry</Button></div>;
   const turns = gm.history.data.pages.flatMap((page) => page.items).slice().reverse();

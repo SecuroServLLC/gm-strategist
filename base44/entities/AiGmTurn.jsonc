@@ -153,6 +153,21 @@
         "storm",
         "quiet"
       ]
+    },
+    "narrative_audio_url": {
+      "type": "string",
+      "description": "Cached River voice for the established narration only"
+    },
+    "outcome_audio_url": {
+      "type": "string",
+      "description": "Cached River voice for the actual resolved dice outcome only"
+    },
+    "narration_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "narration_generated_by": {
+      "type": "string"
     }
   },
   "required": [
