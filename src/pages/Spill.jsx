@@ -13,6 +13,7 @@ import LoadoutBoard from "@/components/play/LoadoutBoard";
 import SessionLog from "@/components/play/SessionLog";
 import PlayMaps from "@/components/maps/PlayMaps";
 import AiGameMaster from "@/components/play/AiGameMaster";
+import PlayGameMaster from "@/components/play/PlayGameMaster";
 import SceneSoundscape from "@/components/audio/SceneSoundscape";
 import AiNarrator from "@/components/audio/AiNarrator";
 
@@ -126,6 +127,11 @@ export default function Spill() {
         {sessionId && <SceneSoundscape key={`${campaign.id}:${sessionId}`} campaignId={campaign.id} sessionId={sessionId} />}
         {sessionId && <AiNarrator key={`narrator:${campaign.id}:${sessionId}`} request={narrationRequest?.sessionId === sessionId ? narrationRequest : null} />}
 
+        <PlayGameMaster key={`moves:${campaign.id}:${sessionId}`} campaignId={campaign.id} sessionId={sessionId} onNarration={(turn, operation) => {
+          if (turn.session_id === currentSession.current) setNarrationRequest({ turnId: turn.id, sessionId: turn.session_id, part: operation === 'resolve' ? 'outcome' : 'narrative' });
+        }} onRecorded={(event) => {
+          if (event.session_id === currentSession.current) setEvents((current) => [...current.filter((item) => item.id !== event.id), event]);
+        }}>
         <Tabs defaultValue="play">
           <TabsList className="mb-6 flex h-auto flex-wrap justify-start">
             <TabsTrigger value="play" className="gap-1.5"><Swords className="w-4 h-4" /> Følget</TabsTrigger>
@@ -159,11 +165,7 @@ export default function Spill() {
 
           <TabsContent value="ai-gm">
             {sessionId ? (
-              <AiGameMaster key={sessionId} campaignId={campaign.id} sessionId={sessionId} onNarration={(turn, operation) => {
-                if (turn.session_id === currentSession.current) setNarrationRequest({ turnId: turn.id, sessionId: turn.session_id, part: operation === 'resolve' ? 'outcome' : 'narrative' });
-              }} onRecorded={(event) => {
-                if (event.session_id === currentSession.current) setEvents((current) => [...current.filter((item) => item.id !== event.id), event]);
-              }} />
+              <AiGameMaster />
             ) : (
               <p className="text-sm text-muted-foreground">Choose a session first. <Link to="/sessions" className="text-primary underline">Create a session</Link> to begin.</p>
             )}
@@ -177,6 +179,7 @@ export default function Spill() {
             )}
           </TabsContent>
         </Tabs>
+        </PlayGameMaster>
       </div>
     </div>
   );

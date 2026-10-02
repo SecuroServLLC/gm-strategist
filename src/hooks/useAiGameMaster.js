@@ -11,16 +11,16 @@ export default function useAiGameMaster(campaignId, sessionId, onRecorded, onNar
   const scope = { campaign_id: campaignId, session_id: sessionId };
   const key = ['ai-gm', campaignId, sessionId];
   const history = useInfiniteQuery({
-    queryKey: [...key, 'history'], initialPageParam: undefined,
+    queryKey: [...key, 'history'], initialPageParam: undefined, enabled: !!sessionId,
     queryFn: ({ pageParam }) => base44.entities.AiGmTurn.filter(scope, { sort: '-created_date', limit: 20, cursor: pageParam }),
     getNextPageParam: (page) => page.has_more ? page.next_cursor : undefined,
   });
-  const pending = useQuery({ queryKey: [...key, 'pending'], queryFn: async () => {
+  const pending = useQuery({ queryKey: [...key, 'pending'], enabled: !!sessionId, queryFn: async () => {
     const page = await base44.entities.AiGmTurn.filter({ ...scope, status: 'awaiting_roll' }, { sort: 'created_date', limit: 1 });
     return page.items[0] || null;
   } });
   const characters = useInfiniteQuery({
-    queryKey: ['ai-gm-characters', campaignId], initialPageParam: undefined,
+    queryKey: ['ai-gm-characters', campaignId], initialPageParam: undefined, enabled: !!sessionId,
     queryFn: ({ pageParam }) => base44.entities.Character.filter({ campaign_id: campaignId }, { sort: 'name', limit: 50, fields: ['name'], cursor: pageParam }),
     getNextPageParam: (page) => page.has_more ? page.next_cursor : undefined,
   });
