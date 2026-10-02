@@ -4,6 +4,8 @@ import { base44 } from "@/api/base44Client";
 const STORAGE_KEY = "gm_active_campaign_id";
 const TRASH_MS = 30 * 24 * 60 * 60 * 1000; // 30 dager
 
+export const getActiveCampaignId = () => (typeof localStorage !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null);
+
 export function useCampaign() {
   const [all, setAll] = useState([]);
   const [campaign, setCampaign] = useState(null);
@@ -24,7 +26,7 @@ export function useCampaign() {
       setAll(kept);
       const active = kept.filter((c) => !c.trashed);
       const stored = localStorage.getItem(STORAGE_KEY);
-      setCampaign(active.find((c) => c.id === stored) || active[0] || null);
+      setCampaign(active.find((c) => c.id === stored) || null);
     } catch (e) {
       setAll([]);
       setCampaign(null);

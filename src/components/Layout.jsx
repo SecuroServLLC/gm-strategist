@@ -1,7 +1,8 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords, Library, UserPlus, Cog, Bot, LayoutGrid, FlaskConical, Tablet } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getActiveCampaignId } from "@/hooks/useCampaign";
 
 const NAV = [
   { to: "/", label: "Campaigns", icon: Library, end: true },
@@ -23,6 +24,7 @@ const NAV = [
 ];
 
 export default function Layout() {
+  if (!getActiveCampaignId()) return <Navigate to="/" replace />;
   return (
     <div className="min-h-screen flex bg-background text-foreground">
       <aside className="no-print w-64 shrink-0 border-r border-sidebar-border bg-sidebar-background flex flex-col">

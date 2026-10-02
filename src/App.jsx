@@ -70,8 +70,8 @@ const AuthenticatedApp = () => {
       <Route path="/sys/game/:deviceId" element={<SysGame />} />
       <Route path="/joingame/:code" element={<JoinGame />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/" element={<Home />} />
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Oversikt />} />
           <Route path="/campaign" element={<Campaign />} />
           <Route path="/story" element={<StoryFlow />} />
