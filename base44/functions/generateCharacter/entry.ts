@@ -45,8 +45,8 @@ const POWER_RANGE = {
 
 function clampCount(n) {
   const v = parseInt(n);
-  if (isNaN(v)) return 3;
-  return Math.max(1, Math.min(8, v));
+  if (isNaN(v) || v < 1) return 3;
+  return Math.min(20, v);
 }
 
 export default async function(req) {
@@ -58,7 +58,8 @@ export default async function(req) {
     const body = await req.json();
     const prompt = (body.prompt || '').toString().slice(0, 1000);
     const setting = (body.setting || '').toString().slice(0, 800);
-    const count = clampCount(body.count);
+    const requested = clampCount(body.count);
+    const target = requested + 2;
     const tone = TONE_DESC[body.tone] || TONE_DESC['nøytral'];
     const powerRange = POWER_RANGE[body.powerLevel] || POWER_RANGE['standard'];
     const roles = Array.isArray(body.roles) ? body.roles.filter(Boolean) : [];
@@ -72,7 +73,8 @@ export default async function(req) {
       : 'Velg roller fritt blant protagonist, alliert, antagonist, npc, kontakt, mentor.';
 
     const llmPrompt = `Du er en Game Master-assistent for et custom, fleksibelt TRPG-system der "alt er lov".
-Generer ${count} tydelig ulike karakterer basert på denne beskrivelsen: "${prompt}".
+GMen ber om minst ${requested} karakterer basert på denne beskrivelsen: "${prompt}".
+Generer minst ${requested}, gjerne opptil ${target} (totalt), så GMen har flere å velge mellom.
 ${setting ? `Kampanjens verden: ${setting}` : 'Ingen fastsatt verden – skap fritt.'}
 
 Stemning: ${tone}.

@@ -81,7 +81,7 @@ export default function CharacterGenerator({ open, onOpenChange, setting, onPick
       const res = await base44.functions.invoke("generateCharacter", {
         prompt,
         setting,
-        count: parseInt(count) || 3,
+        count: Math.max(1, parseInt(count) || 3),
         tone,
         powerLevel: power,
         roles,
@@ -123,15 +123,16 @@ export default function CharacterGenerator({ open, onOpenChange, setting, onPick
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs">Antall forslag</Label>
-                <Select value={count} onValueChange={setCount}>
-                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {[1, 2, 3, 4, 5, 6].map((n) => (
-                      <SelectItem key={n} value={String(n)}>{n} karakter{n > 1 ? "er" : ""}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="text-xs">Hvor mange vil du ha?</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={count}
+                  onChange={(e) => setCount(e.target.value)}
+                  className="mt-1"
+                  placeholder="f.eks. 6"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">AIen lager minst dette antallet, ofte noen ekstra å velge mellom.</p>
               </div>
               <div>
                 <Label className="text-xs">Stemning</Label>
@@ -180,7 +181,7 @@ export default function CharacterGenerator({ open, onOpenChange, setting, onPick
 
             <Button onClick={generate} disabled={generating || !prompt.trim()} className="w-full gap-2">
               {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              {generating ? "Genererer forslag..." : `Foreslå ${count} karakterer`}
+              {generating ? "Genererer forslag..." : `Foreslå minst ${Math.max(1, parseInt(count) || 3)}`}
             </Button>
 
             {added > 0 && (
