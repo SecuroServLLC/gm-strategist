@@ -83,7 +83,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5">
               {campaigns.map((c) => (
-                <CampaignCard key={c.id} campaign={c} selected={selectedId === c.id} onSelect={setSelectedId} onDelete={setDeleteTarget} />
+                <CampaignCard key={c.id} campaign={c} selected={selectedId === c.id} onSelect={(campaign) => setSelectedId(campaign.id)} onDelete={setDeleteTarget} />
               ))}
             </div>
             <div className="lg:w-96 shrink-0">
