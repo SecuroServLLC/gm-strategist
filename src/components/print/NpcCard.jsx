@@ -58,6 +58,13 @@ export default function NpcCard({ character }) {
       </div>
 
       {/* UNDER: alt annet */}
+      {c.background && (
+        <div className="mt-6">
+          <h4 className="font-heading text-lg uppercase tracking-widest text-stone-700 mb-1">Bakgrunn</h4>
+          <p className="text-[13px] text-stone-800 leading-relaxed whitespace-pre-line">{c.background}</p>
+        </div>
+      )}
+
       {abilities.length > 0 && (
         <div className="mt-6 flex-1">
           <div className="flex items-center gap-2 mb-3">
