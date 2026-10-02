@@ -44,8 +44,7 @@ export default function Utskrift() {
   npcs.forEach((c) => { if (selected.has(c.id)) cards.push({ key: "c" + c.id, el: <NpcCard character={c} /> }); });
   tokens.forEach((m) => { if (selected.has(m.id)) cards.push({ key: "m" + m.id, el: <TokenCard member={m} /> }); });
 
-  const pages = [];
-  for (let i = 0; i < cards.length; i += 4) pages.push(cards.slice(i, i + 4));
+  const pages = cards.map((card) => [card]);
 
   const print = () => window.print();
 
@@ -93,8 +92,8 @@ export default function Utskrift() {
           <Printer className="w-6 h-6 text-primary" />
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Utskrift</span>
         </div>
-        <h1 className="no-print font-heading text-4xl mb-1">A6-ark &amp; brikkekort</h1>
-        <p className="no-print text-muted-foreground text-lg mb-6">Fire A6-ark per A4-side. Klikk navn for å ta arket bort/tilbake.</p>
+        <h1 className="no-print font-heading text-4xl mb-1">Utskriftsark</h1>
+        <p className="no-print text-muted-foreground text-lg mb-6">Étt ark per A4-side. Klikk navn for å ta arket bort/tilbake.</p>
 
         <div className="no-print flex flex-wrap gap-3 mb-8">
           <Button className="gap-2" onClick={print} disabled={cards.length === 0}><Printer className="w-4 h-4" /> Skriv ut</Button>
@@ -129,7 +128,6 @@ export default function Utskrift() {
             {pages.map((page, pi) => (
               <div key={pi} className="a4-page">
                 {page.map((card) => <React.Fragment key={card.key}>{card.el}</React.Fragment>)}
-                {Array.from({ length: 4 - page.length }).map((_, i) => <div key={"e" + i} />)}
               </div>
             ))}
           </div>
