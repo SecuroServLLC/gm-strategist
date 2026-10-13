@@ -1,0 +1,183 @@
+{
+  "name": "SemiAnalogMap",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "map_type": {
+      "type": "string",
+      "enum": [
+        "tactical",
+        "exploration"
+      ]
+    },
+    "columns": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 20
+    },
+    "rows": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 20
+    },
+    "background_url": {
+      "type": "string"
+    },
+    "cells": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "terrain": {
+            "type": "string",
+            "enum": [
+              "plain",
+              "forest",
+              "water",
+              "mountain",
+              "settlement",
+              "ruins"
+            ]
+          },
+          "weather": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "gm_notes": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "event": {
+            "type": "string",
+            "maxLength": 1500
+          },
+          "narrative": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "dice_suggestion": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "soundscape": {
+            "type": "string",
+            "enum": [
+              "quiet",
+              "forest",
+              "storm",
+              "cave",
+              "windy_hill",
+              "tavern"
+            ]
+          },
+          "revealed": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "tokens": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "character_id": {
+            "type": "string"
+          },
+          "cell": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 399
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cell"
+        ]
+      }
+    },
+    "dice_rolls": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          },
+          "sides": {
+            "type": "integer"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "modifier": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "cell": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "campaign_id",
+    "title",
+    "map_type",
+    "columns",
+    "rows"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

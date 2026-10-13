@@ -19,6 +19,7 @@ import StoryFlow from "@/pages/StoryFlow";
 import Characters from "@/pages/Characters";
 import Maps from "@/pages/Maps";
 import MapDetail from "@/pages/MapDetail";
+import SemiAnalog from "@/pages/SemiAnalog";
 import Sessions from "@/pages/Sessions";
 import Gruppe from "@/pages/Gruppe";
 import Utskrift from "@/pages/Utskrift";
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
       <Route path="/joingame/:code" element={<JoinGame />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/" element={<Home />} />
+        <Route path="/semi-analog" element={<SemiAnalog />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Oversikt />} />
           <Route path="/campaign" element={<Campaign />} />
