@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 
 const CAT_LABEL = { weapon: "Våpen", armor: "Rustning", consumable: "Forbruk.", valuable: "Verdi", currency: "Mynt", misc: "Div" };
 
-export default function LoadoutBoard({ members, items, onMoveItem }) {
+export default function LoadoutBoard({ members, items, onMoveItem, counts }) {
   const columns = [{ id: "shared", name: "Felleslager" }, ...members.map((m) => ({ id: m.id, name: m.name }))];
   const itemsFor = (colId) => items.filter((i) => (colId === "shared" ? !i.carried_by : i.carried_by === colId));
 
@@ -27,7 +27,7 @@ export default function LoadoutBoard({ members, items, onMoveItem }) {
               >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-heading text-sm truncate">{col.name}</h4>
-                  <Badge variant="secondary" className="text-[10px] py-0">{itemsFor(col.id).length}</Badge>
+                  <Badge variant="secondary" className="text-[10px] py-0">{counts ? counts.find((row) => col.id === 'shared' ? !row.carried_by : row.carried_by === col.id)?.count || 0 : '—'}</Badge>
                 </div>
                 <div className="space-y-1.5 flex-1">
                   {itemsFor(col.id).map((it, idx) => (
