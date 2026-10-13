@@ -11,6 +11,7 @@ const NAV = [
   { to: "/story", label: "Story Flow", icon: Workflow },
   { to: "/characters", label: "Characters", icon: Users },
   { to: "/maps", label: "Maps", icon: MapIcon },
+  { to: "/semi-analog", label: "SEMI Analog", icon: Dices },
   { to: "/sessions", label: "Sessions", icon: BookOpen },
   { to: "/group", label: "The Party", icon: Backpack },
   { to: "/players", label: "Players", icon: UserPlus },
