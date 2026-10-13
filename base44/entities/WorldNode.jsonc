@@ -1,0 +1,77 @@
+{
+  "name": "WorldNode",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string"
+    },
+    "world_id": {
+      "type": "string",
+      "description": "Grupperer alle noder fra \u00e9n generering"
+    },
+    "parent_id": {
+      "type": "string",
+      "description": "Foreldrenode, null for rotnoden"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "world",
+        "region",
+        "city",
+        "location",
+        "building",
+        "floor",
+        "room"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "scale": {
+      "type": "string",
+      "description": "M\u00e5lestokk, f.eks. '1 rute = 100 km'"
+    },
+    "poi_type": {
+      "type": "string",
+      "description": "Type POI (hytte, t\u00e5rn, kirke, etc.)"
+    },
+    "floor_number": {
+      "type": "integer",
+      "description": "Etasjenummer for floor-noder"
+    },
+    "contents": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Hva som finnes i dette omr\u00e5det"
+    },
+    "order": {
+      "type": "integer",
+      "description": "Sorteringsrekkef\u00f8lge blant s\u00f8sken"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "world_id",
+    "level",
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

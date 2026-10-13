@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet, Navigate } from "react-router-dom";
-import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords, Library, UserPlus, Cog, Bot, LayoutGrid, FlaskConical, Tablet } from "lucide-react";
+import { LayoutDashboard, ScrollText, Workflow, Users, Map as MapIcon, Dices, BookOpen, Backpack, Printer, Swords, Library, UserPlus, Cog, Bot, LayoutGrid, FlaskConical, Tablet, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getActiveCampaignId } from "@/hooks/useCampaign";
 
@@ -20,6 +20,7 @@ const NAV = [
   { to: "/co-dm", label: "Co-DM", icon: Bot },
   { to: "/system", label: "System", icon: Cog },
   { to: "/print", label: "Print", icon: Printer },
+  { to: "/autogame", label: "AutoGame", icon: Wand2 },
   { to: "/lab", label: "Lab", icon: FlaskConical },
   { to: "/sys", label: "Devices", icon: Tablet },
 ];

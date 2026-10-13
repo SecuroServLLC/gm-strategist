@@ -30,6 +30,7 @@ import System from "@/pages/System";
 import MedDm from "@/pages/MedDm";
 import Brett from "@/pages/Brett";
 import Lab from "@/pages/Lab";
+import AutoGame from "@/pages/AutoGame";
 import SysLanding from "@/pages/sys/SysLanding";
 import SysTerminal from "@/pages/sys/SysTerminal";
 import SysGameDisplay from "@/pages/sys/SysGameDisplay";
@@ -88,6 +89,7 @@ const AuthenticatedApp = () => {
           <Route path="/co-dm" element={<MedDm />} />
           <Route path="/board" element={<Brett />} />
           <Route path="/lab" element={<Lab />} />
+          <Route path="/autogame" element={<AutoGame />} />
           <Route path="/sys" element={<SysLanding />} />
           <Route path="/print" element={<Utskrift />} />
         </Route>
