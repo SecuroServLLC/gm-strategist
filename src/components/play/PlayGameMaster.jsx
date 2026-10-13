@@ -17,7 +17,7 @@ export default function PlayGameMaster({ campaignId, sessionId, onRecorded, onNa
   const loading = gm.history.isLoading || gm.pending.isLoading || gm.players.isLoading;
   const failed = gm.history.isError || gm.pending.isError || gm.players.isError;
   const latest = gm.pending.data || gm.history.data?.pages[0]?.items[0];
-  const characters = gm.players.data?.pages.flatMap((page) => page.items) || [];
+  const players = gm.players.data?.pages.flatMap((page) => page.items) || [];
   return <PlayGameMasterContext.Provider value={gm}>
     <section aria-label="Player moves" className="mb-6 space-y-4">
       {!sessionId ? <div className="rounded-xl border border-border bg-card p-4">
@@ -27,7 +27,8 @@ export default function PlayGameMaster({ campaignId, sessionId, onRecorded, onNa
         <p>Could not load player moves.</p>
         <Button onClick={() => { gm.refresh(); gm.players.refetch(); }}>Retry</Button>
       </div> : <>
-        <AiGmActionForm characters={characters} hasMore={gm.players.hasNextPage} loadMore={() => gm.players.fetchNextPage()} busy={gm.busy} blocked={!!gm.pending.data} onSubmit={gm.sendAction} />
+        <AiGmActionForm players={players} hasMore={gm.players.hasNextPage} loadMore={() => gm.players.fetchNextPage()} busy={gm.busy} blocked={!!gm.pending.data} onSubmit={gm.sendAction} />
+        <AiDiceControl enabled={aiDice} disabled={gm.busy} onChange={(enabled) => { setAiDice(enabled); localStorage.setItem(diceKey, String(enabled)); }} />
         {gm.error && <p role="alert" className="text-sm text-destructive">{gm.error}</p>}
         {latest && <div aria-live="polite" aria-busy={gm.busy} className="space-y-3">
           <h3 className="font-heading text-xl">Game Master Response</h3>

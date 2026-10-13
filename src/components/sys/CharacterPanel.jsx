@@ -26,7 +26,7 @@ export default function CharacterPanel({ character, partyMember, campaign }) {
           </p>
           <div className="mt-3">
             <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-              <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> HP</span>
+              <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5" /> Livspoeng</span>
               <span>{hp ?? "?"} / {maxHp ?? "?"}</span>
             </div>
             <div className="h-2 rounded-full bg-accent overflow-hidden">
