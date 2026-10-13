@@ -12,9 +12,12 @@ export default async function(req) {
     const device = await entities.Device.get(body.device_id);
     if (!device || device.device_type !== 'terminal') return Response.json({ error: 'Terminalen finnes ikke.' }, { status: 404 });
     if (user.role !== 'admin' && device.created_by_id !== user.id) return Response.json({ error: 'Bare terminalens GM kan endre tilkoblingen.' }, { status: 403 });
+    if (!await base44.auth.isAuthenticated()) return Response.json({ error: 'Logg inn som GM.' }, { status: 401 });
+    // Only this authorized, device-scoped operation may issue or revoke private terminal access.
+    const accessEntities = base44.asServiceRole.entities;
     if (body.operation === 'link') {
-      const page = await entities.TerminalAccess.filter({ device_id: device.id }, { limit: 1 });
-      const access = page.items[0] || await entities.TerminalAccess.create({ device_id: device.id, access_key: crypto.randomUUID() });
+      const page = await accessEntities.TerminalAccess.filter({ device_id: device.id }, { limit: 1 });
+      const access = page.items[0] || await accessEntities.TerminalAccess.create({ device_id: device.id, access_key: crypto.randomUUID() });
       return Response.json({ path: `/sys/terminal/${encodeURIComponent(device.device_id)}#access=${access.access_key}` });
     }
     if (body.operation === 'admit') {
@@ -31,7 +34,7 @@ export default async function(req) {
     await entities.Device.update(device.id, { status: 'pending' });
     await releaseTerminalCharacter(entities, device);
     if (body.operation === 'remove') {
-      await entities.TerminalAccess.deleteMany({ device_id: device.id });
+      await accessEntities.TerminalAccess.deleteMany({ device_id: device.id });
       await entities.Device.delete(device.id);
     } else await entities.Device.update(device.id, body.operation === 'reset' ? { status: device.status } : { campaign_id: '' });
     return Response.json({ ok: true });

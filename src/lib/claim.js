@@ -22,18 +22,19 @@ export async function claimCharacter(device, character, campaign) {
     });
   }
 
+  await base44.entities.Character.updateMany({ id: character.id, campaign_id: campaign.id, claim_status: 'open' }, { $set: {
+    claim_status: 'claimed', claimed_by: partyMember.id, claim_device_id: device.id,
+  } });
+  const reserved = await base44.entities.Character.get(character.id);
+  if (reserved.claim_device_id !== device.id || reserved.claim_status !== 'claimed') throw new Error('En annen spiller har valgt denne karakteren. Velg en annen.');
   await base44.entities.Device.update(device.id, { party_member_id: partyMember.id });
-  await base44.entities.Character.update(character.id, {
-    claim_status: "claimed",
-    claimed_by: partyMember.id,
-  });
 
   return partyMember;
 }
 
 export async function releaseCharacter(device, character) {
   if (device?.party_member_id && character?.id) {
-    await base44.entities.Character.update(character.id, { claim_status: "open", claimed_by: null });
+    await base44.entities.Character.updateMany({ id: character.id, claimed_by: device.party_member_id }, { $set: { claim_status: 'open', claimed_by: '', claim_device_id: '' } });
   }
   if (device?.id) {
     await base44.entities.Device.update(device.id, { party_member_id: null });

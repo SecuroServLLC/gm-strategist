@@ -27,7 +27,7 @@ export default function LoadoutBoard({ members, items, onMoveItem, counts }) {
               >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-heading text-sm truncate">{col.name}</h4>
-                  <Badge variant="secondary" className="text-[10px] py-0">{counts ? counts.find((row) => col.id === 'shared' ? !row.carried_by : row.carried_by === col.id)?.count || 0 : '—'}</Badge>
+                  <Badge variant="secondary" className="text-[10px] py-0">{counts ? (col.id === 'shared' ? counts.reduce((total, row) => total + (!row.carried_by ? row.count : 0), 0) : counts.find((row) => row.carried_by === col.id)?.count || 0) : '—'}</Badge>
                 </div>
                 <div className="space-y-1.5 flex-1">
                   {itemsFor(col.id).map((it, idx) => (
