@@ -21,6 +21,30 @@
     "actor_name": {
       "type": "string"
     },
+    "actor_device_id": {
+      "type": "string"
+    },
+    "participant_device_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10
+    },
+    "participant_character_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10
+    },
+    "dice_source": {
+      "type": "string",
+      "enum": [
+        "physical",
+        "ai"
+      ]
+    },
     "ruleset": {
       "type": "string",
       "enum": [
@@ -129,8 +153,7 @@
         "tavern",
         "storm",
         "quiet"
-      ],
-      "description": "AI-selected audio for the current, established scene"
+      ]
     },
     "success_soundscape": {
       "type": "string",
@@ -155,12 +178,10 @@
       ]
     },
     "narrative_audio_url": {
-      "type": "string",
-      "description": "Cached River voice for the established narration only"
+      "type": "string"
     },
     "outcome_audio_url": {
-      "type": "string",
-      "description": "Cached River voice for the actual resolved dice outcome only"
+      "type": "string"
     },
     "narration_generated_at": {
       "type": "string",

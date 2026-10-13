@@ -10,7 +10,7 @@
     },
     "archetype": {
       "type": "string",
-      "description": "Egendefinert arketype/profesjon, f.eks. 'Bonde', 'Skyggevever'"
+      "description": "Egendefinert arketype/profesjon"
     },
     "race": {
       "type": "string"
@@ -46,25 +46,22 @@
       "items": {
         "type": "string"
       },
-      "description": "Evner/profesjoner \u2013 vises som opptil 3 linjer p\u00e5 utskriftsark"
+      "description": "Evner/profesjoner"
     },
     "appearance": {
       "type": "string"
     },
     "hook": {
-      "type": "string",
-      "description": "Kobling til kampanjens r\u00f8de tr\u00e5d"
+      "type": "string"
     },
     "secret_agenda": {
-      "type": "string",
-      "description": "Skjult m\u00e5l som utvikler seg uavhengig av spillerne"
+      "type": "string"
     },
     "portrait_url": {
       "type": "string"
     },
     "notes": {
-      "type": "string",
-      "description": "GM-notater"
+      "type": "string"
     },
     "claim_status": {
       "type": "string",
@@ -74,11 +71,15 @@
         "claimed"
       ],
       "default": "closed",
-      "description": "closed=ikke claimbar, open=ledig for spiller \u00e5 claime, claimed=allerede tatt"
+      "description": "closed=ikke valgbar, open=ledig, claimed=valgt"
     },
     "claimed_by": {
       "type": "string",
-      "description": "PartyMember-id som har claimet karakteren"
+      "description": "Automatisk opprettet PartyMember-id"
+    },
+    "claim_device_id": {
+      "type": "string",
+      "description": "Terminalen som reserverte karakteren"
     }
   },
   "required": [

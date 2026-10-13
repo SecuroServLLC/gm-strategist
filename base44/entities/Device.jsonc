@@ -4,7 +4,7 @@
   "properties": {
     "device_id": {
       "type": "string",
-      "description": "Permanent kode \u2013 4 tegn for terminal, 6 tegn for player, 16 hex for gamedisplay/game"
+      "description": "Permanent kode: 4 tegn for terminal, 6 for player, 16 hex for skjermer"
     },
     "device_type": {
       "type": "string",
@@ -13,12 +13,10 @@
         "player",
         "gamedisplay",
         "game"
-      ],
-      "description": "terminal=GM-nettbrett (gamecard, ingen login), player=egen enhet (/joingame, login), gamedisplay=felles skjerm, game=\u00f8kt-hub"
+      ]
     },
     "label": {
-      "type": "string",
-      "description": "Egendefinert navn p\u00e5 enheten"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -26,20 +24,106 @@
         "pending",
         "active"
       ],
-      "default": "pending",
-      "description": "pending=venter p\u00e5 GM, active=sluppet inn"
+      "default": "pending"
     },
     "campaign_id": {
-      "type": "string",
-      "description": "Settes n\u00e5r enheten slippes inn / opprettes for en spiller"
+      "type": "string"
     },
     "party_member_id": {
       "type": "string",
-      "description": "For terminal/player: hvilken f\u00f8lgesvenn enheten representerer"
+      "description": "Intern spilltilstand som opprettes automatisk ved karaktervalg"
+    },
+    "claim_lock": {
+      "type": "string"
+    },
+    "claim_lock_until": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
     "device_id",
     "device_type"
-  ]
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "$or": [
+        {
+          "data.device_type": {
+            "$ne": "terminal"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "created_by_id": "{{user.id}}"
+            },
+            {
+              "created_by_id": {
+                "$ne": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.device_type": {
+            "$ne": "terminal"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "created_by_id": "{{user.id}}"
+            },
+            {
+              "created_by_id": {
+                "$ne": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.device_type": {
+            "$ne": "terminal"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "created_by_id": "{{user.id}}"
+            },
+            {
+              "created_by_id": {
+                "$ne": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
 }

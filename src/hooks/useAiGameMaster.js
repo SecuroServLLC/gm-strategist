@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import useJoinedPlayers from '@/components/play/useJoinedPlayers';
 
 export default function useAiGameMaster(campaignId, sessionId, onRecorded, onNarration) {
   const client = useQueryClient();
@@ -19,14 +20,11 @@ export default function useAiGameMaster(campaignId, sessionId, onRecorded, onNar
     const page = await base44.entities.AiGmTurn.filter({ ...scope, status: 'awaiting_roll' }, { sort: 'created_date', limit: 1 });
     return page.items[0] || null;
   } });
-  const characters = useInfiniteQuery({
-    queryKey: ['ai-gm-characters', campaignId], initialPageParam: undefined, enabled: !!sessionId,
-    queryFn: ({ pageParam }) => base44.entities.Character.filter({ campaign_id: campaignId }, { sort: 'name', limit: 50, fields: ['name'], cursor: pageParam }),
-    getNextPageParam: (page) => page.has_more ? page.next_cursor : undefined,
-  });
+  const players = useJoinedPlayers(campaignId, !!sessionId);
   const refresh = () => Promise.all([
     client.invalidateQueries({ queryKey: key }),
     client.invalidateQueries({ queryKey: ['scene-soundscape', campaignId, sessionId] }),
+    client.invalidateQueries({ queryKey: ['joined-players', campaignId] }),
   ]);
   const invoke = async (operation, payload) => {
     if (lock.current) return false;
@@ -49,5 +47,5 @@ export default function useAiGameMaster(campaignId, sessionId, onRecorded, onNar
     if (!request.current || request.current.fingerprint !== fingerprint) request.current = { fingerprint, id: crypto.randomUUID() };
     return invoke('action', { ...payload, request_id: request.current.id });
   };
-  return { history, pending, characters, busy, error, sendAction, resolve: (payload) => invoke('resolve', payload), refresh };
+  return { history, pending, players, busy, error, sendAction, resolve: (payload) => invoke('resolve', payload), refresh };
 }

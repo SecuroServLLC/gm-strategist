@@ -15,7 +15,7 @@ export default function AiGmTurnCard({ turn }) {
       </div>}
     </>}
     {turn.status === 'resolved' && <div className="border-t border-border pt-3">
-      {turn.test_type !== 'none' && <p className="text-sm font-medium text-primary mb-2">{turn.critical ? 'Critical hit' : turn.success ? 'Success' : 'Failure'} · d20 {turn.selected_roll} {turn.modifier >= 0 ? '+' : '−'} {Math.abs(turn.modifier)} = {turn.total}{turn.rolls?.length === 2 ? ` (rolled ${turn.rolls.join(', ')}, ${turn.roll_mode})` : ''}</p>}
+      {turn.test_type !== 'none' && <p className="text-sm font-medium text-primary mb-2">{turn.critical ? 'Critical hit' : turn.success ? 'Success' : 'Failure'} · {turn.dice_source === 'ai' ? 'AI Dice' : 'Fysisk kast'} · d20 {turn.selected_roll} {turn.modifier >= 0 ? '+' : '−'} {Math.abs(turn.modifier)} = {turn.total}{turn.rolls?.length === 2 ? ` (rolled ${turn.rolls.join(', ')}, ${turn.roll_mode})` : ''}</p>}
       <p className="whitespace-pre-wrap break-words">{turn.outcome}</p>
     </div>}
   </article>;
