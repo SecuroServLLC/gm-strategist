@@ -73,6 +73,12 @@ export default function AutoGame() {
               <Badge variant="outline" className="ml-auto">{result.node_count} noder</Badge>
             </div>
             <p className="text-sm text-muted-foreground">{result.summary}</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="secondary">{result.map_count} kart opprettet</Badge>
+              <Button variant="link" size="sm" className="px-0 h-auto py-0" onClick={() => window.location.href = '/maps'}>
+                Se kart →
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">Hierarkisk struktur (Zelda Twilight Princess-modell)</span>
               <ToDoBadge>Kartvisualisering & rom-innhold</ToDoBadge>

@@ -102,9 +102,41 @@ Generer en komplett, dypt hierarkisk struktur. Skriv ALL tekst på norsk bokmål
       records.push(record);
     }
 
+    // Oppdater kart-databasen: lag MapItem for toppnivå-noder (world→building)
+    const MAP_LEVELS = ['world', 'region', 'city', 'location', 'building'];
+    const mapLocationType = (level, poiType) => {
+      const p = (poiType || '').toLowerCase();
+      if (p.includes('hule') || p.includes('cave') || p.includes('dungeon') || p.includes('mine')) return 'dungeon';
+      if (p.includes('kirke') || p.includes('temple') || p.includes('church') || p.includes('kapell')) return 'temple';
+      if (p.includes('slott') || p.includes('castle') || p.includes('tårn') || p.includes('tower') || p.includes('fort') || p.includes('borg')) return 'fortress';
+      if (p.includes('tavern') || p.includes('vertshus') || p.includes('pub')) return 'tavern';
+      if (p.includes('ruin')) return 'ruins';
+      if (p.includes('skog') || p.includes('forest') || p.includes('mark') || p.includes('wilderness') || p.includes('ødemark')) return 'wilderness';
+      if (level === 'world' || level === 'region') return 'region';
+      if (level === 'city') return 'city';
+      return 'other';
+    };
+
+    const mapItems = records
+      .filter(r => MAP_LEVELS.includes(r.level))
+      .map(r => ({
+        campaign_id: campaignId,
+        title: text(r.name, 200),
+        location_type: mapLocationType(r.level, r.poi_type),
+        description: text(r.description, 2000),
+        location_notes: text(r.contents, 2000),
+        connections: `World: ${worldId}`,
+      }));
+
+    let mapCount = 0;
+    if (mapItems.length) {
+      const created = await base44.entities.MapItem.bulkCreate(mapItems);
+      mapCount = Array.isArray(created) ? created.length : 0;
+    }
+
     return Response.json({
       world_id: worldId, title: text(decision.title, 200), summary: text(decision.summary, 1000),
-      node_count: records.length, root_id: records[0]?.id,
+      node_count: records.length, map_count: mapCount, root_id: records[0]?.id,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
