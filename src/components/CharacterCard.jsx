@@ -1,7 +1,7 @@
 import React from "react";
 import { Image } from "@/components/ui/image";
 import { Badge } from "@/components/ui/badge";
-import { Users, ShieldCheck, ShieldOff } from "lucide-react";
+import { Users, ShieldCheck, ShieldOff, Copy } from "lucide-react";
 
 const ROLE_COLORS = {
   protagonist: "border-amber-500/40 text-amber-300",
@@ -33,7 +33,7 @@ function ClaimBadge({ character }) {
   return <Badge variant="outline" className="bg-background/70 backdrop-blur border-slate-500/40 text-slate-300">Ikke godkjent</Badge>;
 }
 
-export default function CharacterCard({ character, onClick, onToggleApprove, approving }) {
+export default function CharacterCard({ character, onClick, onToggleApprove, approving, onDuplicate }) {
   const stats = character.stats || {};
   const isAntagonist = character.role === "antagonist";
   const claimed = character.claim_status === "claimed";
@@ -57,8 +57,13 @@ export default function CharacterCard({ character, onClick, onToggleApprove, app
             {ROLE_LABELS[character.role] || character.role}
           </Badge>
         </div>
-        <div className="absolute top-2.5 right-2.5">
+        <div className="absolute top-2.5 right-2.5 flex flex-col gap-1.5 items-end">
           <ClaimBadge character={character} />
+          {character.relation && character.relation !== "neutral" && character.role !== "protagonist" && (
+            <Badge variant="outline" className={`bg-background/70 backdrop-blur ${character.relation === "friend" ? "border-emerald-500/40 text-emerald-300" : "border-rose-500/40 text-rose-300"}`}>
+              {character.relation === "friend" ? "Venn" : "Fiende"}
+            </Badge>
+          )}
         </div>
       </div>
       <div className="p-4 flex-1 flex flex-col">
@@ -78,15 +83,25 @@ export default function CharacterCard({ character, onClick, onToggleApprove, app
           {character.hook || "Ingen hook ennå."}
         </p>
 
-        {!isAntagonist && !claimed && onToggleApprove && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleApprove(character); }}
-            disabled={approving}
-            className={`mt-3 inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-colors disabled:opacity-50 ${open ? "border-amber-500/40 text-amber-300 hover:bg-amber-500/10" : "border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"}`}
-          >
-            {open ? <><ShieldOff className="w-3.5 h-3.5" /> Trekk tilbake godkjenning</> : <><ShieldCheck className="w-3.5 h-3.5" /> Godkjenn for claim</>}
-          </button>
-        )}
+        <div className="mt-3 flex gap-2">
+          {!isAntagonist && !claimed && onToggleApprove && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleApprove(character); }}
+              disabled={approving}
+              className={`flex-1 inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-md border transition-colors disabled:opacity-50 ${open ? "border-amber-500/40 text-amber-300 hover:bg-amber-500/10" : "border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10"}`}
+            >
+              {open ? <><ShieldOff className="w-3.5 h-3.5" /> Trekk tilbake</> : <><ShieldCheck className="w-3.5 h-3.5" /> Godkjenn</>}
+            </button>
+          )}
+          {onDuplicate && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onDuplicate(character); }}
+              className="inline-flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+            >
+              <Copy className="w-3.5 h-3.5" /> Dupliser
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

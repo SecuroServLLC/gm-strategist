@@ -5,9 +5,11 @@ import { useCampaign } from "@/hooks/useCampaign";
 import CharacterCard from "@/components/CharacterCard";
 import CharacterDialog from "@/components/CharacterDialog";
 import CharacterGenerator from "@/components/CharacterGenerator";
+import RelationOverview from "@/components/relations/RelationOverview";
+import ToDoBadge from "@/components/ToDoBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Plus, ScrollText, Loader2, Dices } from "lucide-react";
+import { Users, Plus, ScrollText, Loader2, Dices, Heart } from "lucide-react";
 
 const ROLE_OPTIONS = [
   { value: "all", label: "Alle" },
@@ -68,6 +70,23 @@ export default function Characters() {
     await load();
   };
 
+  const duplicateCharacter = async (c) => {
+    try {
+      const { id: _id, created_date: _cd, updated_date: _ud, created_by_id: _cb, ...rest } = c;
+      await base44.entities.Character.create({
+        ...rest,
+        name: `${c.name} (kopi)`,
+        claim_status: "closed",
+        claimed_by: null,
+        claim_device_id: null,
+        campaign_id: campaign.id,
+      });
+      load();
+    } catch (e) {
+      alert("Kunne ikke duplisere: " + e.message);
+    }
+  };
+
   const toggleApprove = async (c) => {
     setApprovingId(c.id);
     try {
@@ -116,13 +135,14 @@ export default function Characters() {
             <h1 className="font-heading text-4xl">Karakterkort</h1>
             <p className="text-muted-foreground mt-1">{characters.length} karakterer · AI-genererte, skreddersydd for ditt system.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button onClick={openNew} className="gap-2">
               <Plus className="w-4 h-4" /> Ny karakter
             </Button>
             <Button onClick={openGenerator} variant="outline" className="gap-2">
               <Dices className="w-4 h-4" /> Foreslå karakterer
             </Button>
+            <ToDoBadge>Malerier & Bulk</ToDoBadge>
           </div>
         </div>
 
@@ -157,7 +177,7 @@ export default function Characters() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {filtered.map((c) => (
-              <CharacterCard key={c.id} character={c} onClick={() => openEdit(c)} onToggleApprove={toggleApprove} approving={approvingId === c.id} />
+              <CharacterCard key={c.id} character={c} onClick={() => openEdit(c)} onToggleApprove={toggleApprove} approving={approvingId === c.id} onDuplicate={duplicateCharacter} />
             ))}
           </div>
         )}
@@ -172,6 +192,18 @@ export default function Characters() {
         setting={campaign.setting}
         onSaved={load}
       />
+
+      {characters.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-4">
+            <Heart className="w-4 h-4 text-primary" />
+            <h2 className="font-heading text-2xl">Relasjonsoversikt</h2>
+          </div>
+          <div className="glass-card rounded-2xl p-6">
+            <RelationOverview campaignId={campaign.id} />
+          </div>
+        </div>
+      )}
 
       <CharacterGenerator
         open={genOpen}

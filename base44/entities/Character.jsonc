@@ -63,6 +63,16 @@
     "notes": {
       "type": "string"
     },
+    "relation": {
+      "type": "string",
+      "enum": [
+        "friend",
+        "neutral",
+        "enemy"
+      ],
+      "default": "neutral",
+      "description": "Gruppens forhold til denne NPC-en"
+    },
     "claim_status": {
       "type": "string",
       "enum": [

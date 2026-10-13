@@ -83,6 +83,29 @@
               "character_id": {
                 "type": "string"
               },
+              "token_type": {
+                "type": "string",
+                "description": "Type token (human, elf, dwarf, troll, witch, etc.)"
+              },
+              "relation": {
+                "type": "string",
+                "enum": [
+                  "friend",
+                  "neutral",
+                  "enemy"
+                ],
+                "default": "neutral"
+              },
+              "health_status": {
+                "type": "string",
+                "enum": [
+                  "full",
+                  "wounded",
+                  "critical",
+                  "dead"
+                ],
+                "default": "full"
+              },
               "x": {
                 "type": "number",
                 "minimum": 0,

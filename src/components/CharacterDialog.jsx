@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Loader2, Save, Dices, Upload, Wand2 } from "lucide-react";
 import { DEFAULT_ATTRIBUTES } from "@/lib/attributes";
+import ToDoBadge from "@/components/ToDoBadge";
 
 const ROLES = [
   { value: "protagonist", label: "Protagonist" },
@@ -23,7 +24,7 @@ const ROLES = [
 
 const STAT_KEYS = ["kraft", "smidighet", "utholdenhet", "intelligens", "visdom", "utstralning"];
 
-const EMPTY = { name: "", archetype: "", race: "", role: "npc", background: "", personality: "", stats: {}, abilities: [], appearance: "", hook: "", portrait_url: "", notes: "", claim_status: "closed" };
+const EMPTY = { name: "", archetype: "", race: "", role: "npc", background: "", personality: "", stats: {}, hp: "", abilities: [], appearance: "", hook: "", secret_agenda: "", portrait_url: "", notes: "", claim_status: "closed" };
 
 function SectionLabel({ children }) {
   return (
@@ -58,6 +59,11 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const setStat = (k, v) => setForm((f) => ({ ...f, stats: { ...f.stats, [k]: v } }));
+  const rollStats = () => {
+    const roll4d6 = () => { const d = Array.from({ length: 4 }, () => Math.floor(Math.random() * 6) + 1); return d.sort((a, b) => b - a).slice(0, 3).reduce((s, n) => s + n, 0); };
+    const stats = {}; DEFAULT_ATTRIBUTES.forEach((a) => { stats[a.key] = roll4d6(); });
+    setForm((f) => ({ ...f, stats }));
+  };
 
   const generate = async () => {
     if (!prompt.trim()) return;
@@ -123,9 +129,11 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
         background: form.background,
         personality: form.personality,
         stats: form.stats,
+        hp: form.hp ? Number(form.hp) : null,
         abilities: abilitiesText.split("\n").map((s) => s.trim()).filter(Boolean),
         appearance: form.appearance,
         hook: form.hook,
+        secret_agenda: form.secret_agenda,
         portrait_url: form.portrait_url,
         notes: form.notes,
         claim_status: form.role === "antagonist" ? "closed" : (form.claim_status || "closed"),
@@ -227,7 +235,12 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
               </div>
             </div>
 
-            <SectionLabel>Attributter (1–20)</SectionLabel>
+            <div className="flex items-center justify-between">
+              <SectionLabel>Attributter (1–20)</SectionLabel>
+              <button onClick={rollStats} className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
+                <Dices className="w-3.5 h-3.5" /> Rull attributter
+              </button>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               {DEFAULT_ATTRIBUTES.map((a) => (
                 <div key={a.key} className="rounded-lg border border-border bg-card/30 p-2.5">
@@ -244,6 +257,18 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
                   <p className="text-[10px] text-muted-foreground mt-1 leading-snug">{a.description}</p>
                 </div>
               ))}
+            </div>
+
+            <SectionLabel>Ekstra</SectionLabel>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Livspoeng (HP)</Label>
+                <Input type="number" min="0" value={form.hp ?? ""} onChange={(e) => set("hp", parseInt(e.target.value) || 0)} className="mt-1" />
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs flex items-center gap-1.5">Hemmelig agenda <ToDoBadge /></Label>
+              <Textarea value={form.secret_agenda} onChange={(e) => set("secret_agenda", e.target.value)} rows={2} className="mt-1" placeholder="Skjult motiv som bare GM ser" />
             </div>
 
             <SectionLabel>Beskrivelse</SectionLabel>
@@ -266,6 +291,10 @@ export default function CharacterDialog({ open, onOpenChange, character, campaig
             <div>
               <Label className="text-xs">Hook mot kampanjen</Label>
               <Textarea value={form.hook} onChange={(e) => set("hook", e.target.value)} rows={2} className="mt-1" />
+            </div>
+            <div>
+              <Label className="text-xs">GM-notater</Label>
+              <Textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} rows={2} className="mt-1" placeholder="Interne notater, ikke synlig for spillere" />
             </div>
           </div>
         </ScrollArea>
